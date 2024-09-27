@@ -276,8 +276,8 @@ int main(void)
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
-  osThreadDef(Task2, task2_init, osPriorityNormal, 0, 128);
-  Task2handler = osThreadCreate(osThread(Task2), NULL);
+//  osThreadDef(Task2, task2_init, osPriorityNormal, 0, 128);
+//  Task2handler = osThreadCreate(osThread(Task2), NULL);
   /* USER CODE END RTOS_THREADS */
 
   /* Start scheduler */
@@ -1362,33 +1362,33 @@ void StartDefaultTask(void const * argument)
 	  for(;;)
 	  {
 
-	  if (rxfree) {
-			if (rxmsg[6] == '2' && rxmsg[7] == '8')
-			{ // comm transceiver status
-				float commfreq;
-				commfreq = (rxmsg[8] + 48) + ((rxmsg[9] - 48) * .025);
-				if (commfreq != freq) {
-					faultcounter1 += 1;
-				    int MA = MHz - 48;
-				    int KA = (KHz/25) + 48;
-				    char m = (char)MA;
-				    char k = (char)KA;
-				    char Mfinal[3] = {m,k,0};
-				    Sender(Mfinal, 0); //set active
-					if (faultcounter1 > 2) {
-						glcd_puts("Error 1", 0, 7);
-					}
-				}
-				else {
-					if (faultcounter1 > 2)
-					{
-						glcd_clearline(7);
-					}
-					faultcounter1 = 0;
-				}
-			}
-			rxfree = false;
-		}
+//	  if (rxfree) {
+//			if (rxmsg[6] == '2' && rxmsg[7] == '8')
+//			{ // comm transceiver status
+//				float commfreq;
+//				commfreq = (rxmsg[8] + 48) + ((rxmsg[9] - 48) * .025);
+//				if (commfreq != freq) {
+//					faultcounter1 += 1;
+//				    int MA = MHz - 48;
+//				    int KA = (KHz/25) + 48;
+//				    char m = (char)MA;
+//				    char k = (char)KA;
+//				    char Mfinal[3] = {m,k,0};
+//				    Sender(Mfinal, 0); //set active
+//					if (faultcounter1 > 2) {
+//						glcd_puts("Error 1", 0, 7);
+//					}
+//				}
+//				else {
+//					if (faultcounter1 > 2)
+//					{
+//						glcd_clearline(7);
+//					}
+//					faultcounter1 = 0;
+//				}
+//			}
+//			rxfree = false;
+//		}
 
 		static unsigned long last = 0;
 	    static float freq_last = 108.000;

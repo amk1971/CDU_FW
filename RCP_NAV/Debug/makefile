@@ -38,34 +38,34 @@ $(wildcard ../makefile.init) \
 $(wildcard ../makefile.targets) \
 
 
-BUILD_ARTIFACT_NAME := RCU_NAV_Feedback
+BUILD_ARTIFACT_NAME := RCU_NAV_NoErrorMsg
 BUILD_ARTIFACT_EXTENSION := elf
 BUILD_ARTIFACT_PREFIX :=
 BUILD_ARTIFACT := $(BUILD_ARTIFACT_PREFIX)$(BUILD_ARTIFACT_NAME)$(if $(BUILD_ARTIFACT_EXTENSION),.$(BUILD_ARTIFACT_EXTENSION),)
 
 # Add inputs and outputs from these tool invocations to the build variables 
 EXECUTABLES += \
-RCU_NAV_Feedback.elf \
+RCU_NAV_NoErrorMsg.elf \
 
 MAP_FILES += \
-RCU_NAV_Feedback.map \
+RCU_NAV_NoErrorMsg.map \
 
 SIZE_OUTPUT += \
 default.size.stdout \
 
 OBJDUMP_LIST += \
-RCU_NAV_Feedback.list \
+RCU_NAV_NoErrorMsg.list \
 
 
 # All Target
 all: main-build
 
 # Main-build Target
-main-build: RCU_NAV_Feedback.elf secondary-outputs
+main-build: RCU_NAV_NoErrorMsg.elf secondary-outputs
 
 # Tool invocations
-RCU_NAV_Feedback.elf RCU_NAV_Feedback.map: $(OBJS) $(USER_OBJS) /Users/razeenmaroof/STM32CubeIDE/workspace_1.15.1/RCU_NAV_Feedback/STM32F103VCTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "RCU_NAV_Feedback.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m3 -T"/Users/razeenmaroof/STM32CubeIDE/workspace_1.15.1/RCU_NAV_Feedback/STM32F103VCTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="RCU_NAV_Feedback.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -u _printf_float -Wl,--start-group -lc -lm -Wl,--end-group
+RCU_NAV_NoErrorMsg.elf RCU_NAV_NoErrorMsg.map: $(OBJS) $(USER_OBJS) /Users/razeenmaroof/STM32CubeIDE/workspace_1.15.1/RCU_NAV_NoErrorMsg/STM32F103VCTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "RCU_NAV_NoErrorMsg.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m3 -T"/Users/razeenmaroof/STM32CubeIDE/workspace_1.15.1/RCU_NAV_NoErrorMsg/STM32F103VCTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="RCU_NAV_NoErrorMsg.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -u _printf_float -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 
@@ -74,14 +74,14 @@ default.size.stdout: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
 	@echo 'Finished building: $@'
 	@echo ' '
 
-RCU_NAV_Feedback.list: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-objdump -h -S $(EXECUTABLES) > "RCU_NAV_Feedback.list"
+RCU_NAV_NoErrorMsg.list: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-objdump -h -S $(EXECUTABLES) > "RCU_NAV_NoErrorMsg.list"
 	@echo 'Finished building: $@'
 	@echo ' '
 
 # Other Targets
 clean:
-	-$(RM) RCU_NAV_Feedback.elf RCU_NAV_Feedback.list RCU_NAV_Feedback.map default.size.stdout
+	-$(RM) RCU_NAV_NoErrorMsg.elf RCU_NAV_NoErrorMsg.list RCU_NAV_NoErrorMsg.map default.size.stdout
 	-@echo ' '
 
 secondary-outputs: $(SIZE_OUTPUT) $(OBJDUMP_LIST)

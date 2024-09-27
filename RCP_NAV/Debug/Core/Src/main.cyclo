@@ -33,7 +33,7 @@
 ../Core/Src/main.c:1083:6:concatTwoChars	3
 ../Core/Src/main.c:1095:6:LCDPrint	20
 ../Core/Src/main.c:1264:6:Sender	5
-../Core/Src/main.c:1357:6:StartDefaultTask	110
+../Core/Src/main.c:1357:6:StartDefaultTask	104
 ../Core/Src/main.c:2212:6:task2_init	6
 ../Core/Src/main.c:2257:6:HAL_TIM_PeriodElapsedCallback	2
 ../Core/Src/main.c:2274:6:Error_Handler	1
