@@ -2009,7 +2009,7 @@ void StartDefaultTask(void const * argument)
 		  }
 		}
 		else if (HAL_GPIO_ReadPin(RIGHT_SW_GPIO_Port, RIGHT_SW_Pin) == 0 && !pause) { // Check if button is pressed
-		  float temp = freq;
+		  float tempf = freq;
 		  int tk = KHz;
 		  int tm = MHz;
 
@@ -2017,7 +2017,7 @@ void StartDefaultTask(void const * argument)
 		  KHz = SK;
 		  MHz = SM;
 
-		  Standby = temp;
+		  Standby = tempf;
 		  SK = tk;
 		  SM = tm;
 		  HAL_Delay(500);
