@@ -8,9 +8,9 @@ from tkinter import Tk, Canvas, Entry, Text, Button, PhotoImage
 
 
 OUTPUT_PATH = Path(__file__).parent
-ASSETS_PATH = OUTPUT_PATH / Path(r"D:\Projects\CDU\Demo_RCP_CDU\cduDesktop\Tkinter-Designer-master\build\assets\frame0")
+ASSETS_PATH = OUTPUT_PATH / Path(r"C:\Users\AeroTrainB\Documents\GitHub\CDU_FW\CDU_Python\cduDesktop\build\assets\frame0")
 
-flag = False
+flag = False      # sir now we have to connect the port 
 
 volume = 0
 obs = 0
@@ -33,7 +33,7 @@ def relative_to_assets(path: str) -> Path:
 # Initialize serial communication
 def init_serial():
     try:
-        ser = serial.Serial('COM8', 9600, timeout=1)  # Replace 'COM3' with your actual port
+        ser = serial.Serial('COM5', 9600, timeout=1)  # Replace 'COM3' with your actual port
         return ser
     except serial.SerialException as e:
         print(f"Error opening serial port: {e}")
