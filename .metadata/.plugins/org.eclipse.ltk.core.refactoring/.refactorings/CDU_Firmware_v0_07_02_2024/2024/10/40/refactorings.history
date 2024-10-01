@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename resource &apos;CDU_Firmware_v0_07_02_2024/CDU.ioc&apos; to &apos;CDU_Firmware_v0_07_02_2024.ioc&apos;" description="Rename resource &apos;CDU.ioc&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="CDU.ioc" name="CDU_Firmware_v0_07_02_2024.ioc" stamp="1727799565593" updateReferences="true"/>
+</session>
