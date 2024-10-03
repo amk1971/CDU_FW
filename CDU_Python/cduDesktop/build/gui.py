@@ -33,7 +33,7 @@ def relative_to_assets(path: str) -> Path:
 # Initialize serial communication
 def init_serial():
     try:
-        ser = serial.Serial('COM5', 9600, timeout=1)  # Replace 'COM3' with your actual port
+        ser = serial.Serial('COM3', 9600, timeout=1)  # Replace 'COM3' with your actual port
         return ser
     except serial.SerialException as e:
         print(f"Error opening serial port: {e}")

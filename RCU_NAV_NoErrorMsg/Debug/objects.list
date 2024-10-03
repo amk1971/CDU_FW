@@ -2,6 +2,7 @@
 "./Core/Src/freertos.o"
 "./Core/Src/glcd.o"
 "./Core/Src/main.o"
+"./Core/Src/rcuCduCom.o"
 "./Core/Src/spif.o"
 "./Core/Src/stm32f1xx_hal_msp.o"
 "./Core/Src/stm32f1xx_hal_timebase_tim.o"

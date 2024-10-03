@@ -282,6 +282,7 @@ int main(void)
   responseCDU = HAL_UART_Receive_IT(&huart5, rxbuffcdu, 1); // Start UART5 in interrupt mode
 //  response = HAL_UART_Receive_IT(&huart4, rxbuff, 1); // Start UART4 in interrupt mode
 
+
   /* USER CODE BEGIN RTOS_MUTEX */
   /* add mutexes, ... */
   /* USER CODE END RTOS_MUTEX */
@@ -1391,7 +1392,14 @@ void StartDefaultTask(void const * argument)
   /* USER CODE BEGIN 5 */
 	char toPrint[20];
 	  /* Infinite loop */
-	  for(;;)
+
+	static unsigned long last = 0;
+    static float freq_last = 108.000;
+	static float sfreq_last = 108.000;
+	static int vol_last = 0;
+	static int obs_last = 0;
+
+	for(;;)
 	  {
 
 //	  if (rxfree) {
@@ -1422,11 +1430,7 @@ void StartDefaultTask(void const * argument)
 //			rxfree = false;
 //		}
 
-		static unsigned long last = 0;
-	    static float freq_last = 108.000;
-		static float sfreq_last = 108.000;
-		static int vol_last = 0;
-		static int obs_last = 0;
+
 		freq = MHz + (.001 * KHz);
 		Standby = SM + (.001 * SK);
 		if (millis() - last > 2000 && temp) { // if time between action > 2 send freq in NOTE: will need to add a check later as some actions cant be exited.
@@ -2248,43 +2252,6 @@ void StartDefaultTask(void const * argument)
 		}
 	  }
   /* USER CODE END 5 */
-}
-
-void task2_init(void const * argument) { // rx
-	uint8_t response = 0;
-	  for(;;)
-	  {
-		response = HAL_UART_Receive(&huart4, rxbuff, 1, 1000);
-		if(response==HAL_OK) //if transfer is successful
-		{
-			if (faultcounter0 > 2)
-			{
-				glcd_clearline(7);
-			}
-			faultcounter0 = 0;
-
-			rxmsg[rxcount] = rxbuff[0];
-			rxcount++;
-			if (rxcount > 24) {
-				rxcount = 0;
-			}
-
-			if (rxbuff[0] == '\n')
-			{
-				rxmsg[rxcount] = 0;
-				rxcount = 0;
-				rxfree = true;
-			}
-		}
-		else { // no message in 1 seconds
-			__HAL_UART_FLUSH_DRREGISTER(&huart4);  // Clear the UART Data Register
-			rxcount = 0;
-			faultcounter0++;
-			if (faultcounter0 > 2) {
-				glcd_puts("Error 0", 0, 7);
-			}
-		}
-	  }
 }
 
 /**

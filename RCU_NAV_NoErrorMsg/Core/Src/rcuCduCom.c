@@ -122,7 +122,7 @@ void task3_init(void const * argument)
 				  {
 					  freq = rxfreq;
 					  MHz = rxmsgcdu[8] + 48;
-					  KHz = (rxmsgcdu[9] - 48) * .025;
+					  KHz = (rxmsgcdu[9] - 48) * 25;
 				  }
 				  else
 				  {
@@ -137,7 +137,7 @@ void task3_init(void const * argument)
 				  {
 					  Standby = rxfreq;
 					  SM = rxmsgcdu[8] + 48;
-					  SK = (rxmsgcdu[9] - 48) * .025;
+					  SK = (rxmsgcdu[9] - 48) * 25;
 				  }
 				  else
 				  {
