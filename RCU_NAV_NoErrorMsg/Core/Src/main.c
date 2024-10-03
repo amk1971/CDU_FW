@@ -20,6 +20,8 @@
 #include "main.h"
 #include "cmsis_os.h"
 
+#include "rcuCduCom.h"
+
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "spif.h"
@@ -89,6 +91,13 @@ int rxcount = 0;
 int faultcounter0 = 0;
 int faultcounter1 = 0;
 bool rxfree = false;
+
+extern unsigned char rxbuffcdu[1];
+extern char rxmsgcdu[25];
+extern int rxcountcdu;
+extern bool rxfreecdu;
+
+extern uint8_t responseCDU;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -207,6 +216,23 @@ void toDelete(int index) {
 osThreadId Task2handler;
 void task2_init(void const * argument);
 
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
+//    if (huart->Instance == UART4) {
+//        // Process data from UART4
+//        rxmsg[rxcount] = rxbuff[0];
+//        rxcount++;
+//        response = HAL_UART_Receive_IT(&huart4, rxbuff, 1); // Restart UART4 reception
+//    } else
+    	if (huart->Instance == UART5) {
+        // Process data from UART5
+        rxmsgcdu[rxcountcdu] = rxbuffcdu[0];
+        rxcountcdu++;
+        responseCDU = HAL_UART_Receive_IT(&huart5, rxbuffcdu, 1); // Restart UART5 reception
+    }
+}
+
+osThreadId Task3handler;
+
 
 
 /* USER CODE END 0 */
@@ -253,6 +279,9 @@ int main(void)
   loadstate();
   /* USER CODE END 2 */
 
+  responseCDU = HAL_UART_Receive_IT(&huart5, rxbuffcdu, 1); // Start UART5 in interrupt mode
+//  response = HAL_UART_Receive_IT(&huart4, rxbuff, 1); // Start UART4 in interrupt mode
+
   /* USER CODE BEGIN RTOS_MUTEX */
   /* add mutexes, ... */
   /* USER CODE END RTOS_MUTEX */
@@ -278,6 +307,9 @@ int main(void)
   /* add threads, ... */
 //  osThreadDef(Task2, task2_init, osPriorityNormal, 0, 128);
 //  Task2handler = osThreadCreate(osThread(Task2), NULL);
+
+  osThreadDef(Task3, task3_init, osPriorityNormal, 0, 128);	//128 is stack size (in bytes) requirements for the thread function.
+  Task3handler = osThreadCreate(osThread(Task3), NULL);
   /* USER CODE END RTOS_THREADS */
 
   /* Start scheduler */
@@ -2156,6 +2188,8 @@ void StartDefaultTask(void const * argument)
 		  char VSfinal[2] = {v,0};
 		  Sender(VSfinal,2); //set vol
 
+		  Sender2cdu(VSfinal,2); //sending also to cdu for synchronization
+
 	//	  Serial2.print("v");
 	//	  printFloat2(freq,3);
 	//	  Serial2.print(vol);
@@ -2176,6 +2210,9 @@ void StartDefaultTask(void const * argument)
 		  LCDPrint(toPrint);
 
 		  Sender("",3);
+
+		  Sender2cdu("",3); //sending also to cdu for synchronization
+
 		  obs_last = obs;
 		  last = millis();
 		}
@@ -2187,12 +2224,16 @@ void StartDefaultTask(void const * argument)
 		  char Mfinal[3] = {m,k,0};
 		  Sender(Mfinal, 0); //set active
 
+		  Sender2cdu(Mfinal,0); //sending also to cdu for synchronization
+
 		  MA = SM - 48;
 		  KA = (SK/25) + 48;
 		  m = (char)MA;
 		  k = (char)KA;
 		  char Sfinal[3] = {m,k,0};
 		  Sender(Sfinal, 1); //set standby
+
+		  Sender2cdu(Sfinal,1); //sending also to cdu for synchronization
 
 	//	  Serial2.print("f");
 	//	  printFloat2(freq,3);
