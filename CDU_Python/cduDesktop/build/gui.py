@@ -116,7 +116,8 @@ def on_send_button_click(serial_connection):
         temp_str = str(Active_freq)
         Amhz, Akhz = temp_str.split('.')
         amhz_ascii = chr(int(Amhz) - 48)
-        Akhz_num = int(Akhz)
+        akhz2 = Akhz+"00"
+        Akhz_num = int(akhz2[:3])
         if Akhz_num % 25 != 0:
             Akhz_num += 25 - (Akhz_num % 25)
         akhz_ascii = chr((Akhz_num // 25) + 48) 
@@ -130,7 +131,8 @@ def on_send_button_click(serial_connection):
         temp_str = str(standby_freq)
         Smhz, Skhz = temp_str.split('.')
         smhz_ascii = chr(int(Smhz) - 48)
-        Skhz_num = int(Skhz)
+        skhz2 = Skhz+"00"
+        Skhz_num = int(skhz2[:3])
         if Skhz_num % 25 != 0:
             Skhz_num += 25 - (Skhz_num % 25)
         skhz_ascii = chr((Skhz_num // 25) + 48)
