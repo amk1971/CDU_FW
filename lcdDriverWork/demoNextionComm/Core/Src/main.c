@@ -19,6 +19,9 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "stdio.h"
+#include "stdlib.h"
+
+#include "math.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 
@@ -60,14 +63,46 @@ static void MX_UART4_Init(void);
 uint16_t TIMEOUT = 1000;
 uint8_t endCmd[3] = {0xff, 0xff, 0xff};
 
-void Nextion_sendString(char *id, char *string)
+void nextion_sendstr(char *id, char *string)
 {
 	char buffer[50];
-	int len = sprintf(buffer, "%s.txt=\"%s\"",id, string);
+	int len = sprintf((char *)buffer, "%s.txt=\"%s\"",id, string);
 	HAL_UART_Transmit(&huart4, (uint8_t *)buffer, len, TIMEOUT);
 	HAL_UART_Transmit(&huart4, (uint8_t *)endCmd, 3, TIMEOUT/10);
 }
 
+void nextion_changePage(char *pageName)
+{
+    char buffer[20];
+    int len = sprintf((char *)buffer, "page %s", pageName);
+    HAL_UART_Transmit(&huart4, (uint8_t *)buffer, len, TIMEOUT);
+    HAL_UART_Transmit(&huart4, (uint8_t *)endCmd, 3, TIMEOUT/10);
+}
+
+void nextion_sendnum(char *obj, int16_t num)
+{
+	uint8_t *buffer = malloc(30 * sizeof(char));//30 bytes of buffer
+	int len = sprintf((char *)buffer, "%s.val=%d", obj, num);
+	HAL_UART_Transmit(&huart4, (uint8_t *)buffer, len, TIMEOUT);
+	HAL_UART_Transmit(&huart4, (uint8_t *)endCmd, 3, TIMEOUT/10);
+	free(buffer);
+}
+
+void nextion_sendfloat(char *obj, float num, uint16_t dp)
+{
+	// covert first to integer
+	int16_t number = num*(pow(10,dp));
+	uint8_t *buffer = malloc(30 * sizeof(char));//30 bytes of buffer
+
+	int len = sprintf((char *)buffer, "%s.vvs1=%d", obj, dp);
+	HAL_UART_Transmit(&huart4, (uint8_t *)buffer, len, TIMEOUT);
+	HAL_UART_Transmit(&huart4, (uint8_t *)endCmd, 3, TIMEOUT/10);
+
+	len = sprintf((char *)buffer, "%s.val=%d", obj, number);
+	HAL_UART_Transmit(&huart4, (uint8_t *)buffer, len, TIMEOUT);
+	HAL_UART_Transmit(&huart4, (uint8_t *)endCmd, 3, TIMEOUT/10);
+	free(buffer);
+}
 /* USER CODE END 0 */
 
 /**
@@ -109,15 +144,34 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
-	  Nextion_sendString("t0","ali");
-	  Nextion_sendString("t1","huzaifa");
+	  nextion_sendstr("t0","ali");
+	  nextion_sendstr("t1","huzaifa");
 
 	  HAL_Delay(1000);
 
-	  Nextion_sendString("t0","ila");
-	  Nextion_sendString("t1","afiazuh");
+	  nextion_sendstr("t0","ila");
+	  nextion_sendstr("t1","afiazuh");
 
 	  HAL_Delay(1000);
+
+	  nextion_changePage("1");
+
+	  HAL_Delay(1000);
+
+	  nextion_sendnum("n0", 237);
+	  nextion_sendfloat("x0", 123765, 3);
+
+	  HAL_Delay(1000);
+
+	  nextion_sendnum("n0", 6);
+	  nextion_sendfloat("x0", 11860, 2);
+
+	  HAL_Delay(1000);
+
+	  nextion_changePage("0");
+
+	  HAL_Delay(1000);
+
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */

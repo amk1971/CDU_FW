@@ -1,0 +1,10 @@
+16:17:43 **** Incremental Build of configuration Debug for project demoNextionComm ****
+make -j4 all 
+arm-none-eabi-size  demoNextionComm.elf 
+   text	   data	    bss	    dec	    hex	filename
+  20260	    120	   1976	  22356	   5754	demoNextionComm.elf
+Finished building: default.size.stdout
+ 
+
+16:17:43 Build Finished. 0 errors, 0 warnings. (took 671ms)
+
