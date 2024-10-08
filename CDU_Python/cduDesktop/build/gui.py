@@ -8,7 +8,7 @@ from tkinter import Tk, Canvas, Entry, Text, Button, PhotoImage
 
 
 OUTPUT_PATH = Path(__file__).parent
-ASSETS_PATH = OUTPUT_PATH / Path(r"C:\Users\AeroTrainB\Documents\GitHub\CDU_FW\CDU_Python\cduDesktop\build\assets\frame0")
+ASSETS_PATH = OUTPUT_PATH / Path(r"F:\projects\CDU_FW\CDU_Python\cduDesktop\build\assets\frame0")
 
 flag = False      # sir now we have to connect the port 
 
@@ -26,6 +26,13 @@ standby_freq_update = False
 Active_tx_Status_update = False
 standby_tx_Status_update = False
 
+entry_1=None
+entry_2=None
+entry_5=None
+entry_7=None
+entry_18=None
+entry_19=None
+
 
 def relative_to_assets(path: str) -> Path:
     return ASSETS_PATH / Path(path)
@@ -33,7 +40,7 @@ def relative_to_assets(path: str) -> Path:
 # Initialize serial communication
 def init_serial():
     try:
-        ser = serial.Serial('COM3', 9600, timeout=1)  # Replace 'COM3' with your actual port
+        ser = serial.Serial('COM2', 9600, timeout=1)  # Replace 'COM3' with your actual port
         return ser
     except serial.SerialException as e:
         print(f"Error opening serial port: {e}")
@@ -96,25 +103,19 @@ def send_serial_data(serial_connection, data_to_send):
 def on_send_button_click(serial_connection):
     # message = []
     
+    global volume, obs, Active_freq, standby_freq, Active_tx_Status, standby_tx_Status
     global Active_freq_update, standby_freq_update, Active_tx_Status_update, standby_tx_Status_update, volume_update, obs_update
-
-    # Amhz, Akhz = tx_activef.split('.')
-    # amhz_ascii = chr(int(Amhz) - 48)
-    # Akhz_num = int(Akhz)
-    # if Akhz_num % 25 != 0:
-    #     Akhz_num += 25 - (Akhz_num % 25)
-    # akhz_ascii = chr((Akhz_num // 25) + 48) 
-    # Smhz, Skhz = tx_standbyf.split('.')
-    # smhz_ascii = chr(int(Smhz) - 48)
-    # Skhz_num = int(Skhz)
-    # if Skhz_num % 25 != 0:
-    #     Skhz_num += 25 - (Skhz_num % 25)
-    # skhz_ascii = chr((Skhz_num // 25) + 48)
-    # message = "$PATNV28" + amhz_ascii + akhz_ascii + smhz_ascii + skhz_ascii + tx_status
+    # global old_Active_freq, old_Active_tx_Status, old_standby_freq, old_standby_tx_Status, old_volume, old_obs
+    # global entry_1, entry_2, entry_5, entry_7, entry_18, entry_19
 
     if Active_freq_update or Active_tx_Status_update:
+
         temp_str = str(Active_freq)
-        Amhz, Akhz = temp_str.split('.')
+        try:
+            Amhz, Akhz = temp_str.split('.')
+        except ValueError:
+            Amhz = temp_str  # Assign the whole string to Amhz
+            Akhz = '0'       # Set Akhz to '0' since there is no decimal part
         amhz_ascii = chr(int(Amhz) - 48)
         akhz2 = Akhz+"00"
         Akhz_num = int(akhz2[:3])
@@ -123,13 +124,18 @@ def on_send_button_click(serial_connection):
         akhz_ascii = chr((Akhz_num // 25) + 48) 
         temp_message = "$PATNV27" + amhz_ascii + akhz_ascii + Active_tx_Status +'\r' +'\n'
         send_serial_data(serial_connection, temp_message)
-        # message.append(temp_message)
         Active_freq_update = False
         Active_tx_Status_update = False
 
-    elif standby_freq_update or standby_tx_Status_update:
+    if standby_freq_update or standby_tx_Status_update:
+    # if standby_freq != old_standby_freq or standby_tx_Status_update:
+       
         temp_str = str(standby_freq)
-        Smhz, Skhz = temp_str.split('.')
+        try:
+            Smhz, Skhz = temp_str.split('.')
+        except:
+            Smhz = temp_str
+            Skhz = '0'
         smhz_ascii = chr(int(Smhz) - 48)
         skhz2 = Skhz+"00"
         Skhz_num = int(skhz2[:3])
@@ -138,25 +144,22 @@ def on_send_button_click(serial_connection):
         skhz_ascii = chr((Skhz_num // 25) + 48)
         temp_message = "$PATNV28" + smhz_ascii + skhz_ascii + standby_tx_Status +'\r' +'\n'
         send_serial_data(serial_connection, temp_message)
-        # message.append(temp_message)
         standby_freq_update = False
         standby_tx_Status_update = False
 
-    elif volume_update:
+    if volume_update:
+    # if volume != old_volume 
         temp_message = "$PATNV73" + str(volume) +'\r' +'\n'
         send_serial_data(serial_connection, temp_message)   
-        # message.append(temp_message)
         volume_update = False
 
-    elif obs_update:
+    if obs_update:
+    # if obs != old_obs:
+
         temp_message = "$PATNV34" + obs +'\r' +'\n'
         send_serial_data(serial_connection, temp_message)
-        # message.append(temp_message)
         obs_update = False
 
-    # for i in message:
-    #     send_serial_data(serial_connection, i)
-    #     time.sleep(0.25)
 
 # Start serial reading in a separate thread
 def start_serial_read_thread(serial_connection, data_list):
@@ -171,6 +174,12 @@ prev_standby_tx_Status= standby_tx_Status
 prev_volume= volume
 prev_obs = obs
 
+old_Active_freq= Active_freq
+old_Active_tx_Status= Active_tx_Status
+old_standby_freq= standby_freq
+old_standby_tx_Status= standby_tx_Status
+old_volume= volume
+old_obs = obs
 
 
 # Main GUI application
@@ -178,61 +187,34 @@ def main():
     # Initialize serial port
     serial_connection = init_serial()
 
-    # Function to capture user input from the entry box and assign it to its respective variables
-    def handle_user_input_activefreq(event=None):
-        global Active_freq, Active_freq_update
+    # # Function to capture user input from the entry box and assign it to its respective variables
+    # def handle_user_input_activefreq(event=None):
+    #     global Active_freq, Active_freq_update
 
-        Active_freq_entry = entry_1.get()
-        Active_freq = Active_freq_entry[0:7]
-        
-        Active_freq_update = True
+    # def handle_user_input_standbyfreq(event=None):
+    #     global standby_freq , standby_freq_update
 
-    def handle_user_input_standbyfreq(event=None):
-        global standby_freq , standby_freq_update
+    # def handle_user_input_volume(event=None):
+    #     global volume, volume_update
 
-        standby_freq_entry = entry_7.get() 
-        standby_freq = standby_freq_entry[0:7]
+    # def handle_user_input_obs(event=None):
+    #     global obs, obs_update
 
-        standby_freq_update = True
+    # def handle_user_input_activeStatus(event=None):
+    #     global Active_tx_Status, Active_tx_Status_update
 
-    def handle_user_input_volume(event=None):
-        global volume, volume_update
+    # def handle_user_input_standbyStatus(event=None):
+    #     global standby_tx_Status, standby_tx_Status_update
 
-        volume_entry = entry_18.get()
-        volume = volume_entry[0:2]
-
-        volume_update = True
-
-    def handle_user_input_obs(event=None):
-        global obs, obs_update
-
-        obs_entry = entry_19.get() 
-        obs = obs_entry[0:3]
-        obs_update = True
-
-    def handle_user_input_activeStatus(event=None):
-        global Active_tx_Status, Active_tx_Status_update
-
-        Active_tx_Status_entry = entry_2.get()
-        Active_tx_Status = Active_tx_Status_entry[0:6]
-
-        Active_tx_Status_update = True
-
-    def handle_user_input_standbyStatus(event=None):
-        global standby_tx_Status, standby_tx_Status_update
-
-        standby_tx_Status_entry = entry_5.get()
-        standby_tx_Status = standby_tx_Status_entry[0:6]
-
-        standby_tx_Status_update = True
- 
-    
     # Function to increment and display the value
     def update_value():
 
         global tx_status, tx_activef, tx_standbyf
 
+        global volume, obs, Active_freq, standby_freq, Active_tx_Status, standby_tx_Status
         global prev_Active_freq, prev_Active_tx_Status, prev_standby_freq, prev_standby_tx_Status, prev_volume, prev_obs
+        global old_Active_freq, old_Active_tx_Status, old_standby_freq, old_standby_tx_Status, old_volume, old_obs
+        global Active_freq_update, standby_freq_update, Active_tx_Status_update, standby_tx_Status_update, volume_update, obs_update
 
         # Input Outputs:
 
@@ -272,30 +254,61 @@ def main():
             entry_19.insert(0,obs)
             prev_obs = obs
 
-        # tx_status_entry = entry_14.get("1.0", "2.0")  # Get letter N or M
-        # tx_status = tx_status_entry[0:1]
-        
-        # tx_activef_entry = entry_13.get("1.0", "2.0")
-        # tx_activef = tx_activef_entry[0:7]
+        # Check if Active Frequency has changed
+        Active_freq_entry = entry_1.get()
+        if Active_freq_entry[0:7] != old_Active_freq:
+            Active_freq = Active_freq_entry[0:7]
+            # print(Active_freq)
+            old_Active_freq = Active_freq
+            Active_freq_update = True
 
-        # tx_standbyf_entry = entry_15.get("1.0", "2.0")
-        # tx_standbyf = tx_standbyf_entry[0:7]
+        # Check if Active TX Status has changed
+        Active_tx_Status_entry = entry_2.get()
+        if Active_tx_Status_entry[0:6] != old_Active_tx_Status:
+            Active_tx_Status = Active_tx_Status_entry[0:6]
+            # print(Active_tx_Status)
+            old_Active_tx_Status = Active_tx_Status
+            Active_tx_Status_update = True
 
-        # Input only
-        # entry_1.delete(0,7)
-        # entry_1.insert(0,ip_Active_freq)        
-        # entry_2.delete(0,6)
-        # entry_2.insert(0,ip_Status)
-        # entry_7.delete(0,7)
-        # entry_7.insert(0,ip_standby_freq)
+        # Check if Standby Frequency has changed
+        standby_freq_entry = entry_7.get()
+        if standby_freq_entry[0:7] != old_standby_freq:
+            standby_freq = standby_freq_entry[0:7]
+            # print(standby_freq)
+            standby_freq_update = True
+            old_standby_freq = standby_freq
 
-        # Bind the <Return> key (Enter key) to handle_user_input
-        entry_1.bind("<Return>", handle_user_input_activefreq)
-        entry_18.bind("<Return>", handle_user_input_volume)
-        entry_19.bind("<Return>", handle_user_input_obs)
-        entry_7.bind("<Return>", handle_user_input_standbyfreq)
-        entry_2.bind("<Return>", handle_user_input_activeStatus)
-        entry_5.bind("<Return>", handle_user_input_standbyStatus)
+        # Check if Standby TX Status has changed
+        standby_tx_Status_entry = entry_5.get()
+        if standby_tx_Status_entry[0:6] != old_standby_tx_Status:
+            standby_tx_Status = standby_tx_Status_entry[0:6]
+            # print(standby_tx_Status)
+            old_standby_tx_Status = standby_tx_Status
+            standby_tx_Status_update = True
+
+        # Check if Volume has changed
+        volume_entry = entry_18.get()
+        if volume_entry[0:2] != old_volume:
+            volume = volume_entry[0:2]
+            # print(volume)
+            old_volume = volume
+            volume_update = True
+
+        # Check if OBS has changed
+        obs_entry = entry_19.get()
+        if obs_entry[0:3] != old_obs:
+            obs = obs_entry[0:3]
+            # print(obs)
+            old_obs = obs
+            obs_update = True
+
+        # # Bind the <Return> key (Enter key) to handle_user_input
+        # entry_1.bind("<Return>", handle_user_input_activefreq)
+        # entry_18.bind("<Return>", handle_user_input_volume)
+        # entry_19.bind("<Return>", handle_user_input_obs)
+        # entry_7.bind("<Return>", handle_user_input_standbyfreq)
+        # entry_2.bind("<Return>", handle_user_input_activeStatus)
+        # entry_5.bind("<Return>", handle_user_input_standbyStatus)
 
 
 

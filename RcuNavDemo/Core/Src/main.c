@@ -210,8 +210,8 @@ int main(void)
   osThreadDef(defaultTask, StartDefaultTask, osPriorityNormal, 0, 512);
   defaultTaskHandle = osThreadCreate(osThread(defaultTask), NULL);
 
-  osThreadDef(Task2, task2_init, osPriorityNormal, 0, 128);	//128 is stack size (in bytes) requirements for the thread function.
-  Task2handler = osThreadCreate(osThread(Task2), NULL);
+//  osThreadDef(Task2, task2_init, osPriorityNormal, 0, 128);	//128 is stack size (in bytes) requirements for the thread function.
+//  Task2handler = osThreadCreate(osThread(Task2), NULL);
 
   osThreadDef(Task3, task3_init, osPriorityNormal, 0, 128);	//128 is stack size (in bytes) requirements for the thread function.
   Task3handler = osThreadCreate(osThread(Task3), NULL);
