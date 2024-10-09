@@ -226,28 +226,31 @@ def main():
         #     send_serial_data(serial_connection, temp_message)
 
             # Determine the starting frequency based on the entered kHz value
-            if Akhz_num == 0:
+            if Akhz_num >= 950:
                 # Case where kHz is exactly 0, subtract 1 MHz and start from .000
                 start_mhz = Amhz_num - 1
-                start_khz = 0
+                start_khz = 875
             elif Akhz_num <= 100:
                 # Case where kHz is between 0 and 100, start from 1 MHz lower with the same kHz
                 start_mhz = Amhz_num - 1
-                start_khz = Akhz_num
+                start_khz = Akhz_num + 100
             else:
                 # For all other cases, step back only in the kHz part and start from the closest lower 25 kHz step
-                start_mhz = Amhz_num
-                start_khz = 100
+                start_mhz = Amhz_num - 1
+                start_khz = Akhz_num  - 100
 
             # Loop through frequencies from (start_mhz.start_khz) to (target_mhz.target_khz) in 25 kHz steps
             current_mhz = start_mhz
             current_khz = start_khz
 
-            while (current_mhz < Amhz_num) or (current_mhz == Amhz_num and current_khz <= Akhz_num):
+            while (abs(current_mhz - Amhz_num) > 0) or (abs(current_khz - Akhz_num) > 24):
                 # Adjust to the nearest valid 25 kHz step
-                if current_khz % 25 != 0:
-                    current_khz += 25 - (current_khz % 25)
-
+                current_khz -= 25  * int((current_khz - Akhz_num) / abs(current_khz - Akhz_num))
+                #if current_khz >= 1000:  # If kHz reaches or exceeds 1000, increment MHz
+                #    current_khz = 0
+                #    current_mhz += 1
+                if (current_mhz < Amhz_num):
+                    current_mhz += 1
                 # Convert Amhz and the current_khz to the message format
                 amhz_ascii = chr(current_mhz - 48)
                 akhz_ascii = chr((current_khz // 25) + 48)
@@ -257,13 +260,10 @@ def main():
                 send_serial_data(serial_connection, temp_message)
 
                 # Wait for 5 milliseconds before sending the next frequency
-                time.sleep(0.005)
+                time.sleep(0.5)
 
                 # Increment the kHz part by 25
-                current_khz += 25
-                if current_khz >= 1000:  # If kHz reaches or exceeds 1000, increment MHz
-                    current_khz = 0
-                    current_mhz += 1
+ 
 
         standby_freq_entry = entry_7.get()
         standby_tx_Status_entry = entry_5.get()
@@ -289,27 +289,31 @@ def main():
             # send_serial_data(serial_connection, temp_message)
 
             # Determine the starting frequency based on the entered kHz value
-            if Skhz_num == 0:
+            if Skhz_num >= 950:
                 # Case where kHz is exactly 0, subtract 1 MHz and start from .000
                 start_mhz = Smhz_num - 1
-                start_khz = 0
+                start_khz = 875
             elif Skhz_num <= 100:
                 # Case where kHz is between 0 and 100, start from 1 MHz lower with the same kHz
                 start_mhz = Smhz_num - 1
-                start_khz = Skhz_num
+                start_khz = Skhz_num + 100
             else:
                 # For all other cases, step back only in the kHz part and start from the closest lower 25 kHz step
-                start_mhz = Smhz_num
-                start_khz = 100
+                start_mhz = Smhz_num - 1
+                start_khz = Skhz_num - 100
 
             # Loop through frequencies from (start_mhz.start_khz) to (target_mhz.target_khz) in 25 kHz steps
             current_mhz = start_mhz
-            current_khz = start_khz
+            current_khz = start_khz 
 
-            while (current_mhz < Smhz_num) or (current_mhz == Smhz_num and current_khz <= Skhz_num):
-                # Adjust to the nearest valid 25 kHz step
-                if current_khz % 25 != 0:
-                    current_khz += 25 - (current_khz % 25)
+            while (abs(current_mhz - Smhz_num)) or (abs(current_khz - Skhz_num) > 24):
+    
+                current_khz -= 25  * int((current_khz - Skhz_num) / abs(current_khz - Skhz_num))
+                #if current_khz >= 1000:  # If kHz reaches or exceeds 1000, increment MHz
+                #    current_khz = 0
+                #    current_mhz += 1
+                if (current_mhz < Smhz_num):
+                    current_mhz += 1
 
                 # Convert Smhz and the current_khz to the message format
                 smhz_ascii = chr(current_mhz - 48)
@@ -320,13 +324,7 @@ def main():
                 send_serial_data(serial_connection, temp_message)
 
                 # Wait for 5 milliseconds before sending the next frequency
-                time.sleep(0.005)
-
-                # Increment the kHz part by 25
-                current_khz += 25
-                if current_khz >= 1000:  # If kHz reaches or exceeds 1000, increment MHz
-                    current_khz = 0
-                    current_mhz += 1
+                time.sleep(0.5)
 
         volume_entry = entry_18.get()
         if volume_entry[0:2] != old_volume:
@@ -465,13 +463,7 @@ def main():
         # entry_2.bind("<Return>", handle_user_input_activeStatus)
         # entry_5.bind("<Return>", handle_user_input_standbyStatus)
 
-<<<<<<< Updated upstream
         window.after(1000, update_value)  # Schedule the function to run again after 1 second (1000 ms)
-=======
-
-
-        window.after(300, update_value)  # Schedule the function to run again after 1 second (1000 ms)
->>>>>>> Stashed changes
 
 
     # List to store received data
