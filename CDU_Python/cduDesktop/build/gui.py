@@ -8,7 +8,7 @@ from tkinter import Tk, Canvas, Entry, Text, Button, PhotoImage
 
 
 OUTPUT_PATH = Path(__file__).parent
-ASSETS_PATH = OUTPUT_PATH / Path(r"F:\projects\CDU_FW\CDU_Python\cduDesktop\build\assets\frame0")
+ASSETS_PATH = OUTPUT_PATH / Path(r"C:\Users\AeroTrainB\Documents\GitHub\CDU_FW\CDU_Python\cduDesktop\build\assets\frame0")
 
 flag = False      # sir now we have to connect the port 
 
@@ -40,7 +40,7 @@ def relative_to_assets(path: str) -> Path:
 # Initialize serial communication
 def init_serial():
     try:
-        ser = serial.Serial('COM2', 9600, timeout=1)  # Replace 'COM3' with your actual port
+        ser = serial.Serial('COM3', 9600, timeout=1)  # Replace 'COM3' with your actual port
         return ser
     except serial.SerialException as e:
         print(f"Error opening serial port: {e}")
@@ -465,7 +465,13 @@ def main():
         # entry_2.bind("<Return>", handle_user_input_activeStatus)
         # entry_5.bind("<Return>", handle_user_input_standbyStatus)
 
+<<<<<<< Updated upstream
         window.after(1000, update_value)  # Schedule the function to run again after 1 second (1000 ms)
+=======
+
+
+        window.after(300, update_value)  # Schedule the function to run again after 1 second (1000 ms)
+>>>>>>> Stashed changes
 
 
     # List to store received data

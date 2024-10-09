@@ -123,6 +123,8 @@ void task3_init(void const * argument)
 					  freq = rxfreq;
 					  MHz = rxmsgcdu[8] + 48;
 					  KHz = (rxmsgcdu[9] - 48) * 25;
+//					  char Mfinal[3] = {rxmsgcdu[8],rxmsgcdu[9],0};
+//					  Sender(Mfinal, 0); //set active
 				  }
 				  else
 				  {
