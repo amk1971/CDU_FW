@@ -26,12 +26,12 @@ standby_freq_update = False
 Active_tx_Status_update = False
 standby_tx_Status_update = False
 
-entry_1=None
-entry_2=None
-entry_5=None
-entry_7=None
-entry_18=None
-entry_19=None
+# entry_1=None
+# entry_2=None
+# entry_5=None
+# entry_7=None
+# entry_18=None
+# entry_19=None
 
 
 def relative_to_assets(path: str) -> Path:
@@ -99,66 +99,73 @@ def send_serial_data(serial_connection, data_to_send):
     else:
         print("Serial connection is not open.")
 
-# Function to handle the button click
-def on_send_button_click(serial_connection):
-    # message = []
+# # Function to handle the button click
+# def on_send_button_click(serial_connection):
+#     # message = []
     
-    global volume, obs, Active_freq, standby_freq, Active_tx_Status, standby_tx_Status
-    global Active_freq_update, standby_freq_update, Active_tx_Status_update, standby_tx_Status_update, volume_update, obs_update
-    # global old_Active_freq, old_Active_tx_Status, old_standby_freq, old_standby_tx_Status, old_volume, old_obs
-    # global entry_1, entry_2, entry_5, entry_7, entry_18, entry_19
+#     global volume, obs, Active_freq, standby_freq, Active_tx_Status, standby_tx_Status
+#     global Active_freq_update, standby_freq_update, Active_tx_Status_update, standby_tx_Status_update, volume_update, obs_update
+#     global old_Active_freq, old_Active_tx_Status, old_standby_freq, old_standby_tx_Status, old_volume, old_obs
+#     global entry_1, entry_2, entry_5, entry_7, entry_18, entry_19
 
-    if Active_freq_update or Active_tx_Status_update:
+#     if Active_freq_update or Active_tx_Status_update:
 
-        temp_str = str(Active_freq)
-        try:
-            Amhz, Akhz = temp_str.split('.')
-        except ValueError:
-            Amhz = temp_str  # Assign the whole string to Amhz
-            Akhz = '0'       # Set Akhz to '0' since there is no decimal part
-        amhz_ascii = chr(int(Amhz) - 48)
-        akhz2 = Akhz+"00"
-        Akhz_num = int(akhz2[:3])
-        if Akhz_num % 25 != 0:
-            Akhz_num += 25 - (Akhz_num % 25)
-        akhz_ascii = chr((Akhz_num // 25) + 48) 
-        temp_message = "$PATNV27" + amhz_ascii + akhz_ascii + Active_tx_Status +'\r' +'\n'
-        send_serial_data(serial_connection, temp_message)
-        Active_freq_update = False
-        Active_tx_Status_update = False
+#         temp_str = str(Active_freq)
+#         try:
+#             Amhz, Akhz = temp_str.split('.')
+#         except ValueError:
+#             Amhz = temp_str  # Assign the whole string to Amhz
+#             Akhz = '0'       # Set Akhz to '0' since there is no decimal part
+#         amhz_ascii = chr(int(Amhz) - 48)
+#         akhz2 = Akhz+"00"
+#         Akhz_num = int(akhz2[:3])
+#         if Akhz_num % 25 != 0:
+#             Akhz_num += 25 - (Akhz_num % 25)
+#         akhz_ascii = chr((Akhz_num // 25) + 48) 
+#         temp_message = "$PATNV27" + amhz_ascii + akhz_ascii + Active_tx_Status +'\r' +'\n'
+#         send_serial_data(serial_connection, temp_message)
+#         Active_freq_update = False
+#         Active_tx_Status_update = False
 
-    if standby_freq_update or standby_tx_Status_update:
-    # if standby_freq != old_standby_freq or standby_tx_Status_update:
+#     if standby_freq_update or standby_tx_Status_update:
        
-        temp_str = str(standby_freq)
-        try:
-            Smhz, Skhz = temp_str.split('.')
-        except:
-            Smhz = temp_str
-            Skhz = '0'
-        smhz_ascii = chr(int(Smhz) - 48)
-        skhz2 = Skhz+"00"
-        Skhz_num = int(skhz2[:3])
-        if Skhz_num % 25 != 0:
-            Skhz_num += 25 - (Skhz_num % 25)
-        skhz_ascii = chr((Skhz_num // 25) + 48)
-        temp_message = "$PATNV28" + smhz_ascii + skhz_ascii + standby_tx_Status +'\r' +'\n'
-        send_serial_data(serial_connection, temp_message)
-        standby_freq_update = False
-        standby_tx_Status_update = False
+#         temp_str = str(standby_freq)
+#         try:
+#             Smhz, Skhz = temp_str.split('.')
+#         except:
+#             Smhz = temp_str
+#             Skhz = '0'
+#         smhz_ascii = chr(int(Smhz) - 48)
+#         skhz2 = Skhz+"00"
+#         Skhz_num = int(skhz2[:3])
+#         if Skhz_num % 25 != 0:
+#             Skhz_num += 25 - (Skhz_num % 25)
+#         skhz_ascii = chr((Skhz_num // 25) + 48)
+#         temp_message = "$PATNV28" + smhz_ascii + skhz_ascii + standby_tx_Status +'\r' +'\n'
+#         send_serial_data(serial_connection, temp_message)
+#         standby_freq_update = False
+#         standby_tx_Status_update = False
 
-    if volume_update:
-    # if volume != old_volume 
-        temp_message = "$PATNV73" + str(volume) +'\r' +'\n'
-        send_serial_data(serial_connection, temp_message)   
-        volume_update = False
+#     if volume_update:
 
-    if obs_update:
-    # if obs != old_obs:
+#         temp_message = "$PATNV73" + str(volume) +'\r' +'\n'
+#         send_serial_data(serial_connection, temp_message)   
+#         volume_update = False
 
-        temp_message = "$PATNV34" + obs +'\r' +'\n'
-        send_serial_data(serial_connection, temp_message)
-        obs_update = False
+#     # if obs_update:
+
+#     #     temp_message = "$PATNV34" + obs +'\r' +'\n'
+#     #     send_serial_data(serial_connection, temp_message)
+#     #     obs_update = False
+#         # Check if OBS has changed
+#     obs_entry = entry_19.get()
+#     if obs_entry[0:3] != old_obs:
+#         obs = obs_entry[0:3]
+#         # print(obs)
+#         old_obs = obs
+#         temp_message = "$PATNV34" + obs +'\r' +'\n'
+#         send_serial_data(serial_connection, temp_message)
+#         # obs_update = True
 
 
 # Start serial reading in a separate thread
@@ -187,6 +194,154 @@ def main():
     # Initialize serial port
     serial_connection = init_serial()
 
+    # Function to handle the button click
+    def on_send_button_click(serial_connection):
+        
+        global volume, obs, Active_freq, standby_freq, Active_tx_Status, standby_tx_Status
+        # global Active_freq_update, standby_freq_update, Active_tx_Status_update, standby_tx_Status_update, volume_update, obs_update
+        global old_Active_freq, old_Active_tx_Status, old_standby_freq, old_standby_tx_Status, old_volume, old_obs
+        # global entry_1, entry_2, entry_5, entry_7, entry_18, entry_19
+
+        Active_freq_entry = entry_1.get()
+        Active_tx_Status_entry = entry_2.get()
+        if Active_freq_entry[0:7] != old_Active_freq or Active_tx_Status_entry[0:6] != old_Active_tx_Status:
+            Active_freq = Active_freq_entry[0:7]
+            Active_tx_Status = Active_tx_Status_entry[0:6]
+            old_Active_freq = Active_freq
+            old_Active_tx_Status = Active_tx_Status
+            temp_str = str(Active_freq)
+            try:
+                Amhz, Akhz = temp_str.split('.')
+            except ValueError:
+                Amhz = temp_str  # Assign the whole string to Amhz
+                Akhz = '0'       # Set Akhz to '0' since there is no decimal part
+            amhz_ascii = chr(int(Amhz) - 48)
+            akhz2 = Akhz+"00"
+            Akhz_num = int(akhz2[:3])
+            Amhz_num = int(Amhz)
+        #     if Akhz_num % 25 != 0:
+        #         Akhz_num += 25 - (Akhz_num % 25)
+        #     akhz_ascii = chr((Akhz_num // 25) + 48) 
+        #     temp_message = "$PATNV27" + amhz_ascii + akhz_ascii + Active_tx_Status +'\r' +'\n'
+        #     send_serial_data(serial_connection, temp_message)
+
+            # Determine the starting frequency based on the entered kHz value
+            if Akhz_num == 0:
+                # Case where kHz is exactly 0, subtract 1 MHz and start from .000
+                start_mhz = Amhz_num - 1
+                start_khz = 0
+            elif Akhz_num <= 100:
+                # Case where kHz is between 0 and 100, start from 1 MHz lower with the same kHz
+                start_mhz = Amhz_num - 1
+                start_khz = Akhz_num
+            else:
+                # For all other cases, step back only in the kHz part and start from the closest lower 25 kHz step
+                start_mhz = Amhz_num
+                start_khz = 100
+
+            # Loop through frequencies from (start_mhz.start_khz) to (target_mhz.target_khz) in 25 kHz steps
+            current_mhz = start_mhz
+            current_khz = start_khz
+
+            while (current_mhz < Amhz_num) or (current_mhz == Amhz_num and current_khz <= Akhz_num):
+                # Adjust to the nearest valid 25 kHz step
+                if current_khz % 25 != 0:
+                    current_khz += 25 - (current_khz % 25)
+
+                # Convert Amhz and the current_khz to the message format
+                amhz_ascii = chr(current_mhz - 48)
+                akhz_ascii = chr((current_khz // 25) + 48)
+
+                # Create the message to be sent
+                temp_message = "$PATNV27" + amhz_ascii + akhz_ascii + Active_tx_Status + '\r' + '\n'
+                send_serial_data(serial_connection, temp_message)
+
+                # Wait for 5 milliseconds before sending the next frequency
+                time.sleep(0.005)
+
+                # Increment the kHz part by 25
+                current_khz += 25
+                if current_khz >= 1000:  # If kHz reaches or exceeds 1000, increment MHz
+                    current_khz = 0
+                    current_mhz += 1
+
+        standby_freq_entry = entry_7.get()
+        standby_tx_Status_entry = entry_5.get()
+        if standby_freq_entry[0:7] != old_standby_freq or standby_tx_Status_entry[0:6] != old_standby_tx_Status:
+            standby_freq = standby_freq_entry[0:7]
+            standby_tx_Status = standby_tx_Status_entry[0:6]
+            old_standby_freq = standby_freq
+            old_standby_tx_Status = standby_tx_Status        
+            temp_str = str(standby_freq)
+            try:
+                Smhz, Skhz = temp_str.split('.')
+            except:
+                Smhz = temp_str
+                Skhz = '0'
+            smhz_ascii = chr(int(Smhz) - 48)
+            skhz2 = Skhz+"00"
+            Skhz_num = int(skhz2[:3])
+            Smhz_num = int(Smhz)
+            # if Skhz_num % 25 != 0:
+            #     Skhz_num += 25 - (Skhz_num % 25)
+            # skhz_ascii = chr((Skhz_num // 25) + 48)
+            # temp_message = "$PATNV28" + smhz_ascii + skhz_ascii + standby_tx_Status +'\r' +'\n'
+            # send_serial_data(serial_connection, temp_message)
+
+            # Determine the starting frequency based on the entered kHz value
+            if Skhz_num == 0:
+                # Case where kHz is exactly 0, subtract 1 MHz and start from .000
+                start_mhz = Smhz_num - 1
+                start_khz = 0
+            elif Skhz_num <= 100:
+                # Case where kHz is between 0 and 100, start from 1 MHz lower with the same kHz
+                start_mhz = Smhz_num - 1
+                start_khz = Skhz_num
+            else:
+                # For all other cases, step back only in the kHz part and start from the closest lower 25 kHz step
+                start_mhz = Smhz_num
+                start_khz = 100
+
+            # Loop through frequencies from (start_mhz.start_khz) to (target_mhz.target_khz) in 25 kHz steps
+            current_mhz = start_mhz
+            current_khz = start_khz
+
+            while (current_mhz < Smhz_num) or (current_mhz == Smhz_num and current_khz <= Skhz_num):
+                # Adjust to the nearest valid 25 kHz step
+                if current_khz % 25 != 0:
+                    current_khz += 25 - (current_khz % 25)
+
+                # Convert Smhz and the current_khz to the message format
+                smhz_ascii = chr(current_mhz - 48)
+                skhz_ascii = chr((current_khz // 25) + 48)
+
+                # Create the message to be sent
+                temp_message = "$PATNV28" + smhz_ascii + skhz_ascii + standby_tx_Status + '\r' + '\n'
+                send_serial_data(serial_connection, temp_message)
+
+                # Wait for 5 milliseconds before sending the next frequency
+                time.sleep(0.005)
+
+                # Increment the kHz part by 25
+                current_khz += 25
+                if current_khz >= 1000:  # If kHz reaches or exceeds 1000, increment MHz
+                    current_khz = 0
+                    current_mhz += 1
+
+        volume_entry = entry_18.get()
+        if volume_entry[0:2] != old_volume:
+            volume = volume_entry[0:2]
+            old_volume = volume
+            temp_message = "$PATNV73" + str(volume) +'\r' +'\n'
+            send_serial_data(serial_connection, temp_message)   
+
+        obs_entry = entry_19.get()
+        if obs_entry[0:3] != old_obs:
+            obs = obs_entry[0:3]
+            old_obs = obs
+            temp_message = "$PATNV34" + obs +'\r' +'\n'
+            send_serial_data(serial_connection, temp_message)
+
     # # Function to capture user input from the entry box and assign it to its respective variables
     # def handle_user_input_activefreq(event=None):
     #     global Active_freq, Active_freq_update
@@ -209,12 +364,12 @@ def main():
     # Function to increment and display the value
     def update_value():
 
-        global tx_status, tx_activef, tx_standbyf
+        # global tx_status, tx_activef, tx_standbyf
 
         global volume, obs, Active_freq, standby_freq, Active_tx_Status, standby_tx_Status
         global prev_Active_freq, prev_Active_tx_Status, prev_standby_freq, prev_standby_tx_Status, prev_volume, prev_obs
-        global old_Active_freq, old_Active_tx_Status, old_standby_freq, old_standby_tx_Status, old_volume, old_obs
-        global Active_freq_update, standby_freq_update, Active_tx_Status_update, standby_tx_Status_update, volume_update, obs_update
+        # global old_Active_freq, old_Active_tx_Status, old_standby_freq, old_standby_tx_Status, old_volume, old_obs
+        # global Active_freq_update, standby_freq_update, Active_tx_Status_update, standby_tx_Status_update, volume_update, obs_update
 
         # Input Outputs:
 
@@ -255,52 +410,52 @@ def main():
             prev_obs = obs
 
         # Check if Active Frequency has changed
-        Active_freq_entry = entry_1.get()
-        if Active_freq_entry[0:7] != old_Active_freq:
-            Active_freq = Active_freq_entry[0:7]
-            # print(Active_freq)
-            old_Active_freq = Active_freq
-            Active_freq_update = True
+        # Active_freq_entry = entry_1.get()
+        # if Active_freq_entry[0:7] != old_Active_freq:
+        #     Active_freq = Active_freq_entry[0:7]
+        #     # print(Active_freq)
+        #     old_Active_freq = Active_freq
+        #     Active_freq_update = True
 
-        # Check if Active TX Status has changed
-        Active_tx_Status_entry = entry_2.get()
-        if Active_tx_Status_entry[0:6] != old_Active_tx_Status:
-            Active_tx_Status = Active_tx_Status_entry[0:6]
-            # print(Active_tx_Status)
-            old_Active_tx_Status = Active_tx_Status
-            Active_tx_Status_update = True
+        # # Check if Active TX Status has changed
+        # Active_tx_Status_entry = entry_2.get()
+        # if Active_tx_Status_entry[0:6] != old_Active_tx_Status:
+        #     Active_tx_Status = Active_tx_Status_entry[0:6]
+        #     # print(Active_tx_Status)
+        #     old_Active_tx_Status = Active_tx_Status
+        #     Active_tx_Status_update = True
 
-        # Check if Standby Frequency has changed
-        standby_freq_entry = entry_7.get()
-        if standby_freq_entry[0:7] != old_standby_freq:
-            standby_freq = standby_freq_entry[0:7]
-            # print(standby_freq)
-            standby_freq_update = True
-            old_standby_freq = standby_freq
+        # # Check if Standby Frequency has changed
+        # standby_freq_entry = entry_7.get()
+        # if standby_freq_entry[0:7] != old_standby_freq:
+        #     standby_freq = standby_freq_entry[0:7]
+        #     # print(standby_freq)
+        #     standby_freq_update = True
+        #     old_standby_freq = standby_freq
 
-        # Check if Standby TX Status has changed
-        standby_tx_Status_entry = entry_5.get()
-        if standby_tx_Status_entry[0:6] != old_standby_tx_Status:
-            standby_tx_Status = standby_tx_Status_entry[0:6]
-            # print(standby_tx_Status)
-            old_standby_tx_Status = standby_tx_Status
-            standby_tx_Status_update = True
+        # # Check if Standby TX Status has changed
+        # standby_tx_Status_entry = entry_5.get()
+        # if standby_tx_Status_entry[0:6] != old_standby_tx_Status:
+        #     standby_tx_Status = standby_tx_Status_entry[0:6]
+        #     # print(standby_tx_Status)
+        #     old_standby_tx_Status = standby_tx_Status
+        #     standby_tx_Status_update = True
 
-        # Check if Volume has changed
-        volume_entry = entry_18.get()
-        if volume_entry[0:2] != old_volume:
-            volume = volume_entry[0:2]
-            # print(volume)
-            old_volume = volume
-            volume_update = True
+        # # Check if Volume has changed
+        # volume_entry = entry_18.get()
+        # if volume_entry[0:2] != old_volume:
+        #     volume = volume_entry[0:2]
+        #     # print(volume)
+        #     old_volume = volume
+        #     volume_update = True
 
-        # Check if OBS has changed
-        obs_entry = entry_19.get()
-        if obs_entry[0:3] != old_obs:
-            obs = obs_entry[0:3]
-            # print(obs)
-            old_obs = obs
-            obs_update = True
+        # # Check if OBS has changed
+        # obs_entry = entry_19.get()
+        # if obs_entry[0:3] != old_obs:
+        #     obs = obs_entry[0:3]
+        #     # print(obs)
+        #     old_obs = obs
+        #     obs_update = True
 
         # # Bind the <Return> key (Enter key) to handle_user_input
         # entry_1.bind("<Return>", handle_user_input_activefreq)
@@ -309,8 +464,6 @@ def main():
         # entry_7.bind("<Return>", handle_user_input_standbyfreq)
         # entry_2.bind("<Return>", handle_user_input_activeStatus)
         # entry_5.bind("<Return>", handle_user_input_standbyStatus)
-
-
 
         window.after(1000, update_value)  # Schedule the function to run again after 1 second (1000 ms)
 
