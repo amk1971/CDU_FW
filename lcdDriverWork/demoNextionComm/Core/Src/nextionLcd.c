@@ -13,16 +13,28 @@ uint16_t TIMEOUT = 1000;
 uint8_t endCmd[3] = {0xff, 0xff, 0xff};
 uint8_t pageResponse = 0;
 
-int InitializeLCD(void)
+returnStatus InitializeLCD(void)
 {
 	//initialization of lcd, like setting values to default or some like displaying main page etc
 	ChangePage(lcdPage_main);
 }
 
-int ChangePage(int Page_ID)
+returnStatus ChangePage(lcdCmdPage_id Page_ID)
 {
-	pageName = (char *)Page_ID;
-	char txBuffer[20];
+	char txBuffer[20], page_ID[10];
+	switch (Page_ID) {
+		case lcdPage_main: 
+			strncpy(page_ID, "0", 2);
+			break;
+		case lcdPage_nav:
+			strncpy(page_ID, "1", 2);
+			break;
+		default:
+			strncpy(page_ID, "0", 2);
+			break;
+
+	}
+	
 
 	int len = sprintf((char *)txBuffer, "page %s", pageName);
 	HAL_UART_Transmit(&huart4, (uint8_t *)txBuffer, len, TIMEOUT);
@@ -37,7 +49,7 @@ int ChangePage(int Page_ID)
    		return failure;
 }
 
-void nextion_sendstr(char *id, char *string)
+returnStatus nextion_sendstr(char *id, char *string)
 {
 	char buffer[50];
 	int len = sprintf((char *)buffer, "%s.txt=\"%s\"",id, string);
