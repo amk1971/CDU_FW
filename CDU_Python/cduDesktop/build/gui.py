@@ -230,7 +230,7 @@ def main():
                 # Case where kHz is exactly 0, subtract 1 MHz and start from .000
                 start_mhz = Amhz_num - 1
                 start_khz = 875
-            elif Akhz_num <= 100:
+            elif Akhz_num <= 200:
                 # Case where kHz is between 0 and 100, start from 1 MHz lower with the same kHz
                 start_mhz = Amhz_num - 1
                 start_khz = Akhz_num + 100
@@ -293,7 +293,7 @@ def main():
                 # Case where kHz is exactly 0, subtract 1 MHz and start from .000
                 start_mhz = Smhz_num - 1
                 start_khz = 875
-            elif Skhz_num <= 100:
+            elif Skhz_num <= 200:
                 # Case where kHz is between 0 and 100, start from 1 MHz lower with the same kHz
                 start_mhz = Smhz_num - 1
                 start_khz = Skhz_num + 100
