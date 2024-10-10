@@ -16,13 +16,20 @@ uint8_t pageResponse = 0;
 returnStatus InitializeLCD(void)
 {
 	//initialization of lcd, like setting values to default or some like displaying main page etc
-	ChangePage(lcdPage_main);
+	if(ChangePage(lcdPage_main) == success){
+		return success;
+	}
+	else
+	{
+		return failure;
+	}
 }
 
 returnStatus ChangePage(lcdCmdPage_id Page_ID)
 {
 	char txBuffer[20], page_ID[10];
-	switch (Page_ID) {
+	switch (Page_ID)
+	{
 		case lcdPage_main: 
 			strncpy(page_ID, "0", 2);
 			break;
@@ -32,11 +39,8 @@ returnStatus ChangePage(lcdCmdPage_id Page_ID)
 		default:
 			strncpy(page_ID, "0", 2);
 			break;
-
 	}
-	
-
-	int len = sprintf((char *)txBuffer, "page %s", pageName);
+	int len = sprintf((char *)txBuffer, "page %s", page_ID);
 	HAL_UART_Transmit(&huart4, (uint8_t *)txBuffer, len, TIMEOUT);
 	HAL_UART_Transmit(&huart4, (uint8_t *)endCmd, 3, TIMEOUT/10);
 
@@ -49,37 +53,124 @@ returnStatus ChangePage(lcdCmdPage_id Page_ID)
    		return failure;
 }
 
-returnStatus nextion_sendstr(char *id, char *string)
+//returnStatus nextion_sendstr(char *id, char *string)
+//{
+//	char buffer[50];
+//	int len = sprintf((char *)buffer, "%s.txt=\"%s\"",id, string);
+//	HAL_UART_Transmit(&huart4, (uint8_t *)buffer, len, TIMEOUT);
+//	HAL_UART_Transmit(&huart4, (uint8_t *)endCmd, 3, TIMEOUT/10);
+//}
+//
+//void nextion_sendnum(char *obj, int16_t num)
+//{
+//	uint8_t *buffer = malloc(30 * sizeof(char));//30 bytes of buffer
+//	int len = sprintf((char *)buffer, "%s.val=%d", obj, num);
+//	HAL_UART_Transmit(&huart4, (uint8_t *)buffer, len, TIMEOUT);
+//	HAL_UART_Transmit(&huart4, (uint8_t *)endCmd, 3, TIMEOUT/10);
+//	free(buffer);
+//}
+//
+//void nextion_sendfloat(char *obj, float num, uint16_t dp)
+//{
+//	// covert first to integer
+//	int16_t number = num*(pow(10,dp));
+//	uint8_t *buffer = malloc(30 * sizeof(char));//30 bytes of buffer
+//
+//	int len = sprintf((char *)buffer, "%s.vvs1=%d", obj, dp);
+//	HAL_UART_Transmit(&huart4, (uint8_t *)buffer, len, TIMEOUT);
+//	HAL_UART_Transmit(&huart4, (uint8_t *)endCmd, 3, TIMEOUT/10);
+//
+//	len = sprintf((char *)buffer, "%s.val=%d", obj, number);
+//	HAL_UART_Transmit(&huart4, (uint8_t *)buffer, len, TIMEOUT);
+//	HAL_UART_Transmit(&huart4, (uint8_t *)endCmd, 3, TIMEOUT/10);
+//	free(buffer);
+//}
+//
+
+returnStatus UpdateParamLCD(lcdCmdParam_id Param_ID, void * Param_Value)
 {
-	char buffer[50];
-	int len = sprintf((char *)buffer, "%s.txt=\"%s\"",id, string);
-	HAL_UART_Transmit(&huart4, (uint8_t *)buffer, len, TIMEOUT);
-	HAL_UART_Transmit(&huart4, (uint8_t *)endCmd, 3, TIMEOUT/10);
+	uint8_t txBuffer = malloc(30 * sizeof(char));  // Command buffer
+	int len = 0;
+	char param_ID[10];
+
+	// Handle the parameter based on its type (integer, float, or string)
+	switch (Param_ID) {
+		case param_number: {
+			strncpy(param_ID, "n0", 2);
+			// Cast Param_Value to integer and send as .val
+			int32_t param_value = *(int32_t *)Param_Value;
+			len = sprintf((char *)buffer, "%s.vvs1=3", param_ID);
+			HAL_UART_Transmit(&huart4, (uint8_t *)buffer, len, TIMEOUT);
+			HAL_UART_Transmit(&huart4, (uint8_t *)endCmd, 3, TIMEOUT/10);
+			len = sprintf((char *)txBuffer, "%s.val=%d", param_ID, param_value);
+			break;
+		}
+		case param_float: {
+			strncpy(param_ID, "x0", 2);
+			// Cast Param_Value to float and send it (as a whole number)
+			float value = *(float *)Param_Value;
+			int32_t param_value = value*(pow(10,3));//10^3, for converting into integer
+			len = sprintf((char *)txBuffer, "%s.val=%ld", param_ID, int_float_value);
+			break;
+		}
+		case param_txt: {
+			strncpy(param_ID, "t0", 2);
+			// Cast Param_Value to string and send as .txt
+			char *string_value = (char *)Param_Value;
+			len = sprintf((char *)txBuffer, "%s.txt=\"%s\"", param_ID, string_value);
+			break;
+		}
+		default:
+			break;
+	}
+
+	// Transmit the command over UART
+	if (HAL_UART_Transmit(&huart4, buffer, len, TIMEOUT) != HAL_OK) {
+		return failure;
+	}
+
+	// Send termination bytes (0xFF 0xFF 0xFF)
+	if (HAL_UART_Transmit(&huart4, (uint8_t *)endCmd, 3, TIMEOUT/10) != HAL_OK) {
+		return failure;
+	}
+
+	return success;
 }
 
-void nextion_sendnum(char *obj, int16_t num)
+returnStatus ReadParamLCD(lcdCmdParam_id Param_ID, void * Param_Value)
 {
-	uint8_t *buffer = malloc(30 * sizeof(char));//30 bytes of buffer
-	int len = sprintf((char *)buffer, "%s.val=%d", obj, num);
-	HAL_UART_Transmit(&huart4, (uint8_t *)buffer, len, TIMEOUT);
-	HAL_UART_Transmit(&huart4, (uint8_t *)endCmd, 3, TIMEOUT/10);
-	free(buffer);
-}
+    char txBuffer[30], param_ID[10];
+	switch (Param_ID)
+	{
+		case param_number:
+			strncpy(param_ID, "n0", 2);
+			break;
+		case param_float:
+			strncpy(param_ID, "x0", 2);
+			break;
+		default:
+//    			strncpy(param_ID, "0", 2);
+			break;
+	}
 
-void nextion_sendfloat(char *obj, float num, uint16_t dp)
-{
-	// covert first to integer
-	int16_t number = num*(pow(10,dp));
-	uint8_t *buffer = malloc(30 * sizeof(char));//30 bytes of buffer
+    // Command to request the value of the parameter from the Nextion display
+    int len = sprintf((char *)txBuffer, "get %s.val", param_ID); // Request value of Param_ID
+    HAL_UART_Transmit(&huart4, (uint8_t *)txBuffer, len, TIMEOUT);      // Send request to Nextion
+    HAL_UART_Transmit(&huart4, (uint8_t *)endCmd, 3, TIMEOUT/10);  // Send termination bytes
 
-	int len = sprintf((char *)buffer, "%s.vvs1=%d", obj, dp);
-	HAL_UART_Transmit(&huart4, (uint8_t *)buffer, len, TIMEOUT);
-	HAL_UART_Transmit(&huart4, (uint8_t *)endCmd, 3, TIMEOUT/10);
+    // Wait and receive the response from Nextion (the response format depends on your Nextion configuration)
+    uint8_t rxBuffer[8];  // Assuming a response fits in 8 bytes
+    if (HAL_UART_Receive(&huart4, rxBuffer, 8, TIMEOUT) != HAL_OK)  // Read response
+    {
+        return failure;  // Error in receiving data
+    }
 
-	len = sprintf((char *)buffer, "%s.val=%d", obj, number);
-	HAL_UART_Transmit(&huart4, (uint8_t *)buffer, len, TIMEOUT);
-	HAL_UART_Transmit(&huart4, (uint8_t *)endCmd, 3, TIMEOUT/10);
-	free(buffer);
+    *Param_Value = (response[4] << 24) |
+                   (response[3] << 16) |
+                   (response[2] << 8)  |
+                   (response[1]);
+
+    return success;  // Success
 }
 
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
