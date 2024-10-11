@@ -290,7 +290,7 @@ int main(void)
   /* USER CODE END 2 */
 
   responseCDU = HAL_UART_Receive_IT(&huart5, rxbuffcdu, 1); // Start UART5 in interrupt mode
-  //  response = HAL_UART_Receive_IT(&huart4, rxbuff, 1); // Start UART4 in interrupt mode
+    //  response = HAL_UART_Receive_IT(&huart4, rxbuff, 1); // Start UART4 in interrupt mode
 
   /* USER CODE BEGIN RTOS_MUTEX */
   /* add mutexes, ... */
@@ -313,9 +313,9 @@ int main(void)
   osThreadDef(defaultTask, StartDefaultTask, osPriorityNormal, 0, 512);
   defaultTaskHandle = osThreadCreate(osThread(defaultTask), NULL);
 
-  /* definition and creation of RxThread */
-  //osThreadDef(RxThread, StartRxThread, osPriorityNormal, 0, 160);
-  //RxThreadHandle = osThreadCreate(osThread(RxThread), NULL);
+//  /* definition and creation of RxThread */
+//  osThreadDef(RxThread, StartRxThread, osPriorityNormal, 0, 160);
+//  RxThreadHandle = osThreadCreate(osThread(RxThread), NULL);
 
   osThreadDef(Task3, task3_init, osPriorityNormal, 0, 128);	//128 is stack size (in bytes) requirements for the thread function.
   Task3handler = osThreadCreate(osThread(Task3), NULL);

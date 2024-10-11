@@ -44,7 +44,7 @@ def init_serial():
         return None
 
 # Function to read data from the serial port
-def read_serial_data(serial_connection):
+def read_serial_data(serial_connection, datalist):
     global N_volume, N_obs, N_Active_freq, N_standby_freq, N_Active_tx_Status, N_standby_tx_Status
     global C_volume, C_squelch, C_micgain, C_sidetone, C_Active_freq, C_standby_freq, C_Active_tx_Status, C_standby_tx_Status
 
@@ -118,7 +118,7 @@ def send_serial_data(serial_connection, data_to_send):
 
 # Start serial reading in a separate thread
 def start_serial_read_thread(serial_connection, datalist):
-    thread = threading.Thread(target=read_serial_data, args=(serial_connection))
+    thread = threading.Thread(target=read_serial_data, args=(serial_connection, datalist))
     thread.daemon = True
     thread.start()
 

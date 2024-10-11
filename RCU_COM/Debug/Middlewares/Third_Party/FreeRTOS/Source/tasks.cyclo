@@ -39,7 +39,6 @@
 ../Middlewares/Third_Party/FreeRTOS/Source/tasks.c:3493:7:vTaskGetInfo	7
 ../Middlewares/Third_Party/FreeRTOS/Source/tasks.c:3589:21:prvListTasksWithinSingleList	5
 ../Middlewares/Third_Party/FreeRTOS/Source/tasks.c:3622:18:prvTaskCheckFreeStackSpace	2
-../Middlewares/Third_Party/FreeRTOS/Source/tasks.c:3642:14:uxTaskGetStackHighWaterMark	2
 ../Middlewares/Third_Party/FreeRTOS/Source/tasks.c:3670:14:prvDeleteTCB	4
 ../Middlewares/Third_Party/FreeRTOS/Source/tasks.c:3724:13:prvResetNextTaskUnblockTime	3
 ../Middlewares/Third_Party/FreeRTOS/Source/tasks.c:3750:15:xTaskGetCurrentTaskHandle	1
