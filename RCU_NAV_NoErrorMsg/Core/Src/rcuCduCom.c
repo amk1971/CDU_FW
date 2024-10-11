@@ -12,6 +12,20 @@
 
 extern UART_HandleTypeDef huart5;
 
+#define ACTIVE_FREQ_MESSAGE  "$PATNV27%c%cN"
+#define STANDBY_FREQ_MESSAGE "$PATNV28%c%cN"
+#define VOLUME_MESSAGE      "$PATNV73%c"
+#define OBS_MESSAGE         "$PATNV34%03d"
+
+#define ACTIVE_FREQ_IDENTIFIER  "27"
+#define STANDBY_FREQ_IDENTIFIER "28"
+#define VOLUME_IDENTIFIER       "73"
+#define OBS_IDENTIFIER  	    "34"
+
+// N: NAV, C: COM, A: ADF, T: TACAN
+#define RCU_DESIG				'N'
+
+
 uint8_t responseCDU = 0;
 
 extern float freq;
@@ -37,7 +51,7 @@ void Sender2cdu(const char * str, int mode) { //TODO				construct and send a mes
     if (mode == 0) {
         char m = str[0];
         char k = str[1];
-        snprintf((char*)str2, sizeof(str2), "$PATNV27%c%cN", m, k);
+        snprintf((char*)str2, sizeof(str2), ACTIVE_FREQ_MESSAGE, m, k);
         char end2[3];
         checksum((char*)str2, end2);
         concatTwoChars((char*)str2, end2);
@@ -45,20 +59,20 @@ void Sender2cdu(const char * str, int mode) { //TODO				construct and send a mes
     } else if (mode == 1) {
         char m = str[0];
         char k = str[1];
-        snprintf((char*)str2, sizeof(str2), "$PATNV28%c%cN", m, k);
+        snprintf((char*)str2, sizeof(str2), STANDBY_FREQ_MESSAGE, m, k);
         char end3[3];
         checksum((char*)str2, end3);
         concatTwoChars((char*)str2, end3);
         concatTwoChars((char*)str2, crlf);
     } else if (mode == 2) {
         char v = str[0];
-        snprintf((char*)str2, sizeof(str2), "$PATNV73%c", v);
+        snprintf((char*)str2, sizeof(str2), VOLUME_MESSAGE, v);
         char end4[3];
         checksum((char*)str2, end4);
         concatTwoChars((char*)str2, end4);
         concatTwoChars((char*)str2, crlf);
     } else if (mode == 3) {
-        snprintf((char*)str2, sizeof(str2), "$PATNV34%03d", obs);
+        snprintf((char*)str2, sizeof(str2), OBS_MESSAGE, obs);
         char end5[3];
         checksum((char*)str2, end5);
         concatTwoChars((char*)str2, end5);
@@ -67,6 +81,12 @@ void Sender2cdu(const char * str, int mode) { //TODO				construct and send a mes
 
     HAL_UART_Transmit(&huart5, str2, strlen((char*)str2), 500);
     HAL_Delay(100);
+}
+
+bool Test_Pattern (char * msg, char * pattern) {
+	if(*msg != *pattern) return false;
+	if(*(msg+1) != *(pattern+1)) return false;
+	return true;
 }
 
 void task3_init(void const * argument)
@@ -114,69 +134,77 @@ void task3_init(void const * argument)
 		  if(rxfreecdu)
 		  {
 			  rxfreecdu = false;
-			  if(rxmsgcdu[6] == '2' && rxmsgcdu[7] == '7')
+			  if(rxmsgcdu[4] == RCU_DESIG)
 			  {
-				  float rxfreq;
-				  rxfreq = (rxmsgcdu[8] + 48) + ((rxmsgcdu[9] - 48) * .025); // active frequency
-				  if (rxfreq != freq)
+				  if(Test_Pattern(&rxmsgcdu[6], ACTIVE_FREQ_IDENTIFIER))
 				  {
-					  freq = rxfreq;
-					  MHz = rxmsgcdu[8] + 48;
-					  KHz = (rxmsgcdu[9] - 48) * 25;
-//					  char Mfinal[3] = {rxmsgcdu[8],rxmsgcdu[9],0};
-//					  Sender(Mfinal, 0); //set active
+					  float rxfreq;
+					  rxfreq = (rxmsgcdu[8] + 48) + ((rxmsgcdu[9] - 48) * .025); // active frequency
+					  if (rxfreq != freq)
+					  {
+						  freq = rxfreq;
+						  MHz = rxmsgcdu[8] + 48;
+						  KHz = (rxmsgcdu[9] - 48) * 25;
+	  //					  char Mfinal[3] = {rxmsgcdu[8],rxmsgcdu[9],0};
+	  //					  Sender(Mfinal, 0); //set active
+					  }
+					  else
+					  {
+
+					  }
 				  }
-				  else
+				  else if(Test_Pattern(&rxmsgcdu[6], STANDBY_FREQ_IDENTIFIER))// standby frequency, rxmsgcdu[6] == '2' && rxmsgcdu[7] == '8'
 				  {
+					  float rxfreq;
+					  rxfreq = (rxmsgcdu[8] + 48) + ((rxmsgcdu[9] - 48) * .025);
+					  if (rxfreq != Standby)
+					  {
+						  Standby = rxfreq;
+						  SM = rxmsgcdu[8] + 48;
+						  SK = (rxmsgcdu[9] - 48) * 25;
+					  }
+					  else
+					  {
+
+					  }
 
 				  }
+				  else if(Test_Pattern(&rxmsgcdu[6], OBS_IDENTIFIER))// obs value
+				  {
+					  int i, val = 0;
+					  for (i = 8; i <= 10; i++) {
+							  val = val * 10 + (rxmsgcdu[i] - '0');
+						  }
+					  if (val != obs)
+					  {
+						  obs = val;
+					  }
+					  else
+					  {
+						  //do nothing
+					  }
+
+
+				  }
+				  else if(Test_Pattern(&rxmsgcdu[6], VOLUME_IDENTIFIER))// volume level
+				  {
+					  int val;
+					  val = rxmsgcdu[8] - '0'; // subtracting 48
+					  if (val != vol)
+					  {
+						  vol = val;
+					  }
+					  else
+					  {
+						  //do nothing
+					  }
+				  }
+
 			  }
-			  else if(rxmsgcdu[6] == '2' && rxmsgcdu[7] == '8')// standby frequency
-			  {
-				  float rxfreq;
-				  rxfreq = (rxmsgcdu[8] + 48) + ((rxmsgcdu[9] - 48) * .025);
-				  if (rxfreq != Standby)
-				  {
-					  Standby = rxfreq;
-					  SM = rxmsgcdu[8] + 48;
-					  SK = (rxmsgcdu[9] - 48) * 25;
-				  }
-				  else
-				  {
-
-				  }
-
-			  }
-			  else if(rxmsgcdu[6] == '3' && rxmsgcdu[7] == '4')// obs value
-			  {
-				  int i, val = 0;
-				  for (i = 8; i <= 10; i++) {
-				          val = val * 10 + (rxmsgcdu[i] - '0');
-				      }
-				  if (val != obs)
-				  {
-					  obs = val;
-				  }
-				  else
-				  {
-					  //do nothing
-				  }
-
-
-			  }
-			  else if(rxmsgcdu[6] == '7' && rxmsgcdu[7] == '3')// volume level
-			  {
-				  int val;
-				  val = rxmsgcdu[8] - '0'; // subtracting 48
-				  if (val != vol)
-				  {
-					  vol = val;
-				  }
-				  else
-				  {
-					  //do nothing
-				  }
-			  }
+//			  else if(rxmsgcdu[4] == COM)
+//			  {
+//				  //hey, COM message receive here...
+//			  }
 		  }
 	}
 }
