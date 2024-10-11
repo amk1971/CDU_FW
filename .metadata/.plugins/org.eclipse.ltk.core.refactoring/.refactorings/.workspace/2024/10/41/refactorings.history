@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Delete resource &apos;RCU_NAV_NoErrorMsg&apos;" deleteContents="false" description="Delete resource &apos;RCU_NAV_NoErrorMsg&apos;" element1="/RCU_NAV_NoErrorMsg" flags="7" id="org.eclipse.ltk.core.refactoring.delete.resources" resources="1" stamp="1728624270360"/>
+</session>
