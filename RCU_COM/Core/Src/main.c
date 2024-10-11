@@ -314,8 +314,8 @@ int main(void)
   defaultTaskHandle = osThreadCreate(osThread(defaultTask), NULL);
 
   /* definition and creation of RxThread */
-  osThreadDef(RxThread, StartRxThread, osPriorityNormal, 0, 160);
-  RxThreadHandle = osThreadCreate(osThread(RxThread), NULL);
+  //osThreadDef(RxThread, StartRxThread, osPriorityNormal, 0, 160);
+  //RxThreadHandle = osThreadCreate(osThread(RxThread), NULL);
 
   osThreadDef(Task3, task3_init, osPriorityNormal, 0, 128);	//128 is stack size (in bytes) requirements for the thread function.
   Task3handler = osThreadCreate(osThread(Task3), NULL);

@@ -8,7 +8,9 @@ from tkinter import Tk, Canvas, Entry, Text, Button, PhotoImage
 
 
 OUTPUT_PATH = Path(__file__).parent
-ASSETS_PATH = OUTPUT_PATH / Path(r"D:\Projects\CDU\CDU_FW\CDU_Python\cduDesktop\build\assets\frame0")
+#ASSETS_PATH = OUTPUT_PATH / Path(r"D:\Projects\CDU\CDU_FW\CDU_Python\cduDesktop\build\assets\frame0")
+ASSETS_PATH = OUTPUT_PATH / Path(r"C:\Users\AeroTrainB\Documents\GitHub\CDU_FW\CDU_Python\cduDesktop\build\assets\frame0")
+
 
 flag = False
 
@@ -115,7 +117,7 @@ def send_serial_data(serial_connection, data_to_send):
 
 
 # Start serial reading in a separate thread
-def start_serial_read_thread(serial_connection):
+def start_serial_read_thread(serial_connection, datalist):
     thread = threading.Thread(target=read_serial_data, args=(serial_connection))
     thread.daemon = True
     thread.start()
@@ -498,6 +500,7 @@ def main():
     # Start serial read thread
     if serial_connection:
         start_serial_read_thread(serial_connection, received_data)    
+        #start_serial_read_thread(serial_connection)    
 
     window = Tk()
     window.title("CDU Simulator")

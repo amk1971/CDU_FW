@@ -97,13 +97,13 @@ bool Test_Pattern (char * msg, char * pattern) {
 void task3_init(void const * argument)
 { // data synchronization between cdu and rcu
 
-
+int response;
 //	unsigned long time = 0;
 
 	for(;;)
 	{
 		  //continuously receive data through UART=====================================
-//		  response = HAL_UART_Receive(&huart5, rxbuffcdu, 1, 500);
+		//  response = HAL_UART_Receive(&huart5, rxbuffcdu, 1, 500);
 //		  HAL_UART
 
 		  //printf("%u\n",rxbuffcdu);
