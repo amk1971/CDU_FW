@@ -1,0 +1,4 @@
+../Core/Src/nextionLcd.c:21:14:InitializeLCD	2
+../Core/Src/nextionLcd.c:33:14:ChangePage	4
+../Core/Src/nextionLcd.c:95:14:UpdateParamLCD	15
+../Core/Src/nextionLcd.c:264:6:HAL_UART_RxCpltCallback	2
