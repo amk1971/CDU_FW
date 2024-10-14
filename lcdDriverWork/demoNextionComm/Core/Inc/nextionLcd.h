@@ -19,11 +19,22 @@ typedef enum
 	lcdPage_adf
 }lcdCmdPage_id;
 
+
 typedef enum
 {
 	param_number = 0,
 	param_float,
-	param_txt
+	param_txt,
+	nav_Param_afreq,
+	nav_param_sfreq,
+	nav_param_vol,
+	nav_param_obs,
+	com_Param_afreq,
+	com_param_sfreq,
+	com_param_vol,
+	com_param_sql,
+	com_param_mic,
+	com_param_stone,
 }lcdCmdParam_id;
 
 returnStatus InitializeLCD(void);

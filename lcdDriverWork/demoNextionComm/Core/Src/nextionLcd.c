@@ -9,6 +9,7 @@
 #include "stdbool.h"
 
 
+
 uint16_t TIMEOUT = 1000;
 uint8_t endCmd[3] = {0xff, 0xff, 0xff};
 uint8_t pageResponse = 0;
@@ -95,7 +96,27 @@ returnStatus UpdateParamLCD(lcdCmdParam_id Param_ID, void * Param_Value)
 
 	// Handle the parameter based on its type (integer, float, or string)
 	switch (Param_ID) {
-		case param_number: {
+
+		// for nav.................................................................................
+		case nav_Param_afreq:
+		{
+			strncpy(param_ID, "x0", 2);
+			// Cast Param_Value to float and send it (as a whole number)
+			float value = *(float *)Param_Value;
+			int32_t param_value = value*(pow(10,3));//10^3, for converting into integer
+			len = sprintf((char *)txBuffer, "%s.val=%ld", param_ID, int_float_value);
+			break;
+		}
+		case nav_param_sfreq:
+		{
+			strncpy(param_ID, "x1", 2);
+			float value = *(float *)Param_Value;
+			int32_t param_value = value*(pow(10,3));//10^3, for converting into integer
+			len = sprintf((char *)txBuffer, "%s.val=%ld", param_ID, int_float_value);
+			break;
+		}
+		case param_number:
+		{
 			strncpy(param_ID, "n0", 2);
 			// Cast Param_Value to integer and send as .val
 			int32_t param_value = *(int32_t *)Param_Value;
@@ -105,7 +126,10 @@ returnStatus UpdateParamLCD(lcdCmdParam_id Param_ID, void * Param_Value)
 			len = sprintf((char *)txBuffer, "%s.val=%d", param_ID, param_value);
 			break;
 		}
-		case param_float: {
+
+		// for com.................................................................................
+		case com_Param_afreq:
+		{
 			strncpy(param_ID, "x0", 2);
 			// Cast Param_Value to float and send it (as a whole number)
 			float value = *(float *)Param_Value;
@@ -113,13 +137,24 @@ returnStatus UpdateParamLCD(lcdCmdParam_id Param_ID, void * Param_Value)
 			len = sprintf((char *)txBuffer, "%s.val=%ld", param_ID, int_float_value);
 			break;
 		}
-		case param_txt: {
-			strncpy(param_ID, "t0", 2);
-			// Cast Param_Value to string and send as .txt
-			char *string_value = (char *)Param_Value;
-			len = sprintf((char *)txBuffer, "%s.txt=\"%s\"", param_ID, string_value);
+		case com_Param_sfreq:
+		{
+			strncpy(param_ID, "x1", 2);
+			// Cast Param_Value to float and send it (as a whole number)
+			float value = *(float *)Param_Value;
+			int32_t param_value = value*(pow(10,3));//10^3, for converting into integer
+			len = sprintf((char *)txBuffer, "%s.val=%ld", param_ID, int_float_value);
 			break;
 		}
+
+
+//		case param_txt: {
+//			strncpy(param_ID, "t0", 2);
+//			// Cast Param_Value to string and send as .txt
+//			char *string_value = (char *)Param_Value;
+//			len = sprintf((char *)txBuffer, "%s.txt=\"%s\"", param_ID, string_value);
+//			break;
+//		}
 		default:
 			break;
 	}
