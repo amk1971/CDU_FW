@@ -22,7 +22,11 @@ typedef enum
 
 typedef enum
 {
-	nav_param_afreq = 0,
+	Left1 = 0
+	Left2,
+	Left3,
+	Center1,
+	av_param_afreq,
 	nav_param_sfreq,
 	nav_param_vol,
 	nav_param_obs,

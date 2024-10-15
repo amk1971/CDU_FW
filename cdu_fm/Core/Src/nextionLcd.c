@@ -92,7 +92,14 @@ returnStatus ChangePage(lcdCmdPage_id Page_ID)
 //}
 //
 
-returnStatus UpdateParamLCD(lcdCmdParam_id Param_ID, void * Param_Value)
+returnStatus UpdateNavScreen(void * Parameters)
+{
+	UpdateParamLCD(Center1, "    NAV      ");
+	UpdateParamLCD(Right1, "P1");
+
+}
+
+returnStatus UpdateParamLCD(lcdCmdParam_id Param_ID, char * Param_Value)
 {
 	uint8_t txBuffer = malloc(30 * sizeof(char));  // Command buffer
 	int len = 0;
