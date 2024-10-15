@@ -97,51 +97,55 @@ int main(void)
   MX_USART3_UART_Init();
   /* USER CODE BEGIN 2 */
 
-  if(InitializeLCD(void)){
-	  //lcd initialize successfully
-	  page = lcdPage_nav;
-  }
-  else
-  {
-	  paeg = lcdPage_main;
-  }
+//  if(InitializeLCD(void)){
+//	  //lcd initialize successfully
+//	  page = lcdPage_nav;
+//  }
+//  else
+//  {
+//	  paeg = lcdPage_main;
+//  }
 
-  float
+  //HAL_Delay(2000);
+
+  mainScreen();
 
 
-  if(ChangePage(page))
-  {
-	  for(;;)
-	  {
-		  param = nav_param_afreq;
-		  UpdateParamLCD(param, 112.45);
 
-		  HAL_Delay(1000);
 
-		  param = nav_param_sfreq;
-		  UpdateParamLCD(param, 123.65);
-
-		  HAL_Delay(1000);
-
-		  param = nav_param_afreq;
-		  UpdateParamLCD(param, 345.45);
-
-		  HAL_Delay(1000);
-
-		  param = nav_param_sfreq;
-		  UpdateParamLCD(param, 567.65);
-
-		  HAL_Delay(1000);
-
-		  param = nav_param_vol;
-		  UpdateParamLCD(param, 34);
-
-		  HAL_Delay(1000);
-
-		  param = nav_param_vol;
-		  UpdateParamLCD(param, 5);
-	  }
-  }
+//  if(ChangePage(page))
+//  {
+//	  for(;;)
+//	  {
+//		  param = nav_param_afreq;
+//		  UpdateParamLCD(param, 112.45);
+//
+//		  HAL_Delay(1000);
+//
+//		  param = nav_param_sfreq;
+//		  UpdateParamLCD(param, 123.65);
+//
+//		  HAL_Delay(1000);
+//
+//		  param = nav_param_afreq;
+//		  UpdateParamLCD(param, 345.45);
+//
+//		  HAL_Delay(1000);
+//
+//		  param = nav_param_sfreq;
+//		  UpdateParamLCD(param, 567.65);
+//
+//		  HAL_Delay(1000);
+//
+//		  param = nav_param_vol;
+//		  UpdateParamLCD(param, 34);
+//
+//		  HAL_Delay(1000);
+//
+//		  param = nav_param_vol;
+//		  UpdateParamLCD(param, 5);
+//	  }
+//  }
   /* USER CODE END 2 */
 
   /* Infinite loop */

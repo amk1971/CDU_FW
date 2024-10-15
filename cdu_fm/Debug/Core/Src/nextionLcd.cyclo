@@ -1,4 +1,6 @@
-../Core/Src/nextionLcd.c:21:14:InitializeLCD	2
-../Core/Src/nextionLcd.c:33:14:ChangePage	4
-../Core/Src/nextionLcd.c:95:14:UpdateParamLCD	15
-../Core/Src/nextionLcd.c:264:6:HAL_UART_RxCpltCallback	2
+../Core/Src/nextionLcd.c:23:14:InitializeLCD	2
+../Core/Src/nextionLcd.c:35:14:ChangePage	4
+../Core/Src/nextionLcd.c:97:14:UpdateNavScreen	1
+../Core/Src/nextionLcd.c:104:14:mainScreen	2
+../Core/Src/nextionLcd.c:119:14:UpdateParamLCD	32
+../Core/Src/nextionLcd.c:459:6:HAL_UART_RxCpltCallback	2

@@ -22,25 +22,25 @@ typedef enum
 
 typedef enum
 {
-	Left1 = 0
+	Left1 = 0,
 	Left2,
 	Left3,
+	Left4,
+	Right1,
+	Right2,
+	Right3,
+	Right4,
 	Center1,
-	av_param_afreq,
-	nav_param_sfreq,
-	nav_param_vol,
-	nav_param_obs,
-	com_param_afreq,
-	com_param_sfreq,
-	com_param_vol,
-	com_param_sql,
-	com_param_mic,
-	com_param_stone,
+	Center2,
+	Center3,
+	Center4,
+	Center5,
 }lcdCmdParam_id;
 
 returnStatus InitializeLCD(void);
+returnStatus mainScreen(void );
 returnStatus ChangePage(lcdCmdPage_id Page_ID);
-returnStatus UpdateParamLCD(lcdCmdParam_id Param_ID, void * Parm_Vlaue);
+returnStatus UpdateParamLCD(lcdCmdParam_id Param_ID, char * Parm_Vlaue);
 returnStatus ReadParamLCD(lcdCmdParam_id Param_ID, void * Param_Value);
 
 #endif /* INC_NEXTIONLCD_H_ */
