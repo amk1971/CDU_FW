@@ -12,13 +12,15 @@
 #include <stdio.h>
 #include "string.h"
 
-extern UART_HandleTypeDef huart3;
+#define LCDUart huart2
+
+extern UART_HandleTypeDef huart2;
 
 
 
 uint16_t TIMEOUT = 1000;
 uint8_t endCmd[3] = {0xff, 0xff, 0xff};
-uint8_t pageResponse = 0;
+uint8_t pageResponse[2] = {0, 0, 0};
 
 returnStatus InitializeLCD(void)
 {
@@ -48,11 +50,11 @@ returnStatus ChangePage(lcdCmdPage_id Page_ID)
 			break;
 	}
 	int len = sprintf((char *)txBuffer, "page %s", page_ID);
-	HAL_UART_Transmit(&huart3, (uint8_t *)txBuffer, len, TIMEOUT);
-	HAL_UART_Transmit(&huart3, (uint8_t *)endCmd, 3, TIMEOUT/10);
+	HAL_UART_Transmit(&LCDUart, (uint8_t *)txBuffer, len, TIMEOUT);
+	HAL_UART_Transmit(&LCDUart, (uint8_t *)endCmd, 3, TIMEOUT/10);
 
 //	pageResponse = HAL_UART_Receive_IT(&huart3, rxBuffer, 1); //receiving 1 byte only of output(hex): 02 00 00 00
-	HAL_UART_Receive_IT(&huart3, pageResponse, 1); //receiving 1 byte only of output(hex): 02 00 00 00
+	HAL_UART_Receive_IT(&LCDUart, pageResponse, 1); //receiving 1 byte only of output(hex): 02 00 00 00
 
 	if (pageResponse == Page_ID)
    		return success;
@@ -98,22 +100,23 @@ returnStatus UpdateNavScreen(void * Parameters)
 {
 	UpdateParamLCD(Center1, "    NAV      ");
 	UpdateParamLCD(Right1, "P1");
-
+return true;
 }
 
 returnStatus mainScreen(void )
 {
-	if(UpdateParamLCD(Center1, "HOME"))
+	UpdateParamLCD(Center1, "HOME");
+	HAL_Delay(500);
 	UpdateParamLCD(Right1, "HF");
 	UpdateParamLCD(Right2, "VHF");
 	UpdateParamLCD(Right3, "UHF");
 	UpdateParamLCD(Left1, "NAV");
 	UpdateParamLCD(Left2, "ADF");
 	UpdateParamLCD(Left3, "TACAN");
-	UpdateParamLCD(Left4, "M/B");
+	//UpdateParamLCD(Left4, "M/B");
 	UpdateParamLCD(Center4, "");
 	UpdateParamLCD(Center5, "");
-
+return true;
 }
 
 returnStatus UpdateParamLCD(lcdCmdParam_id Param_ID, char * Param_Value)
@@ -128,14 +131,14 @@ returnStatus UpdateParamLCD(lcdCmdParam_id Param_ID, char * Param_Value)
 	case Left1:
 	{
 		strncpy(param_ID, "t0", 3);
-		len = sprintf((char *)txBuffer, "%s.val=%s", param_ID, Param_Value);
-		if (HAL_UART_Transmit(&huart3, txBuffer, len, TIMEOUT) != HAL_OK)
+		len = sprintf((char *)txBuffer, "%s.txt=\"%s\"", param_ID, Param_Value);
+		if (HAL_UART_Transmit(&LCDUart, txBuffer, len, TIMEOUT) != HAL_OK)
 		{
 			return failure;
 		}
 
 		// Send termination bytes (0xFF 0xFF 0xFF)
-		if (HAL_UART_Transmit(&huart3, (uint8_t *)endCmd, 3, TIMEOUT/10) != HAL_OK)
+		if (HAL_UART_Transmit(&LCDUart, (uint8_t *)endCmd, 3, TIMEOUT/10) != HAL_OK)
 		{
 			return failure;
 		}
@@ -145,14 +148,14 @@ returnStatus UpdateParamLCD(lcdCmdParam_id Param_ID, char * Param_Value)
 	case Left2:
 		{
 			strncpy(param_ID, "t1", 3);
-			len = sprintf((char *)txBuffer, "%s.val=%s", param_ID, Param_Value);
-			if (HAL_UART_Transmit(&huart3, txBuffer, len, TIMEOUT) != HAL_OK)
+			len = sprintf((char *)txBuffer, "%s.txt=\"%s\"", param_ID, Param_Value);
+			if (HAL_UART_Transmit(&LCDUart, txBuffer, len, TIMEOUT) != HAL_OK)
 			{
 				return failure;
 			}
 
 			// Send termination bytes (0xFF 0xFF 0xFF)
-			if (HAL_UART_Transmit(&huart3, (uint8_t *)endCmd, 3, TIMEOUT/10) != HAL_OK)
+			if (HAL_UART_Transmit(&LCDUart, (uint8_t *)endCmd, 3, TIMEOUT/10) != HAL_OK)
 			{
 				return failure;
 			}
@@ -162,14 +165,14 @@ returnStatus UpdateParamLCD(lcdCmdParam_id Param_ID, char * Param_Value)
 	case Left3:
 	{
 		strncpy(param_ID, "t2", 3);
-		len = sprintf((char *)txBuffer, "%s.val=%s", param_ID, Param_Value);
-		if (HAL_UART_Transmit(&huart3, txBuffer, len, TIMEOUT) != HAL_OK)
+		len = sprintf((char *)txBuffer, "%s.txt=\"%s\"", param_ID, Param_Value);
+		if (HAL_UART_Transmit(&LCDUart, txBuffer, len, TIMEOUT) != HAL_OK)
 		{
 			return failure;
 		}
 
 		// Send termination bytes (0xFF 0xFF 0xFF)
-		if (HAL_UART_Transmit(&huart3, (uint8_t *)endCmd, 3, TIMEOUT/10) != HAL_OK)
+		if (HAL_UART_Transmit(&LCDUart, (uint8_t *)endCmd, 3, TIMEOUT/10) != HAL_OK)
 		{
 			return failure;
 		}
@@ -179,14 +182,14 @@ returnStatus UpdateParamLCD(lcdCmdParam_id Param_ID, char * Param_Value)
 	case Left4:
 	{
 		strncpy(param_ID, "t3", 3);
-		len = sprintf((char *)txBuffer, "%s.val=%s", param_ID, Param_Value);
-		if (HAL_UART_Transmit(&huart3, txBuffer, len, TIMEOUT) != HAL_OK)
+		len = sprintf((char *)txBuffer, "%s.txt=\"%s\"", param_ID, Param_Value);
+		if (HAL_UART_Transmit(&LCDUart, txBuffer, len, TIMEOUT) != HAL_OK)
 		{
 			return failure;
 		}
 
 		// Send termination bytes (0xFF 0xFF 0xFF)
-		if (HAL_UART_Transmit(&huart3, (uint8_t *)endCmd, 3, TIMEOUT/10) != HAL_OK)
+		if (HAL_UART_Transmit(&LCDUart, (uint8_t *)endCmd, 3, TIMEOUT/10) != HAL_OK)
 		{
 			return failure;
 		}
@@ -196,14 +199,14 @@ returnStatus UpdateParamLCD(lcdCmdParam_id Param_ID, char * Param_Value)
 	case Right1:
 	{
 		strncpy(param_ID, "t4", 3);
-		len = sprintf((char *)txBuffer, "%s.val=%s", param_ID, Param_Value);
-		if (HAL_UART_Transmit(&huart3, txBuffer, len, TIMEOUT) != HAL_OK)
+		len = sprintf((char *)txBuffer, "%s.txt=\"%s\"", param_ID, Param_Value);
+		if (HAL_UART_Transmit(&LCDUart, txBuffer, len, TIMEOUT) != HAL_OK)
 		{
 			return failure;
 		}
 
 		// Send termination bytes (0xFF 0xFF 0xFF)
-		if (HAL_UART_Transmit(&huart3, (uint8_t *)endCmd, 3, TIMEOUT/10) != HAL_OK)
+		if (HAL_UART_Transmit(&LCDUart, (uint8_t *)endCmd, 3, TIMEOUT/10) != HAL_OK)
 		{
 			return failure;
 		}
@@ -213,14 +216,14 @@ returnStatus UpdateParamLCD(lcdCmdParam_id Param_ID, char * Param_Value)
 	case Right2:
 	{
 		strncpy(param_ID, "t5", 3);
-		len = sprintf((char *)txBuffer, "%s.val=%s", param_ID, Param_Value);
-		if (HAL_UART_Transmit(&huart3, txBuffer, len, TIMEOUT) != HAL_OK)
+		len = sprintf((char *)txBuffer, "%s.txt=\"%s\"", param_ID, Param_Value);
+		if (HAL_UART_Transmit(&LCDUart, txBuffer, len, TIMEOUT) != HAL_OK)
 		{
 			return failure;
 		}
 
 		// Send termination bytes (0xFF 0xFF 0xFF)
-		if (HAL_UART_Transmit(&huart3, (uint8_t *)endCmd, 3, TIMEOUT/10) != HAL_OK)
+		if (HAL_UART_Transmit(&LCDUart, (uint8_t *)endCmd, 3, TIMEOUT/10) != HAL_OK)
 		{
 			return failure;
 		}
@@ -230,14 +233,14 @@ returnStatus UpdateParamLCD(lcdCmdParam_id Param_ID, char * Param_Value)
 	case Right3:
 	{
 		strncpy(param_ID, "t6", 3);
-		len = sprintf((char *)txBuffer, "%s.val=%s", param_ID, Param_Value);
-		if (HAL_UART_Transmit(&huart3, txBuffer, len, TIMEOUT) != HAL_OK)
+		len = sprintf((char *)txBuffer, "%s.txt=\"%s\"", param_ID, Param_Value);
+		if (HAL_UART_Transmit(&LCDUart, txBuffer, len, TIMEOUT) != HAL_OK)
 		{
 			return failure;
 		}
 
 		// Send termination bytes (0xFF 0xFF 0xFF)
-		if (HAL_UART_Transmit(&huart3, (uint8_t *)endCmd, 3, TIMEOUT/10) != HAL_OK)
+		if (HAL_UART_Transmit(&LCDUart, (uint8_t *)endCmd, 3, TIMEOUT/10) != HAL_OK)
 		{
 			return failure;
 		}
@@ -247,14 +250,14 @@ returnStatus UpdateParamLCD(lcdCmdParam_id Param_ID, char * Param_Value)
 	case Center1:
 	{
 		strncpy(param_ID, "t8", 3);
-		len = sprintf((char *)txBuffer, "%s.val=%s", param_ID, Param_Value);
-		if (HAL_UART_Transmit(&huart3, txBuffer, len, TIMEOUT) != HAL_OK)
+		len = sprintf((char *)txBuffer, "%s.txt=\"%s\"", param_ID, Param_Value);
+		if (HAL_UART_Transmit(&LCDUart, txBuffer, len, TIMEOUT) != HAL_OK)
 		{
 			return failure;
 		}
 
 		// Send termination bytes (0xFF 0xFF 0xFF)
-		if (HAL_UART_Transmit(&huart3, (uint8_t *)endCmd, 3, TIMEOUT/10) != HAL_OK)
+		if (HAL_UART_Transmit(&LCDUart, (uint8_t *)endCmd, 3, TIMEOUT/10) != HAL_OK)
 		{
 			return failure;
 		}
@@ -264,14 +267,14 @@ returnStatus UpdateParamLCD(lcdCmdParam_id Param_ID, char * Param_Value)
 	case Center4:
 		{
 			strncpy(param_ID, "t11", 4);
-			len = sprintf((char *)txBuffer, "%s.val=%s", param_ID, Param_Value);
-			if (HAL_UART_Transmit(&huart3, txBuffer, len, TIMEOUT) != HAL_OK)
+			len = sprintf((char *)txBuffer, "%s.txt=\"%s\"", param_ID, Param_Value);
+			if (HAL_UART_Transmit(&LCDUart, txBuffer, len, TIMEOUT) != HAL_OK)
 			{
 				return failure;
 			}
 
 			// Send termination bytes (0xFF 0xFF 0xFF)
-			if (HAL_UART_Transmit(&huart3, (uint8_t *)endCmd, 3, TIMEOUT/10) != HAL_OK)
+			if (HAL_UART_Transmit(&LCDUart, (uint8_t *)endCmd, 3, TIMEOUT/10) != HAL_OK)
 			{
 				return failure;
 			}
@@ -281,14 +284,14 @@ returnStatus UpdateParamLCD(lcdCmdParam_id Param_ID, char * Param_Value)
 	case Center5:
 		{
 			strncpy(param_ID, "t12", 4);
-			len = sprintf((char *)txBuffer, "%s.val=%s", param_ID, Param_Value);
-			if (HAL_UART_Transmit(&huart3, txBuffer, len, TIMEOUT) != HAL_OK)
+			len = sprintf((char *)txBuffer, "%s.txt=\"%s\"", param_ID, Param_Value);
+			if (HAL_UART_Transmit(&LCDUart, txBuffer, len, TIMEOUT) != HAL_OK)
 			{
 				return failure;
 			}
 
 			// Send termination bytes (0xFF 0xFF 0xFF)
-			if (HAL_UART_Transmit(&huart3, (uint8_t *)endCmd, 3, TIMEOUT/10) != HAL_OK)
+			if (HAL_UART_Transmit(&LCDUart, (uint8_t *)endCmd, 3, TIMEOUT/10) != HAL_OK)
 			{
 				return failure;
 			}
@@ -457,9 +460,9 @@ returnStatus UpdateParamLCD(lcdCmdParam_id Param_ID, char * Param_Value)
 //}
 
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
-    	if (huart->Instance == USART3)
+    	if (huart->Instance == USART2)
     	{
-    		HAL_UART_Receive_IT(&huart3, pageResponse, 1); // Restart UART5 reception
+    		HAL_UART_Receive_IT(&LCDUart, pageResponse, 1); // Restart UART5 reception
     	}
 
 }
