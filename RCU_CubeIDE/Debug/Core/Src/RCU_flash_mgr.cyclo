@@ -1,0 +1,11 @@
+../Core/Src/RCU_flash_mgr.c:52:9:spif_IsBusy	1
+../Core/Src/RCU_flash_mgr.c:75:6:spif_WriteEnable	1
+../Core/Src/RCU_flash_mgr.c:93:9:spif_Init_Flash	3
+../Core/Src/RCU_flash_mgr.c:119:6:spif_WriteRecord	3
+../Core/Src/RCU_flash_mgr.c:155:6:spif_ReadRecord	1
+../Core/Src/RCU_flash_mgr.c:182:9:spif_Record_Is_Empty	2
+../Core/Src/RCU_flash_mgr.c:202:6:spif_DeleteRecord	2
+../Core/Src/RCU_flash_mgr.c:233:6:spif_Reset_Flash	2
+../Core/Src/RCU_flash_mgr.c:257:6:spif_Store_SysState	3
+../Core/Src/RCU_flash_mgr.c:294:6:spif_Load_SysState	1
+../Core/Src/RCU_flash_mgr.c:321:9:spif_SysState_in_Flash	2
