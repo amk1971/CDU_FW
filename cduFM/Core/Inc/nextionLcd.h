@@ -12,12 +12,12 @@
 
 typedef enum
 {
-	lcdPage_main = 0,
-	lcdPage_nav,
-	lcdPage_com,
-	lcdPage_tacan,
-	lcdPage_adf
-}lcdCmdPage_id;
+	lcdDisp_home = 0,
+	lcdDisp_nav,
+	lcdDisp_com,
+	lcdDisp_tacan,
+	lcdDisp_adf
+}lcdCmdDisp_id;
 
 
 typedef enum
@@ -38,8 +38,8 @@ typedef enum
 }lcdCmdParam_id;
 
 returnStatus InitializeLCD(void);
-returnStatus mainScreen(void );
-returnStatus ChangePage(lcdCmdPage_id Page_ID);
+returnStatus DispHomeScreen(void);
+//returnStatus ChangePage(lcdCmdPage_id Page_ID);
 returnStatus UpdateParamLCD(lcdCmdParam_id Param_ID, char * Parm_Vlaue);
 returnStatus ReadParamLCD(lcdCmdParam_id Param_ID, void * Param_Value);
 

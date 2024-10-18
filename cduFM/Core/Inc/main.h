@@ -29,6 +29,8 @@ extern "C" {
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f0xx_hal.h"
 
+extern lcdCmdDisp_id screen;
+
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 
