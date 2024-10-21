@@ -111,9 +111,11 @@ returnStatus UpdateParamLCD(lcdCmdParam_id Param_ID, char * Param_Value)
 	{
 		case Left1:
 		{
-			strncpy(param_ID, "t0", 3);
-			len = sprintf((char *)txBuffer, "%s.txt=\"%s\"", param_ID, Param_Value);
-			if (HAL_UART_Transmit(&LCDUart, txBuffer, len, TIMEOUT) != HAL_OK)
+			strncpy(txBuffer, "t0.txt=\"", 9);
+			strncat(txBuffer, Param_Value, 5);
+			strncat(txBuffer, "\"", 2);
+			//len = sprintf((char *)txBuffer, "%s.txt=\"%s\"", param_ID, Param_Value);
+			if (HAL_UART_Transmit(&LCDUart, txBuffer, strlen(txBuffer), TIMEOUT) != HAL_OK)
 			{
 				return failure;
 			}
