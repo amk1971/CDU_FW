@@ -29,8 +29,6 @@ extern "C" {
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f0xx_hal.h"
 
-extern lcdCmdDisp_id screen;
-
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 
@@ -59,6 +57,22 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
+#define Left_SW2_Pin GPIO_PIN_2
+#define Left_SW2_GPIO_Port GPIOE
+#define Left_SW1_Pin GPIO_PIN_3
+#define Left_SW1_GPIO_Port GPIOE
+#define Right_SW4_Pin GPIO_PIN_1
+#define Right_SW4_GPIO_Port GPIOD
+#define Right_SW3_Pin GPIO_PIN_2
+#define Right_SW3_GPIO_Port GPIOD
+#define Right_SW2_Pin GPIO_PIN_3
+#define Right_SW2_GPIO_Port GPIOD
+#define Right_SW1_Pin GPIO_PIN_4
+#define Right_SW1_GPIO_Port GPIOD
+#define Left_SW4_Pin GPIO_PIN_0
+#define Left_SW4_GPIO_Port GPIOE
+#define Left_SW3_Pin GPIO_PIN_1
+#define Left_SW3_GPIO_Port GPIOE
 
 /* USER CODE BEGIN Private defines */
 

@@ -163,7 +163,7 @@ void USART3_8_IRQHandler(void)
   /* USER CODE BEGIN USART3_8_IRQn 0 */
 
   /* USER CODE END USART3_8_IRQn 0 */
-  HAL_UART_IRQHandler(&huart3);
+  HAL_UART_IRQHandler(&huart3);(&huart3);
   /* USER CODE BEGIN USART3_8_IRQn 1 */
 
   /* USER CODE END USART3_8_IRQn 1 */
