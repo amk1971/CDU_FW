@@ -1,0 +1,3 @@
+../Core/Src/switches.c:11:6:soft_keysTest	10
+../Core/Src/switches.c:71:6:Matrix_keypad_test	12
+../Core/Src/switches.c:125:6:test_sw	1

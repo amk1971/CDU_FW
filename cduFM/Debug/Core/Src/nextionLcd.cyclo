@@ -1,0 +1,4 @@
+../Core/Src/nextionLcd.c:27:14:InitializeLCD	2
+../Core/Src/nextionLcd.c:67:14:DispNavScreen	1
+../Core/Src/nextionLcd.c:85:14:DispHomeScreen	1
+../Core/Src/nextionLcd.c:104:14:UpdateParamLCD	40
