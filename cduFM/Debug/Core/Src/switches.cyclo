@@ -1,3 +1,7 @@
-../Core/Src/switches.c:11:6:soft_keysTest	10
-../Core/Src/switches.c:71:6:Matrix_keypad_test	12
-../Core/Src/switches.c:125:6:test_sw	1
+../Core/Src/switches.c:15:10:Read_Port	1
+../Core/Src/switches.c:20:6:KeyS_init	1
+../Core/Src/switches.c:26:10:keyPad_Scan	14
+../Core/Src/switches.c:90:10:keyPad_Scan4SisTick	3
+../Core/Src/switches.c:125:6:soft_keysTest	10
+../Core/Src/switches.c:185:6:Matrix_keypad_test	1
+../Core/Src/switches.c:198:6:test_sw	1

@@ -18,6 +18,7 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "nextionLcd.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -240,13 +241,13 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOD_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(ROW1_GPIO_Port, ROW1_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(ROW1_GPIO_Port, ROW1_Pin, GPIO_PIN_SET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOC, ROW2_Pin|ROW3_Pin|ROW4_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOC, ROW2_Pin|ROW3_Pin|ROW4_Pin, GPIO_PIN_SET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOF, ROW5_Pin|ROW6_Pin|ROW7_Pin|ROW8_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOF, ROW5_Pin|ROW6_Pin|ROW7_Pin|ROW8_Pin, GPIO_PIN_SET);
 
   /*Configure GPIO pins : Left_SW2_Pin Left_SW1_Pin Left_SW4_Pin Left_SW3_Pin */
   GPIO_InitStruct.Pin = Left_SW2_Pin|Left_SW1_Pin|Left_SW4_Pin|Left_SW3_Pin;

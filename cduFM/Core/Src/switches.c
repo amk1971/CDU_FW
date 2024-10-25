@@ -8,6 +8,120 @@
 #include "switches.h"
 #include "main.h"
 
+#define DEBOUNCE_DELAY 20
+
+keyPad_t keyPad;
+
+uint16_t Read_Port(GPIO_TypeDef *GPIOx)
+{
+    return (uint16_t)(GPIOx->IDR);  // Read and return the entire port input register
+}
+
+void KeyS_init()
+{
+	keyPad.ColumnS = 8;
+	keyPad.RowS = 8;
+}
+
+uint16_t keyPad_Scan(void)
+{
+	uint16_t key = 0;
+
+	for(uint8_t r = 0; r < keyPad.RowS; r++)
+	{
+//			for(uint8_t i = 0; r < KeyPad.RowS; i++)
+//			{
+//
+//			}
+
+		// Set all rows high except the current row
+		HAL_GPIO_WritePin(ROW1_GPIO_Port, ROW1_Pin, (r == 0) ? GPIO_PIN_RESET : GPIO_PIN_SET);
+		HAL_GPIO_WritePin(ROW2_GPIO_Port, ROW2_Pin, (r == 1) ? GPIO_PIN_RESET : GPIO_PIN_SET);
+		HAL_GPIO_WritePin(ROW3_GPIO_Port, ROW3_Pin, (r == 2) ? GPIO_PIN_RESET : GPIO_PIN_SET);
+		HAL_GPIO_WritePin(ROW4_GPIO_Port, ROW4_Pin, (r == 3) ? GPIO_PIN_RESET : GPIO_PIN_SET);
+		HAL_GPIO_WritePin(ROW5_GPIO_Port, ROW5_Pin, (r == 4) ? GPIO_PIN_RESET : GPIO_PIN_SET);
+		HAL_GPIO_WritePin(ROW6_GPIO_Port, ROW6_Pin, (r == 5) ? GPIO_PIN_RESET : GPIO_PIN_SET);
+		HAL_GPIO_WritePin(ROW7_GPIO_Port, ROW7_Pin, (r == 6) ? GPIO_PIN_RESET : GPIO_PIN_SET);
+		HAL_GPIO_WritePin(ROW8_GPIO_Port, ROW8_Pin, (r == 7) ? GPIO_PIN_RESET : GPIO_PIN_SET);
+
+		HAL_Delay(5);
+
+		for(int c = 0; c < keyPad.ColumnS; c++)
+		{
+			GPIO_TypeDef* columnPort;
+			uint16_t columnPin;
+
+			switch(c)
+			{
+				case 0: columnPort = COL1_GPIO_Port; columnPin = COL1_Pin; break;
+				case 1: columnPort = COL2_GPIO_Port; columnPin = COL2_Pin; break;
+				case 2: columnPort = COL3_GPIO_Port; columnPin = COL3_Pin; break;
+				case 3: columnPort = COL4_GPIO_Port; columnPin = COL4_Pin; break;
+				case 4: columnPort = COL5_GPIO_Port; columnPin = COL5_Pin; break;
+				case 5: columnPort = COL6_GPIO_Port; columnPin = COL6_Pin; break;
+				case 6: columnPort = COL7_GPIO_Port; columnPin = COL7_Pin; break;
+				case 7: columnPort = COL8_GPIO_Port; columnPin = COL8_Pin; break;
+				default: break;
+			}
+
+			if(!(HAL_GPIO_ReadPin(columnPort, columnPin)))
+			{
+				HAL_Delay(DEBOUNCE_DELAY);
+
+				if(!(HAL_GPIO_ReadPin(columnPort, columnPin)))
+				{
+					key |= 1<<c;
+					key |= 1<<(r+8);
+				}
+
+				while(!(HAL_GPIO_ReadPin(columnPort, columnPin)))
+				{
+					HAL_Delay(1);
+				}
+
+				return key;
+			}
+		}
+	}
+
+	return key;
+}
+
+uint16_t keyPad_Scan4SisTick(void)
+{
+	uint16_t key = 0;
+
+	for(uint8_t r = 0; r < 8; r++)
+	{
+
+		// Set all rows high except the current row
+		HAL_GPIO_WritePin(ROW1_GPIO_Port, ROW1_Pin, (r == 0) ? GPIO_PIN_RESET : GPIO_PIN_SET);
+		HAL_GPIO_WritePin(ROW2_GPIO_Port, ROW2_Pin, (r == 1) ? GPIO_PIN_RESET : GPIO_PIN_SET);
+		HAL_GPIO_WritePin(ROW3_GPIO_Port, ROW3_Pin, (r == 2) ? GPIO_PIN_RESET : GPIO_PIN_SET);
+		HAL_GPIO_WritePin(ROW4_GPIO_Port, ROW4_Pin, (r == 3) ? GPIO_PIN_RESET : GPIO_PIN_SET);
+		HAL_GPIO_WritePin(ROW5_GPIO_Port, ROW5_Pin, (r == 4) ? GPIO_PIN_RESET : GPIO_PIN_SET);
+		HAL_GPIO_WritePin(ROW6_GPIO_Port, ROW6_Pin, (r == 5) ? GPIO_PIN_RESET : GPIO_PIN_SET);
+		HAL_GPIO_WritePin(ROW7_GPIO_Port, ROW7_Pin, (r == 6) ? GPIO_PIN_RESET : GPIO_PIN_SET);
+		HAL_GPIO_WritePin(ROW8_GPIO_Port, ROW8_Pin, (r == 7) ? GPIO_PIN_RESET : GPIO_PIN_SET);
+
+
+		uint16_t c1c4_C = ~Read_Port(GPIOC);
+		uint16_t c5c6_F	= ~Read_Port(GPIOF);
+		uint16_t c7c8_A = ~Read_Port(GPIOA);
+
+		uint8_t c = ((c1c4_C & 0b00001111) << 0) |
+					((c5c6_F & 0b00001100) >> 2) << 4 |
+					((c7c8_A & 0b00000011) << 6);
+
+		key = c | (r<<8);
+
+		if(c != 0)
+			return key;
+	}
+
+	return key;
+}
+
 void soft_keysTest(void)
 {
 	static char  pval = 0, val = 0;
@@ -70,54 +184,13 @@ void soft_keysTest(void)
 
 void Matrix_keypad_test(void)
 {
-	uint8_t colArray[8] = {0};
-	uint8_t pressedKey[8][8] = {0};
+	uint16_t keyRead;
+
+	KeyS_init();
+
 	for(;;)
 	{
-		for(int r = 0; r < 8; r++)
-		{
-			// Set all rows high except the current row
-			HAL_GPIO_WritePin(ROW1_GPIO_Port, ROW1_Pin, (r == 0) ? GPIO_PIN_RESET : GPIO_PIN_SET);
-			HAL_GPIO_WritePin(ROW2_GPIO_Port, ROW2_Pin, (r == 1) ? GPIO_PIN_RESET : GPIO_PIN_SET);
-			HAL_GPIO_WritePin(ROW3_GPIO_Port, ROW3_Pin, (r == 2) ? GPIO_PIN_RESET : GPIO_PIN_SET);
-			HAL_GPIO_WritePin(ROW4_GPIO_Port, ROW4_Pin, (r == 3) ? GPIO_PIN_RESET : GPIO_PIN_SET);
-			HAL_GPIO_WritePin(ROW5_GPIO_Port, ROW5_Pin, (r == 4) ? GPIO_PIN_RESET : GPIO_PIN_SET);
-			HAL_GPIO_WritePin(ROW6_GPIO_Port, ROW6_Pin, (r == 5) ? GPIO_PIN_RESET : GPIO_PIN_SET);
-			HAL_GPIO_WritePin(ROW7_GPIO_Port, ROW7_Pin, (r == 6) ? GPIO_PIN_RESET : GPIO_PIN_SET);
-			HAL_GPIO_WritePin(ROW8_GPIO_Port, ROW8_Pin, (r == 7) ? GPIO_PIN_RESET : GPIO_PIN_SET);
-
-			for(int c = 0; c < 8; c++)
-			{
-				GPIO_TypeDef* columnPort;
-				uint16_t columnPin;
-
-				switch(c)
-				{
-					case 0: columnPort = COL1_GPIO_Port; columnPin = COL1_Pin; break;
-					case 1: columnPort = COL2_GPIO_Port; columnPin = COL2_Pin; break;
-					case 2: columnPort = COL3_GPIO_Port; columnPin = COL3_Pin; break;
-					case 3: columnPort = COL4_GPIO_Port; columnPin = COL4_Pin; break;
-					case 4: columnPort = COL5_GPIO_Port; columnPin = COL5_Pin; break;
-					case 5: columnPort = COL6_GPIO_Port; columnPin = COL6_Pin; break;
-					case 6: columnPort = COL7_GPIO_Port; columnPin = COL7_Pin; break;
-					case 7: columnPort = COL8_GPIO_Port; columnPin = COL8_Pin; break;
-					default: break;
-				}
-
-				if(!(HAL_GPIO_ReadPin(columnPort, columnPin)))
-				{
-					colArray[r] |= (1 << c);  // Mark the column bit in the colArray
-
-					 pressedKey[r][c] = 1;
-				}
-				else
-				{
-					colArray[r] &= ~(1 << c); // Clear the bit if no button press
-
-					 pressedKey[r][c] = 0;
-				}
-			}
-		}
+		keyRead = keyPad_Scan();
 	}
 }
 

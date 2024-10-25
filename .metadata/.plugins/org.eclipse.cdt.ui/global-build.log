@@ -1,23 +1,14 @@
-16:01:40 **** Incremental Build of configuration Debug for project cduFM ****
+15:28:23 **** Incremental Build of configuration Debug for project cduFM ****
 make -j4 all 
 arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m0 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F091xC -c -I../Core/Inc -I../Drivers/STM32F0xx_HAL_Driver/Inc -I../Drivers/STM32F0xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F0xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Core/Src/main.o"
-arm-none-eabi-gcc "../Core/Src/nextionLcd.c" -mcpu=cortex-m0 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F091xC -c -I../Core/Inc -I../Drivers/STM32F0xx_HAL_Driver/Inc -I../Drivers/STM32F0xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F0xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/nextionLcd.d" -MT"Core/Src/nextionLcd.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Core/Src/nextionLcd.o"
-arm-none-eabi-gcc "../Core/Src/stm32f0xx_hal_msp.c" -mcpu=cortex-m0 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F091xC -c -I../Core/Inc -I../Drivers/STM32F0xx_HAL_Driver/Inc -I../Drivers/STM32F0xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F0xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/stm32f0xx_hal_msp.d" -MT"Core/Src/stm32f0xx_hal_msp.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Core/Src/stm32f0xx_hal_msp.o"
-arm-none-eabi-gcc "../Core/Src/stm32f0xx_it.c" -mcpu=cortex-m0 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F091xC -c -I../Core/Inc -I../Drivers/STM32F0xx_HAL_Driver/Inc -I../Drivers/STM32F0xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F0xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/stm32f0xx_it.d" -MT"Core/Src/stm32f0xx_it.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Core/Src/stm32f0xx_it.o"
-In file included from ../Core/Src/main.c:20:
-../Core/Inc/main.h:32:8: error: unknown type name 'lcdCmdDisp_id'
-   32 | extern lcdCmdDisp_id screen;
-      |        ^~~~~~~~~~~~~
-In file included from ../Core/Src/stm32f0xx_hal_msp.c:23:
-../Core/Inc/main.h:32:8: error: unknown type name 'lcdCmdDisp_id'
-   32 | extern lcdCmdDisp_id screen;
-      |        ^~~~~~~~~~~~~
-In file included from ../Core/Src/stm32f0xx_it.c:21:
-../Core/Inc/main.h:32:8: error: unknown type name 'lcdCmdDisp_id'
-   32 | extern lcdCmdDisp_id screen;
-      |        ^~~~~~~~~~~~~
-make: *** [Core/Src/subdir.mk:37: Core/Src/main.o] Error 1
-make: *** Waiting for unfinished jobs....
-make: *** [Core/Src/subdir.mk:37: Core/Src/stm32f0xx_hal_msp.o] Error 1
-make: *** [Core/Src/subdir.mk:37: Core/Src/stm32f0xx_it.o] Error 1
-"make -j4 all" terminated with exit code 2. Build might be incomplete.
+arm-none-eabi-gcc -o "cduFM.elf" @"objects.list"   -mcpu=cortex-m0 -T"D:\Projects\CDU\CDU_FW\cduFM\STM32F091VCTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="cduFM.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: cduFM.elf
+ 
+arm-none-eabi-size  cduFM.elf 
+arm-none-eabi-objdump -h -S cduFM.elf  > "cduFM.list"
+   text	   data	    bss	    dec	    hex	filename
+  15644	    100	   2172	  17916	   45fc	cduFM.elf
+Finished building: default.size.stdout
+ 
+Finished building: cduFM.list
+ 
