@@ -1,0 +1,8 @@
+ENTER: 4020
+HOME: No Response
+BACK: No Response
+A: 208
+B:210
+G: 410
+M:820
+N: 840
