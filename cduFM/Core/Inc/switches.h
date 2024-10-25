@@ -10,12 +10,17 @@
 
 #include <stdint.h>
 
+//typedef struct
+//{
+//	uint16_t key;
+//
+//}global_t;
 
 typedef struct
 {
 	uint8_t ColumnS;
 	uint8_t RowS;
-	uint16_t lastKey;
+	uint16_t key;
 
 }keyPad_t;
 

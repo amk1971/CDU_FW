@@ -1,6 +1,14 @@
-15:28:23 **** Incremental Build of configuration Debug for project cduFM ****
+17:01:53 **** Incremental Build of configuration Debug for project cduFM ****
 make -j4 all 
-arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m0 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F091xC -c -I../Core/Inc -I../Drivers/STM32F0xx_HAL_Driver/Inc -I../Drivers/STM32F0xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F0xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Core/Src/main.o"
+arm-none-eabi-gcc "../Core/Src/switches.c" -mcpu=cortex-m0 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F091xC -c -I../Core/Inc -I../Drivers/STM32F0xx_HAL_Driver/Inc -I../Drivers/STM32F0xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F0xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/switches.d" -MT"Core/Src/switches.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Core/Src/switches.o"
+../Core/Src/switches.c: In function 'decode_keycode':
+../Core/Src/switches.c:112:14: warning: unused variable 'Tkey' [-Wunused-variable]
+  112 |         char Tkey = decode_str[index];
+      |              ^~~~
+../Core/Src/switches.c: In function 'Matrix_keypad_test':
+../Core/Src/switches.c:211:18: warning: variable 'keyRead' set but not used [-Wunused-but-set-variable]
+  211 |         uint16_t keyRead;
+      |                  ^~~~~~~
 arm-none-eabi-gcc -o "cduFM.elf" @"objects.list"   -mcpu=cortex-m0 -T"D:\Projects\CDU\CDU_FW\cduFM\STM32F091VCTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="cduFM.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 Finished building target: cduFM.elf
  

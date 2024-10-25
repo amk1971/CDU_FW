@@ -21,6 +21,7 @@ void KeyS_init()
 {
 	keyPad.ColumnS = 8;
 	keyPad.RowS = 8;
+	keyPad.key = 0;
 }
 
 uint16_t keyPad_Scan(void)
@@ -87,11 +88,36 @@ uint16_t keyPad_Scan(void)
 	return key;
 }
 
-uint16_t keyPad_Scan4SisTick(void)
+void decode_keycode(void)
 {
-	uint16_t key = 0;
+	uint8_t i, j, col, row, index;
 
-	for(uint8_t r = 0; r < 8; r++)
+	for(i = 1, j = 1 ; j <= 8 ; i <<= 1, j++)
+	{
+		if ((keyPad.key & 0xFF) == i)
+		{
+			col = j;
+			break;
+		}
+	}
+	row = keyPad.key >> 8;
+
+	index = col | (row << 3);
+
+	char decode_str[] = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P',
+	        'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', // Uppercase letters
+	        '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'  // Digits
+			};
+
+	char Tkey = decode_str[index];
+
+
+}
+
+void keyPad_Scan4SisTick(void)
+{
+
+	for(uint8_t r = 0; r < keyPad.RowS; r++)
 	{
 
 		// Set all rows high except the current row
@@ -110,16 +136,14 @@ uint16_t keyPad_Scan4SisTick(void)
 		uint16_t c7c8_A = ~Read_Port(GPIOA);
 
 		uint8_t c = ((c1c4_C & 0b00001111) << 0) |
-					((c5c6_F & 0b00001100) >> 2) << 4 |
+					((c5c6_F & 0b00001100) << 2) |
 					((c7c8_A & 0b00000011) << 6);
 
-		key = c | (r<<8);
+		keyPad.key = c | (r<<8);
 
-		if(c != 0)
-			return key;
+//		if(c != 0)
+//			return key;
 	}
-
-	return key;
 }
 
 void soft_keysTest(void)
