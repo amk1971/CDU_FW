@@ -61,7 +61,8 @@ void Error_Handler(void);
 #define Left_SW2_GPIO_Port GPIOE
 #define Left_SW1_Pin GPIO_PIN_3
 #define Left_SW1_GPIO_Port GPIOE
-#define ROW1_Pin GPIO_PIN_4
+
+#define ROW1_Pin GPIO_PIN_6
 #define ROW1_GPIO_Port GPIOE
 #define ROW2_Pin GPIO_PIN_13
 #define ROW2_GPIO_Port GPIOC
@@ -77,6 +78,7 @@ void Error_Handler(void);
 #define ROW7_GPIO_Port GPIOF
 #define ROW8_Pin GPIO_PIN_1
 #define ROW8_GPIO_Port GPIOF
+
 #define COL1_Pin GPIO_PIN_0
 #define COL1_GPIO_Port GPIOC
 #define COL2_Pin GPIO_PIN_1
@@ -93,6 +95,7 @@ void Error_Handler(void);
 #define COL7_GPIO_Port GPIOA
 #define COL8_Pin GPIO_PIN_1
 #define COL8_GPIO_Port GPIOA
+
 #define Right_SW4_Pin GPIO_PIN_1
 #define Right_SW4_GPIO_Port GPIOD
 #define Right_SW3_Pin GPIO_PIN_2
