@@ -36,35 +36,26 @@ returnStatus InitializeLCD(void)
 	}
 }
 
-//returnStatus ChangePage(lcdCmdPage_id Page_ID)
-//{
-//	char txBuffer[20], page_ID[10];
-//	switch (Page_ID)
-//	{
-//		case lcdPage_main:
-//			strncpy(page_ID, "0", 2);
-//			break;
-//		case lcdPage_nav:
-//			strncpy(page_ID, "1", 2);
-//			break;
-//		default:
-//			strncpy(page_ID, "0", 2);
-//			break;
-//	}
-//	int len = sprintf((char *)txBuffer, "page %s", page_ID);
-//	HAL_UART_Transmit(&LCDUart, (uint8_t *)txBuffer, len, TIMEOUT);
-//	HAL_UART_Transmit(&LCDUart, (uint8_t *)endCmd, 3, TIMEOUT/10);
-//
-////	pageResponse = HAL_UART_Receive_IT(&huart3, rxBuffer, 1); //receiving 1 byte only of output(hex): 02 00 00 00
-//	HAL_UART_Receive_IT(&LCDUart, pageResponse, 1); //receiving 1 byte only of output(hex): 02 00 00 00
-//
-//	if (pageResponse == Page_ID)
-//   		return success;
-//   	else
-//   		return failure;
-//}
+returnStatus DispTACANscreen(void)
+{
+	UpdateParamLCD(Left1, "S 22Y");
+	UpdateParamLCD(Left2, "");
+	UpdateParamLCD(Left3, "");
+	UpdateParamLCD(Left4, "PROG");
+	UpdateParamLCD(Center1, "TACAN");
+	UpdateParamLCD(Center2, "A 83X");
+	UpdateParamLCD(Center3, "");
+	UpdateParamLCD(Center4, "PROG");
+	UpdateParamLCD(Center5, "P1 19X");
+	UpdateParamLCD(Right1, "P 1");
+	UpdateParamLCD(Right2, "P 2");
+	UpdateParamLCD(Right3, "P 3");
+	UpdateParamLCD(Right4, "P 4");
 
-returnStatus DispNavScreen(void)
+	return success;
+}
+
+returnStatus DispNAVscreen(void)
 {
 	UpdateParamLCD(Left1, "S 110.10");
 	UpdateParamLCD(Left2, "");
@@ -79,15 +70,35 @@ returnStatus DispNavScreen(void)
 	UpdateParamLCD(Right2, "P 2");
 	UpdateParamLCD(Right3, "P 3");
 	UpdateParamLCD(Right4, "P 4");
+
 	return success;
 }
 
-returnStatus DispHomeScreen(void)
+returnStatus DispADFscreen(void)
+{
+	UpdateParamLCD(Left1, "S 195.00");
+	UpdateParamLCD(Left2, "");
+	UpdateParamLCD(Left3, "");
+	UpdateParamLCD(Left4, "PROG");
+	UpdateParamLCD(Center1, "ADF");
+	UpdateParamLCD(Center2, "A 210.00");
+	UpdateParamLCD(Center3, "");
+	UpdateParamLCD(Center4, "");
+	UpdateParamLCD(Center5, "");
+	UpdateParamLCD(Right1, "P 1");
+	UpdateParamLCD(Right2, "P 2");
+	UpdateParamLCD(Right3, "P 3");
+	UpdateParamLCD(Right4, "P 4");
+
+	return success;
+}
+
+returnStatus DispHomesSreen(void)
 {
 	UpdateParamLCD(Left1, "NAV");
 	UpdateParamLCD(Left2, "ADF");
 	UpdateParamLCD(Left3, "TACAN");
-	//UpdateParamLCD(Left4, "M/B");
+	UpdateParamLCD(Left4, "");
 	UpdateParamLCD(Center1, "HOME");
 	UpdateParamLCD(Center2, "");
 	UpdateParamLCD(Center3, "");

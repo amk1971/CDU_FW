@@ -27,6 +27,11 @@ C_standby_freq = 0
 C_Active_tx_Status = 0 
 C_standby_tx_Status = 0
 
+A_Active_freq = 0
+A_standby_freq = 0
+
+T_Active_freq = 0
+T_standby_freq = 0
 
 def relative_to_assets(path: str) -> Path:
     return ASSETS_PATH / Path(path)
@@ -44,6 +49,8 @@ def init_serial():
 def read_serial_data(serial_connection, datalist):
     global N_volume, N_obs, N_Active_freq, N_standby_freq, N_Active_tx_Status, N_standby_tx_Status
     global C_volume, C_squelch, C_micgain, C_sidetone, C_Active_freq, C_standby_freq, C_Active_tx_Status, C_standby_tx_Status
+    global A_Active_freq, A_standby_freq
+    global T_Active_freq, T_standby_freq
 
     while True:
         if serial_connection and serial_connection.in_waiting > 0:
@@ -155,6 +162,21 @@ C_old_squelch = C_squelch
 C_old_micgain = C_micgain
 C_old_sidetone = C_sidetone
 
+# for ADF data
+
+A_prev_Active_freq = A_Active_freq
+A_prev_standby_freq = A_standby_freq
+
+A_old_Active_freq = A_Active_freq
+A_old_standby_freq = A_standby_freq
+
+# for TACAN data
+
+T_prev_Active_freq = T_Active_freq
+T_prev_standby_freq = T_standby_freq
+
+T_old_Active_freq = T_Active_freq
+T_old_standby_freq = T_standby_freq
 
 # Main GUI application
 def main():
@@ -169,6 +191,12 @@ def main():
 
         global N_old_Active_freq, N_old_Active_tx_Status, N_old_standby_freq, N_old_standby_tx_Status, N_old_volume, N_old_obs
         global C_old_volume, C_old_squelch, C_old_micgain, C_old_sidetone, C_old_Active_freq, C_old_standby_freq, C_old_Active_tx_Status, C_old_standby_tx_Status
+
+        global A_Active_freq, A_standby_freq
+        global A_old_Active_freq, A_old_standby_freq
+
+        global T_Active_freq, T_standby_freq
+        global T_old_Active_freq, T_old_standby_freq
 
         # for nav ..................................................................................................
 
@@ -386,7 +414,177 @@ def main():
             C_old_micgain = C_micgain
             C_old_sidetone = C_sidetone
             temp_message = "$PATCV72" + str(C_micgain) + str(C_sidetone) +'\r' +'\n'
-            send_serial_data(serial_connection, temp_message)   
+            send_serial_data(serial_connection, temp_message)
+
+        # for ADF ..................................................................................................
+
+        Active_freq_entry = entry_2.get()
+        if Active_freq_entry[0:7] != A_old_Active_freq:
+            A_Active_freq = Active_freq_entry[0:7]
+            A_old_Active_freq = A_Active_freq
+            temp_str = str(A_Active_freq)
+            try:
+                Amhz, Akhz = temp_str.split('.')
+            except ValueError:
+                Amhz = temp_str 
+                Akhz = '0'    
+            amhz_ascii = chr(int(Amhz) - 48)
+            akhz2 = Akhz+"00"
+            Akhz_num = int(akhz2[:3])
+            Amhz_num = int(Amhz)
+
+            if Akhz_num >= 950:
+                start_mhz = Amhz_num - 1
+                start_khz = 875
+            elif Akhz_num <= 200:
+                start_mhz = Amhz_num - 1
+                start_khz = Akhz_num + 100
+            else:
+                start_mhz = Amhz_num - 1
+                start_khz = Akhz_num  - 100
+
+            current_mhz = start_mhz
+            current_khz = start_khz
+
+            while (abs(current_mhz - Amhz_num) > 0) or (abs(current_khz - Akhz_num) > 24):
+                current_khz -= 25  * int((current_khz - Akhz_num) / abs(current_khz - Akhz_num))
+                if (current_mhz < Amhz_num):
+                    current_mhz += 1
+                amhz_ascii = chr(current_mhz - 48)
+                akhz_ascii = chr((current_khz // 25) + 48)
+
+                temp_message = "$PATAV27" + amhz_ascii + akhz_ascii + '\r' + '\n'
+                send_serial_data(serial_connection, temp_message)
+
+                time.sleep(0.5)
+
+        standby_freq_entry = entry_3.get()
+        if standby_freq_entry[0:7] != A_old_standby_freq:
+            A_standby_freq = standby_freq_entry[0:7]
+            A_old_standby_freq = A_standby_freq      
+            temp_str = str(A_standby_freq)
+            try:
+                Smhz, Skhz = temp_str.split('.')
+            except:
+                Smhz = temp_str
+                Skhz = '0'
+            smhz_ascii = chr(int(Smhz) - 48)
+            skhz2 = Skhz+"00"
+            Skhz_num = int(skhz2[:3])
+            Smhz_num = int(Smhz)
+
+            if Skhz_num >= 950:
+                start_mhz = Smhz_num - 1
+                start_khz = 875
+            elif Skhz_num <= 200:
+                start_mhz = Smhz_num - 1
+                start_khz = Skhz_num + 100
+            else:
+                start_mhz = Smhz_num - 1
+                start_khz = Skhz_num - 100
+
+            current_mhz = start_mhz
+            current_khz = start_khz 
+
+            while (abs(current_mhz - Smhz_num)) or (abs(current_khz - Skhz_num) > 24):
+
+                current_khz -= 25  * int((current_khz - Skhz_num) / abs(current_khz - Skhz_num))
+
+                if (current_mhz < Smhz_num):
+                    current_mhz += 1
+
+                smhz_ascii = chr(current_mhz - 48)
+                skhz_ascii = chr((current_khz // 25) + 48)
+
+                temp_message = "$PATAV28" + smhz_ascii + skhz_ascii + '\r' + '\n'
+                send_serial_data(serial_connection, temp_message)
+
+                time.sleep(0.5)   
+
+        # for TACAN ..................................................................................................
+
+        Active_freq_entry = entry_4.get()
+        if Active_freq_entry[0:7] != T_old_Active_freq:
+            T_Active_freq = Active_freq_entry[0:7]
+            T_old_Active_freq = T_Active_freq
+            temp_str = str(T_Active_freq)
+            try:
+                Amhz, Akhz = temp_str.split('.')
+            except ValueError:
+                Amhz = temp_str 
+                Akhz = '0'    
+            amhz_ascii = chr(int(Amhz) - 48)
+            akhz2 = Akhz+"00"
+            Akhz_num = int(akhz2[:3])
+            Amhz_num = int(Amhz)
+
+            if Akhz_num >= 950:
+                start_mhz = Amhz_num - 1
+                start_khz = 875
+            elif Akhz_num <= 200:
+                start_mhz = Amhz_num - 1
+                start_khz = Akhz_num + 100
+            else:
+                start_mhz = Amhz_num - 1
+                start_khz = Akhz_num  - 100
+
+            current_mhz = start_mhz
+            current_khz = start_khz
+
+            while (abs(current_mhz - Amhz_num) > 0) or (abs(current_khz - Akhz_num) > 24):
+                current_khz -= 25  * int((current_khz - Akhz_num) / abs(current_khz - Akhz_num))
+                if (current_mhz < Amhz_num):
+                    current_mhz += 1
+                amhz_ascii = chr(current_mhz - 48)
+                akhz_ascii = chr((current_khz // 25) + 48)
+
+                temp_message = "$PATTV27" + amhz_ascii + akhz_ascii + '\r' + '\n'
+                send_serial_data(serial_connection, temp_message)
+
+                time.sleep(0.5)
+
+        standby_freq_entry = entry_5.get()
+        if standby_freq_entry[0:7] != T_old_standby_freq:
+            T_standby_freq = standby_freq_entry[0:7]
+            T_old_standby_freq = T_standby_freq      
+            temp_str = str(T_standby_freq)
+            try:
+                Smhz, Skhz = temp_str.split('.')
+            except:
+                Smhz = temp_str
+                Skhz = '0'
+            smhz_ascii = chr(int(Smhz) - 48)
+            skhz2 = Skhz+"00"
+            Skhz_num = int(skhz2[:3])
+            Smhz_num = int(Smhz)
+
+            if Skhz_num >= 950:
+                start_mhz = Smhz_num - 1
+                start_khz = 875
+            elif Skhz_num <= 200:
+                start_mhz = Smhz_num - 1
+                start_khz = Skhz_num + 100
+            else:
+                start_mhz = Smhz_num - 1
+                start_khz = Skhz_num - 100
+
+            current_mhz = start_mhz
+            current_khz = start_khz 
+
+            while (abs(current_mhz - Smhz_num)) or (abs(current_khz - Skhz_num) > 24):
+
+                current_khz -= 25  * int((current_khz - Skhz_num) / abs(current_khz - Skhz_num))
+
+                if (current_mhz < Smhz_num):
+                    current_mhz += 1
+
+                smhz_ascii = chr(current_mhz - 48)
+                skhz_ascii = chr((current_khz // 25) + 48)
+
+                temp_message = "$PATTV28" + smhz_ascii + skhz_ascii + '\r' + '\n'
+                send_serial_data(serial_connection, temp_message)
+
+                time.sleep(0.5)
 
 
     # Function to increment and display the value
@@ -397,6 +595,12 @@ def main():
         
         global N_prev_Active_freq, N_prev_Active_tx_Status, N_prev_standby_freq, N_prev_standby_tx_Status, N_prev_volume, N_prev_obs
         global C_prev_volume, C_prev_squelch, C_prev_micgain, C_prev_sidetone, C_prev_Active_freq, C_prev_standby_freq, C_prev_Active_tx_Status, C_prev_standby_tx_Status
+
+        global T_prev_Active_freq, T_prev_standby_freq
+        global T_Active_freq, T_standby_freq
+
+        global A_Active_freq, A_standby_freq
+        global A_prev_Active_freq, A_prev_standby_freq
 
         # Input Outputs:
 
@@ -488,7 +692,35 @@ def main():
             entry_25.insert(0,C_sidetone)
             C_prev_sidetone = C_sidetone 
 
-        window.after(1000, update_value)  # Schedule the function to run again after 1 second (1000 ms)
+        # for ADF ..............................................................
+
+        if A_Active_freq != A_prev_Active_freq:
+            print(A_Active_freq)
+            entry_2.delete(0,7)
+            entry_2.insert(0,A_Active_freq)
+            A_prev_Active_freq = A_Active_freq
+
+        if A_standby_freq != A_prev_standby_freq:
+            print(A_standby_freq)
+            entry_3.delete(0,7)
+            entry_3.insert(0,A_standby_freq)
+            A_prev_standby_freq = A_standby_freq
+
+        # for TACAN ..............................................................
+
+        if T_Active_freq != T_prev_Active_freq:
+            print(T_Active_freq)
+            entry_4.delete(0,7)
+            entry_4.insert(0,T_Active_freq)
+            T_prev_Active_freq = T_Active_freq
+
+        if T_standby_freq != T_prev_standby_freq:
+            print(T_standby_freq)
+            entry_5.delete(0,7)
+            entry_5.insert(0,T_standby_freq)
+            T_prev_standby_freq = T_standby_freq
+
+        window.after(1000, update_value)
 
 
     # List to store received data
@@ -496,8 +728,7 @@ def main():
 
     # Start serial read thread
     if serial_connection:
-        start_serial_read_thread(serial_connection, received_data)    
-        #start_serial_read_thread(serial_connection)    
+        start_serial_read_thread(serial_connection, received_data)   
 
     window = Tk()
     window.title("CDU Simulator")

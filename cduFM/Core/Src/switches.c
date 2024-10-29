@@ -140,9 +140,6 @@ void keyPad_Scan4SisTick(void)
 					((c7c8_A & 0b00000011) << 6);
 
 		keyPad.key = c | (r<<8);
-
-//		if(c != 0)
-//			return key;
 	}
 }
 
