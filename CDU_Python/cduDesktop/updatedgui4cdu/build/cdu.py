@@ -8,7 +8,7 @@ from tkinter import Tk, Canvas, Entry, Text, Button, PhotoImage
 
 
 OUTPUT_PATH = Path(__file__).parent
-ASSETS_PATH = OUTPUT_PATH / Path(r"F:\projects\CDU_FW\CDU_Python\cduDesktop\updatedgui4cdu\build\assets\frame0")
+ASSETS_PATH = OUTPUT_PATH / Path(r"C:\Users\Antelope LMS\Documents\GitHub\CDU_FW\CDU_Python\cduDesktop\updatedgui4cdu\build\assets\frame0")
 
 
 N_volume = 0

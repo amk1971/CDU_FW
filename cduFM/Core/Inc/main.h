@@ -61,7 +61,7 @@ void Error_Handler(void);
 #define Left_SW2_GPIO_Port GPIOE
 #define Left_SW1_Pin GPIO_PIN_3
 #define Left_SW1_GPIO_Port GPIOE
-#define ROW1_Pin GPIO_PIN_4
+#define ROW1_Pin GPIO_PIN_6
 #define ROW1_GPIO_Port GPIOE
 #define ROW2_Pin GPIO_PIN_13
 #define ROW2_GPIO_Port GPIOC

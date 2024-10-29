@@ -95,7 +95,7 @@ int main(void)
   /* USER CODE BEGIN 2 */
   InitializeLCD();
   /* USER CODE END 2 */
-
+  Matrix_keypad_test();
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)

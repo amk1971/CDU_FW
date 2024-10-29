@@ -16,6 +16,9 @@
 
 extern UART_HandleTypeDef LCDUart;
 
+returnStatus DispTACANscreen(void);
+returnStatus DispADFscreen(void);
+
 //lcdCmdDisp_id screen = lcdDisp_home;
 
 screen = lcdDisp_home;
@@ -27,7 +30,7 @@ uint8_t endCmd[3] = {0xff, 0xff, 0xff};
 returnStatus InitializeLCD(void)
 {
 	//initialization of lcd, like setting values to default or some like displaying main page etc
-	if(DispHomeScreen()){
+	if(DispADFscreen()){
 		return success;
 	}
 	else
