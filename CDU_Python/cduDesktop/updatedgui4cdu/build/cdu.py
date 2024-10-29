@@ -8,8 +8,8 @@ from tkinter import Tk, Canvas, Entry, Text, Button, PhotoImage
 
 
 OUTPUT_PATH = Path(__file__).parent
-#ASSETS_PATH = OUTPUT_PATH / Path(r"D:\Projects\CDU\CDU_FW\CDU_Python\cduDesktop\build\assets\frame0")
-ASSETS_PATH = OUTPUT_PATH / Path(r"C:\Users\AeroTrainB\Documents\GitHub\CDU_FW\CDU_Python\cduDesktop\build\assets\frame0")
+ASSETS_PATH = OUTPUT_PATH / Path(r"F:\projects\CDU_FW\CDU_Python\cduDesktop\updatedgui4cdu\build\assets\frame0")
+
 
 N_volume = 0
 N_obs = 0
@@ -173,7 +173,7 @@ def main():
         # for nav ..................................................................................................
 
         Active_freq_entry = entry_1.get()
-        Active_tx_Status_entry = entry_2.get()
+        Active_tx_Status_entry = entry_6.get()
         if Active_freq_entry[0:7] != N_old_Active_freq or Active_tx_Status_entry[0:6] != N_old_Active_tx_Status:
             N_Active_freq = Active_freq_entry[0:7]
             N_Active_tx_Status = Active_tx_Status_entry[0:6]
@@ -217,8 +217,8 @@ def main():
 
  
 
-        standby_freq_entry = entry_7.get()
-        standby_tx_Status_entry = entry_5.get()
+        standby_freq_entry = entry_11.get()
+        standby_tx_Status_entry = entry_9.get()
         if standby_freq_entry[0:7] != N_old_standby_freq or standby_tx_Status_entry[0:6] != N_old_standby_tx_Status:
             N_standby_freq = standby_freq_entry[0:7]
             N_standby_tx_Status = standby_tx_Status_entry[0:6]
@@ -263,14 +263,14 @@ def main():
 
                 time.sleep(0.5)
 
-        volume_entry = entry_18.get()
+        volume_entry = entry_22.get()
         if volume_entry[0:2] != N_old_volume:
             N_volume = volume_entry[0:2]
             N_old_volume = N_volume
             temp_message = "$PATNV73" + str(N_volume) +'\r' +'\n'
             send_serial_data(serial_connection, temp_message)   
 
-        obs_entry = entry_19.get()
+        obs_entry = entry_23.get()
         if obs_entry[0:3] != N_old_obs:
             N_obs = obs_entry[0:3]
             N_old_obs = N_obs
@@ -279,8 +279,8 @@ def main():
 
         # for com ..................................................................................................
 
-        C_Active_freq_entry = entry_6.get()
-        C_Active_tx_Status_entry = entry_3.get()
+        C_Active_freq_entry = entry_10.get()
+        C_Active_tx_Status_entry = entry_7.get()
         if C_Active_freq_entry[0:7] != C_old_Active_freq or C_Active_tx_Status_entry[0:6] != C_old_Active_tx_Status:
             C_Active_freq = C_Active_freq_entry[0:7]
             C_Active_tx_Status = C_Active_tx_Status_entry[0:6]
@@ -322,8 +322,8 @@ def main():
 
                 time.sleep(0.5)
 
-        C_standby_freq_entry = entry_8.get()
-        C_standby_tx_Status_entry = entry_4.get()
+        C_standby_freq_entry = entry_12.get()
+        C_standby_tx_Status_entry = entry_8.get()
         if C_standby_freq_entry[0:7] != C_old_standby_freq or C_standby_tx_Status_entry[0:6] != C_old_standby_tx_Status:
             C_standby_freq = C_standby_freq_entry[0:7]
             C_standby_tx_Status = C_standby_tx_Status_entry[0:6]
@@ -368,8 +368,8 @@ def main():
 
                 time.sleep(0.5)
 
-        C_volume_entry = entry_16.get()
-        C_squelch_entry = entry_20.get()
+        C_volume_entry = entry_20.get()
+        C_squelch_entry = entry_24.get()
         if C_volume_entry[0:2] != C_old_volume or C_squelch_entry[0:2] != C_old_squelch:
             C_volume = C_volume_entry[0:2]
             C_squelch = C_squelch_entry[0:2]
@@ -378,8 +378,8 @@ def main():
             temp_message = "$PATCV71" + str(C_volume) + str(C_squelch) +'\r' +'\n'
             send_serial_data(serial_connection, temp_message)
 
-        C_micgain_entry = entry_17.get()
-        C_sidetone_entry = entry_21.get()
+        C_micgain_entry = entry_21.get()
+        C_sidetone_entry = entry_25.get()
         if C_micgain_entry[0:2] != C_old_micgain or C_sidetone_entry[0:2] != C_old_sidetone:
             C_micgain = C_micgain_entry[0:2]
             C_sidetone = C_sidetone_entry[0:2]
@@ -410,82 +410,82 @@ def main():
 
         if N_Active_tx_Status != N_prev_Active_tx_Status:
             print(N_Active_tx_Status)
-            entry_2.delete(0,6)
-            entry_2.insert(0,N_Active_tx_Status)
+            entry_6.delete(0,6)
+            entry_6.insert(0,N_Active_tx_Status)
             N_prev_Active_tx_Status = N_Active_tx_Status
 
         if N_standby_freq != N_prev_standby_freq:
             print(N_standby_freq)
-            entry_7.delete(0,7)
-            entry_7.insert(0,N_standby_freq)
+            entry_11.delete(0,7)
+            entry_11.insert(0,N_standby_freq)
             N_prev_standby_freq = N_standby_freq
 
         if N_standby_tx_Status != N_prev_standby_tx_Status:
             print(N_standby_tx_Status)
-            entry_5.delete(0,6)
-            entry_5.insert(0,N_standby_tx_Status)
+            entry_9.delete(0,6)
+            entry_9.insert(0,N_standby_tx_Status)
             N_prev_standby_tx_Status = N_standby_tx_Status
 
         if N_volume != N_prev_volume:
             print(N_volume)
-            entry_18.delete(0,2)
-            entry_18.insert(0,N_volume)
+            entry_22.delete(0,2)
+            entry_22.insert(0,N_volume)
             N_prev_volume = N_volume
 
         if N_obs != N_prev_obs:
             print(N_obs)
-            entry_19.delete(0,3)
-            entry_19.insert(0,N_obs)
+            entry_23.delete(0,3)
+            entry_23.insert(0,N_obs)
             N_prev_obs = N_obs
 
         # for com ..............................................................
 
         if C_Active_freq != C_prev_Active_freq:
             print(C_Active_freq)
-            entry_6.delete(0,7)
-            entry_6.insert(0,C_Active_freq)
+            entry_10.delete(0,7)
+            entry_10.insert(0,C_Active_freq)
             C_prev_Active_freq = C_Active_freq
 
         if C_Active_tx_Status != C_prev_Active_tx_Status:
             print(C_Active_tx_Status)
-            entry_3.delete(0,6)
-            entry_3.insert(0,C_Active_tx_Status)
+            entry_7.delete(0,6)
+            entry_7.insert(0,C_Active_tx_Status)
             C_prev_Active_tx_Status = C_Active_tx_Status
 
         if C_standby_freq != C_prev_standby_freq:
             print(C_standby_freq)
-            entry_8.delete(0,7)
-            entry_8.insert(0,C_standby_freq)
+            entry_12.delete(0,7)
+            entry_12.insert(0,C_standby_freq)
             C_prev_standby_freq = C_standby_freq
 
         if C_standby_tx_Status != C_prev_standby_tx_Status:
             print(C_standby_tx_Status)
-            entry_4.delete(0,6)
-            entry_4.insert(0,C_standby_tx_Status)
+            entry_8.delete(0,6)
+            entry_8.insert(0,C_standby_tx_Status)
             C_prev_standby_tx_Status = C_standby_tx_Status
 
         if C_volume != C_prev_volume:
             print(C_volume)
-            entry_16.delete(0,2)
-            entry_16.insert(0,C_volume)
+            entry_20.delete(0,2)
+            entry_20.insert(0,C_volume)
             C_prev_volume = C_volume
 
         if C_squelch != C_prev_squelch:
             print(C_squelch)
-            entry_20.delete(0,2)
-            entry_20.insert(0,C_squelch)
+            entry_24.delete(0,2)
+            entry_24.insert(0,C_squelch)
             C_prev_squelch = C_squelch
 
         if C_micgain != C_prev_micgain:
             print(C_micgain)
-            entry_17.delete(0,2)
-            entry_17.insert(0,C_micgain)
+            entry_21.delete(0,2)
+            entry_21.insert(0,C_micgain)
             C_prev_micgain = C_micgain
 
         if C_sidetone != C_prev_sidetone:
             print(C_sidetone)
-            entry_21.delete(0,2)
-            entry_21.insert(0,C_sidetone)
+            entry_25.delete(0,2)
+            entry_25.insert(0,C_sidetone)
             C_prev_sidetone = C_sidetone 
 
         window.after(1000, update_value)  # Schedule the function to run again after 1 second (1000 ms)
@@ -501,6 +501,7 @@ def main():
 
     window = Tk()
     window.title("CDU Simulator")
+
 
     window.geometry("700x500")
     window.configure(bg = "#C8F0F5")
@@ -589,7 +590,43 @@ def main():
         37.0,
         42.0,
         anchor="nw",
-        text="Active Freq, status",
+        text="Active Freq, Tx status",
+        fill="#000000",
+        font=("Inter SemiBold", 12 * -1)
+    )
+
+    canvas.create_text(
+        37.0,
+        307.0,
+        anchor="nw",
+        text="Active Freq",
+        fill="#000000",
+        font=("Inter SemiBold", 12 * -1)
+    )
+
+    canvas.create_text(
+        37.0,
+        344.0,
+        anchor="nw",
+        text="Standby Freq",
+        fill="#000000",
+        font=("Inter SemiBold", 12 * -1)
+    )
+
+    canvas.create_text(
+        369.0,
+        307.0,
+        anchor="nw",
+        text="Active Freq",
+        fill="#000000",
+        font=("Inter SemiBold", 12 * -1)
+    )
+
+    canvas.create_text(
+        369.0,
+        344.0,
+        anchor="nw",
+        text="Standby Freq",
         fill="#000000",
         font=("Inter SemiBold", 12 * -1)
     )
@@ -607,7 +644,7 @@ def main():
         37.0,
         77.0,
         anchor="nw",
-        text="Standby Freq, status",
+        text="Standby Freq, Tx status",
         fill="#000000",
         font=("Inter SemiBold", 12 * -1)
     )
@@ -634,7 +671,7 @@ def main():
         248.0,
         187.0,
         anchor="nw",
-        text="Status(N/M)",
+        text="Rx Status",
         fill="#000000",
         font=("Inter SemiBold", 12 * -1)
     )
@@ -670,7 +707,7 @@ def main():
         37.0,
         182.0,
         anchor="nw",
-        text="Active Freq.(in MHz)",
+        text="Rx Active Freq.",
         fill="#000000",
         font=("Inter SemiBold", 12 * -1)
     )
@@ -688,7 +725,7 @@ def main():
         37.0,
         205.0,
         anchor="nw",
-        text="Standby Freq.(in MHz)",
+        text="Rx Standby Freq.",
         fill="#000000",
         font=("Inter SemiBold", 12 * -1)
     )
@@ -702,7 +739,7 @@ def main():
         font=("Inter SemiBold", 12 * -1)
     )
 
-    entry_image_1 = PhotoImage(                             # op nav active
+    entry_image_1 = PhotoImage(
         file=relative_to_assets("entry_1.png"))
     entry_bg_1 = canvas.create_image(
         231.0,
@@ -722,11 +759,11 @@ def main():
         height=28.0
     )
 
-    entry_image_2 = PhotoImage(                             # op nav active tx status
+    entry_image_2 = PhotoImage(
         file=relative_to_assets("entry_2.png"))
     entry_bg_2 = canvas.create_image(
-        299.5,
-        48.0,
+        231.0,
+        315.0,
         image=entry_image_2
     )
     entry_2 = Entry(
@@ -735,18 +772,18 @@ def main():
         fg="#000716",
         highlightthickness=0
     )
-    entry_2.place(
-        x=272.0,
-        y=33.0,
-        width=55.0,
+    entry_2.place(                  # adf active 
+        x=194.0,
+        y=300.0,
+        width=74.0,
         height=28.0
     )
 
     entry_image_3 = PhotoImage(
         file=relative_to_assets("entry_3.png"))
     entry_bg_3 = canvas.create_image(
-        638.5,
-        50.0,
+        231.0,
+        352.0,
         image=entry_image_3
     )
     entry_3 = Entry(
@@ -755,18 +792,18 @@ def main():
         fg="#000716",
         highlightthickness=0
     )
-    entry_3.place(
-        x=611.0,
-        y=35.0,
-        width=55.0,
+    entry_3.place(                  # adf standby 
+        x=194.0,
+        y=337.0,
+        width=74.0,
         height=28.0
     )
 
     entry_image_4 = PhotoImage(
         file=relative_to_assets("entry_4.png"))
     entry_bg_4 = canvas.create_image(
-        638.5,
-        85.0,
+        570.0,
+        315.0,
         image=entry_image_4
     )
     entry_4 = Entry(
@@ -775,18 +812,18 @@ def main():
         fg="#000716",
         highlightthickness=0
     )
-    entry_4.place(
-        x=611.0,
-        y=70.0,
-        width=55.0,
+    entry_4.place(              # tacan active 
+        x=533.0,
+        y=300.0,
+        width=74.0,
         height=28.0
     )
 
-    entry_image_5 = PhotoImage(                             # op nav standby tx status
+    entry_image_5 = PhotoImage(
         file=relative_to_assets("entry_5.png"))
     entry_bg_5 = canvas.create_image(
-        299.5,
-        83.0,
+        570.0,
+        352.0,
         image=entry_image_5
     )
     entry_5 = Entry(
@@ -795,18 +832,18 @@ def main():
         fg="#000716",
         highlightthickness=0
     )
-    entry_5.place(
-        x=272.0,
-        y=68.0,
-        width=55.0,
+    entry_5.place(              # tacan standby
+        x=533.0,
+        y=337.0,
+        width=74.0,
         height=28.0
     )
 
-    entry_image_6 = PhotoImage(                                   
+    entry_image_6 = PhotoImage(
         file=relative_to_assets("entry_6.png"))
     entry_bg_6 = canvas.create_image(
-        570.0,
-        51.0,
+        299.5,
+        48.0,
         image=entry_image_6
     )
     entry_6 = Entry(
@@ -816,17 +853,17 @@ def main():
         highlightthickness=0
     )
     entry_6.place(
-        x=533.0,
-        y=36.0,
-        width=74.0,
+        x=272.0,
+        y=33.0,
+        width=55.0,
         height=28.0
     )
 
-    entry_image_7 = PhotoImage(                         # op nav standby
+    entry_image_7 = PhotoImage(
         file=relative_to_assets("entry_7.png"))
     entry_bg_7 = canvas.create_image(
-        231.0,
-        83.0,
+        638.5,
+        50.0,
         image=entry_image_7
     )
     entry_7 = Entry(
@@ -836,16 +873,16 @@ def main():
         highlightthickness=0
     )
     entry_7.place(
-        x=194.0,
-        y=68.0,
-        width=74.0,
+        x=611.0,
+        y=35.0,
+        width=55.0,
         height=28.0
     )
 
     entry_image_8 = PhotoImage(
         file=relative_to_assets("entry_8.png"))
     entry_bg_8 = canvas.create_image(
-        570.0,
+        638.5,
         85.0,
         image=entry_image_8
     )
@@ -856,40 +893,40 @@ def main():
         highlightthickness=0
     )
     entry_8.place(
-        x=533.0,
+        x=611.0,
         y=70.0,
-        width=74.0,
+        width=55.0,
         height=28.0
     )
 
     entry_image_9 = PhotoImage(
         file=relative_to_assets("entry_9.png"))
     entry_bg_9 = canvas.create_image(
-        570.0,
-        190.5,
+        299.5,
+        83.0,
         image=entry_image_9
     )
-    entry_9 = Text(
+    entry_9 = Entry(
         bd=0,
         bg="#FFFFFF",
         fg="#000716",
         highlightthickness=0
     )
     entry_9.place(
-        x=533.0,
-        y=178.0,
-        width=74.0,
-        height=23.0
+        x=272.0,
+        y=68.0,
+        width=55.0,
+        height=28.0
     )
 
     entry_image_10 = PhotoImage(
         file=relative_to_assets("entry_10.png"))
     entry_bg_10 = canvas.create_image(
         570.0,
-        217.5,
+        51.0,
         image=entry_image_10
     )
-    entry_10 = Text(
+    entry_10 = Entry(
         bd=0,
         bg="#FFFFFF",
         fg="#000716",
@@ -897,56 +934,56 @@ def main():
     )
     entry_10.place(
         x=533.0,
-        y=205.0,
+        y=36.0,
         width=74.0,
-        height=23.0
+        height=28.0
     )
 
     entry_image_11 = PhotoImage(
         file=relative_to_assets("entry_11.png"))
     entry_bg_11 = canvas.create_image(
-        638.5,
-        217.5,
+        231.0,
+        83.0,
         image=entry_image_11
     )
-    entry_11 = Text(
+    entry_11 = Entry(
         bd=0,
         bg="#FFFFFF",
         fg="#000716",
         highlightthickness=0
     )
     entry_11.place(
-        x=611.0,
-        y=205.0,
-        width=55.0,
-        height=23.0
+        x=194.0,
+        y=68.0,
+        width=74.0,
+        height=28.0
     )
 
     entry_image_12 = PhotoImage(
         file=relative_to_assets("entry_12.png"))
     entry_bg_12 = canvas.create_image(
-        638.5,
-        190.5,
+        570.0,
+        85.0,
         image=entry_image_12
     )
-    entry_12 = Text(
+    entry_12 = Entry(
         bd=0,
         bg="#FFFFFF",
         fg="#000716",
         highlightthickness=0
     )
     entry_12.place(
-        x=611.0,
-        y=178.0,
-        width=55.0,
-        height=23.0
+        x=533.0,
+        y=70.0,
+        width=74.0,
+        height=28.0
     )
 
-    entry_image_13 = PhotoImage(                # ip nav active
+    entry_image_13 = PhotoImage(
         file=relative_to_assets("entry_13.png"))
     entry_bg_13 = canvas.create_image(
-        194.0,
-        189.5,
+        570.0,
+        190.5,
         image=entry_image_13
     )
     entry_13 = Text(
@@ -956,17 +993,17 @@ def main():
         highlightthickness=0
     )
     entry_13.place(
-        x=157.0,
-        y=177.0,
+        x=533.0,
+        y=178.0,
         width=74.0,
         height=23.0
     )
 
-    entry_image_14 = PhotoImage(                        # ip nav status
+    entry_image_14 = PhotoImage(
         file=relative_to_assets("entry_14.png"))
     entry_bg_14 = canvas.create_image(
-        276.0,
-        216.5,
+        570.0,
+        217.5,
         image=entry_image_14
     )
     entry_14 = Text(
@@ -976,19 +1013,17 @@ def main():
         highlightthickness=0
     )
     entry_14.place(
-        x=239.0,
-        y=204.0,
+        x=533.0,
+        y=205.0,
         width=74.0,
         height=23.0
     )
-    # txt = entry_14.get(0)
-    # print(txt)
 
-    entry_image_15 = PhotoImage(                        # ip nav standby
+    entry_image_15 = PhotoImage(
         file=relative_to_assets("entry_15.png"))
     entry_bg_15 = canvas.create_image(
-        194.0,
-        216.5,
+        638.5,
+        217.5,
         image=entry_image_15
     )
     entry_15 = Text(
@@ -998,96 +1033,96 @@ def main():
         highlightthickness=0
     )
     entry_15.place(
-        x=157.0,
-        y=204.0,
-        width=74.0,
+        x=611.0,
+        y=205.0,
+        width=55.0,
         height=23.0
     )
 
     entry_image_16 = PhotoImage(
         file=relative_to_assets("entry_16.png"))
     entry_bg_16 = canvas.create_image(
-        579.5,
-        152.0,
+        638.5,
+        190.5,
         image=entry_image_16
     )
-    entry_16 = Entry(
+    entry_16 = Text(
         bd=0,
         bg="#FFFFFF",
         fg="#000716",
         highlightthickness=0
     )
     entry_16.place(
-        x=552.0,
-        y=137.0,
+        x=611.0,
+        y=178.0,
         width=55.0,
-        height=28.0
+        height=23.0
     )
 
     entry_image_17 = PhotoImage(
         file=relative_to_assets("entry_17.png"))
     entry_bg_17 = canvas.create_image(
-        579.5,
-        120.0,
+        194.0,
+        189.5,
         image=entry_image_17
     )
-    entry_17 = Entry(
+    entry_17 = Text(
         bd=0,
         bg="#FFFFFF",
         fg="#000716",
         highlightthickness=0
     )
     entry_17.place(
-        x=552.0,
-        y=105.0,
-        width=55.0,
-        height=28.0
+        x=157.0,
+        y=177.0,
+        width=74.0,
+        height=23.0
     )
 
-    entry_image_18 = PhotoImage(                        # op nav vol level
+    entry_image_18 = PhotoImage(
         file=relative_to_assets("entry_18.png"))
     entry_bg_18 = canvas.create_image(
-        299.5,
-        156.0,
+        276.0,
+        216.5,
         image=entry_image_18
     )
-    entry_18 = Entry(
+    entry_18 = Text(
         bd=0,
         bg="#FFFFFF",
         fg="#000716",
         highlightthickness=0
     )
     entry_18.place(
-        x=272.0,
-        y=141.0,
-        width=55.0,
-        height=28.0
+        x=239.0,
+        y=204.0,
+        width=74.0,
+        height=23.0
     )
 
-    entry_image_19 = PhotoImage(                            # op nav obs val
+    entry_image_19 = PhotoImage(
         file=relative_to_assets("entry_19.png"))
     entry_bg_19 = canvas.create_image(
-        299.5,
-        121.0,
+        194.0,
+        216.5,
         image=entry_image_19
     )
-    entry_19 = Entry(
+    entry_19 = Text(
         bd=0,
         bg="#FFFFFF",
         fg="#000716",
         highlightthickness=0
     )
     entry_19.place(
-        x=272.0,
-        y=106.0,
-        width=55.0,
-        height=28.0
+        x=157.0,
+        y=204.0,
+        width=74.0,
+        height=23.0
     )
 
     entry_image_20 = PhotoImage(
         file=relative_to_assets("entry_20.png"))
     entry_bg_20 = canvas.create_image(
-        638.5,
+        579.5,
         152.0,
         image=entry_image_20
     )
@@ -1098,7 +1133,7 @@ def main():
         highlightthickness=0
     )
     entry_20.place(
-        x=611.0,
+        x=552.0,
         y=137.0,
         width=55.0,
         height=28.0
@@ -1107,7 +1142,7 @@ def main():
     entry_image_21 = PhotoImage(
         file=relative_to_assets("entry_21.png"))
     entry_bg_21 = canvas.create_image(
-        638.5,
+        579.5,
         120.0,
         image=entry_image_21
     )
@@ -1118,6 +1153,86 @@ def main():
         highlightthickness=0
     )
     entry_21.place(
+        x=552.0,
+        y=105.0,
+        width=55.0,
+        height=28.0
+    )
+
+    entry_image_22 = PhotoImage(
+        file=relative_to_assets("entry_22.png"))
+    entry_bg_22 = canvas.create_image(
+        299.5,
+        156.0,
+        image=entry_image_22
+    )
+    entry_22 = Entry(
+        bd=0,
+        bg="#FFFFFF",
+        fg="#000716",
+        highlightthickness=0
+    )
+    entry_22.place(
+        x=272.0,
+        y=141.0,
+        width=55.0,
+        height=28.0
+    )
+
+    entry_image_23 = PhotoImage(
+        file=relative_to_assets("entry_23.png"))
+    entry_bg_23 = canvas.create_image(
+        299.5,
+        121.0,
+        image=entry_image_23
+    )
+    entry_23 = Entry(
+        bd=0,
+        bg="#FFFFFF",
+        fg="#000716",
+        highlightthickness=0
+    )
+    entry_23.place(
+        x=272.0,
+        y=106.0,
+        width=55.0,
+        height=28.0
+    )
+
+    entry_image_24 = PhotoImage(
+        file=relative_to_assets("entry_24.png"))
+    entry_bg_24 = canvas.create_image(
+        638.5,
+        152.0,
+        image=entry_image_24
+    )
+    entry_24 = Entry(
+        bd=0,
+        bg="#FFFFFF",
+        fg="#000716",
+        highlightthickness=0
+    )
+    entry_24.place(
+        x=611.0,
+        y=137.0,
+        width=55.0,
+        height=28.0
+    )
+
+    entry_image_25 = PhotoImage(
+        file=relative_to_assets("entry_25.png"))
+    entry_bg_25 = canvas.create_image(
+        638.5,
+        120.0,
+        image=entry_image_25
+    )
+    entry_25 = Entry(
+        bd=0,
+        bg="#FFFFFF",
+        fg="#000716",
+        highlightthickness=0
+    )
+    entry_25.place(
         x=611.0,
         y=105.0,
         width=55.0,
@@ -1139,7 +1254,6 @@ def main():
         width=80.0,
         height=27.0
     )
-    update_value()
     window.resizable(False, False)
     window.mainloop()
 
