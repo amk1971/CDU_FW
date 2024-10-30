@@ -40,7 +40,7 @@ typedef enum
 
 returnStatus InitializeLCD(void);
 returnStatus DispTACANscreen(void);
-returnStatus DispNAVscreen(void);
+returnStatus DispNAVscreen(NavParams *);
 returnStatus DispHomeScreen(void);
 //returnStatus ChangePage(lcdCmdPage_id Page_ID);
 returnStatus UpdateParamLCD(lcdCmdParam_id Param_ID, char * Parm_Vlaue);

@@ -5,7 +5,9 @@
  *      Author: LENOVO
  */
 
-#include "common.h"
+#include "nextionlcd.h"
+#include "switches.h"
+
 
 typedef enum
 {
@@ -23,6 +25,8 @@ typedef enum {
 
 NAVSCREENState NavScreenState = Idle;
 int NAVScreenPage = 0;
+
+returnStatus ChangeNavParam(NavParamNumber PNum, void * PVal);
 
 
 returnStatus DispNAVscreen(NavParams * Params)
