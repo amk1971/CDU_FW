@@ -19,9 +19,7 @@ extern UART_HandleTypeDef LCDUart;
 returnStatus DispTACANscreen(void);
 returnStatus DispADFscreen(void);
 
-//lcdCmdDisp_id screen = lcdDisp_home;
-
-screen = lcdDisp_home;
+lcdCmdDisp_id currentScreen;
 
 uint16_t TIMEOUT = 1000;
 uint8_t endCmd[3] = {0xff, 0xff, 0xff};
@@ -30,7 +28,9 @@ uint8_t endCmd[3] = {0xff, 0xff, 0xff};
 returnStatus InitializeLCD(void)
 {
 	//initialization of lcd, like setting values to default or some like displaying main page etc
-	if(DispADFscreen()){
+	if(DispHomeScreen())
+	{
+		currentScreen = lcdDisp_home;
 		return success;
 	}
 	else
@@ -96,7 +96,7 @@ returnStatus DispADFscreen(void)
 	return success;
 }
 
-returnStatus DispHomesSreen(void)
+returnStatus DispHomeScreen(void)
 {
 	UpdateParamLCD(Left1, "NAV");
 	UpdateParamLCD(Left2, "ADF");

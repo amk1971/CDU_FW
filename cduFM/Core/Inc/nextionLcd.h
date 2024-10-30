@@ -17,6 +17,7 @@ typedef enum
 	lcdDisp_com,
 	lcdDisp_tacan,
 	lcdDisp_adf
+
 }lcdCmdDisp_id;
 
 
@@ -38,6 +39,8 @@ typedef enum
 }lcdCmdParam_id;
 
 returnStatus InitializeLCD(void);
+returnStatus DispTACANscreen(void);
+returnStatus DispNAVscreen(void);
 returnStatus DispHomeScreen(void);
 //returnStatus ChangePage(lcdCmdPage_id Page_ID);
 returnStatus UpdateParamLCD(lcdCmdParam_id Param_ID, char * Parm_Vlaue);

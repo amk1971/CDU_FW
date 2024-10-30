@@ -43,6 +43,13 @@
 UART_HandleTypeDef huart2;
 UART_HandleTypeDef huart3;
 
+uint16_t keyRead;
+
+extern lcdCmdDisp_id currentScreen;
+extern softKey_t softkey;
+
+
+
 /* USER CODE BEGIN PV */
 
 /* USER CODE END PV */
@@ -92,15 +99,73 @@ int main(void)
   MX_GPIO_Init();
   MX_USART2_UART_Init();
   MX_USART3_UART_Init();
-  /* USER CODE BEGIN 2 */
+
   InitializeLCD();
-  /* USER CODE END 2 */
-  Matrix_keypad_test();
-  /* Infinite loop */
-  /* USER CODE BEGIN WHILE */
+//  Matrix_keypad_test();
+  KeyS_init();
   while (1)
   {
-    /* USER CODE END WHILE */
+	  switch(currentScreen)
+	  {
+	  case lcdDisp_home:
+		  if(soft_keysTest() == L1)
+		  {
+			  currentScreen = lcdDisp_nav;
+			  DispNAVscreen();
+		  }
+		  if(soft_keysTest() == L2)
+		  {
+			  currentScreen = lcdDisp_adf;
+			  DispADFscreen();
+		  }
+		  if(soft_keysTest() == L3)
+		  {
+			  currentScreen = lcdDisp_tacan;
+			  DispTACANscreen();
+		  }
+		  break;
+
+	  case lcdDisp_nav:
+		  keyRead = keyPad_Scan();
+		  if (keyRead == 0x00)	// to be checked later
+		  {
+			  currentScreen = lcdDisp_home;
+			  DispHomeScreen();
+		  }
+		  else if(keyRead == 0)
+		  {
+			  // do nothing here
+		  }
+		  break;
+
+	  case lcdDisp_adf:
+		  keyRead = keyPad_Scan();
+		  if (keyRead == 0x00)	// to be checked later
+		  {
+			  currentScreen = lcdDisp_home;
+			  DispHomeScreen();
+		  }
+		  else if(keyRead == 0)
+		  {
+			  // do nothing here
+		  }
+		  break;
+
+	  case lcdDisp_tacan:
+		  keyRead = keyPad_Scan();
+		  if (keyRead == 0x00)	// to be checked later
+		  {
+			  currentScreen = lcdDisp_home;
+			  DispHomeScreen();
+		  }
+		  else if(keyRead == 0)
+		  {
+			  // do nothing here
+		  }
+		  break;
+	  default:
+		  break;
+	  }
 
     /* USER CODE BEGIN 3 */
   }

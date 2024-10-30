@@ -11,6 +11,7 @@
 #define DEBOUNCE_DELAY 20
 
 keyPad_t keyPad;
+softKey_t softkey;
 
 uint16_t Read_Port(GPIO_TypeDef *GPIOx)
 {
@@ -143,63 +144,70 @@ void keyPad_Scan4SisTick(void)
 	}
 }
 
-void soft_keysTest(void)
+softKey_t soft_keysTest(void)
 {
+	softkey = idle;
 	static char  pval = 0, val = 0;
 
-	for(;;)
+	if(!(HAL_GPIO_ReadPin(Right_SW1_GPIO_Port, Right_SW1_Pin)))
 	{
-		if(!(HAL_GPIO_ReadPin(Right_SW1_GPIO_Port, Right_SW1_Pin)))
-		{
-			// i am here
-			val = 1;
-		}
-
-		if(!(HAL_GPIO_ReadPin(Right_SW2_GPIO_Port, Right_SW2_Pin)))
-		{
-			// i am here
-			val = 2;
-		}
-		if(!(HAL_GPIO_ReadPin(Right_SW3_GPIO_Port, Right_SW3_Pin)))
-		{
-			// i am here
-			val = 3;
-		}
-
-		if(!(HAL_GPIO_ReadPin(Right_SW4_GPIO_Port, Right_SW4_Pin)))
-		{
-			// i am here
-			val = 4;
-		}
-
-		if(!(HAL_GPIO_ReadPin(Left_SW1_GPIO_Port, Left_SW1_Pin)))
-		{
-			// i am here
-			val = 5;
-		}
-
-		if(!(HAL_GPIO_ReadPin(Left_SW2_GPIO_Port, Left_SW2_Pin)))
-		{
-			// i am here
-			val = 6;
-		}
-		if(!(HAL_GPIO_ReadPin(Left_SW3_GPIO_Port, Left_SW3_Pin)))
-		{
-			// i am here
-			val = 7;
-		}
-
-		if(!(HAL_GPIO_ReadPin(Left_SW4_GPIO_Port, Left_SW4_Pin)))
-		{
-			// i am here
-			val = 8;
-		}
-
-		if (pval != val) {
-			pval = val;
-		}
-
+		// i am here
+		val = 1;
+		softkey = R1;
 	}
+
+	if(!(HAL_GPIO_ReadPin(Right_SW2_GPIO_Port, Right_SW2_Pin)))
+	{
+		// i am here
+		val = 2;
+		softkey = R2;
+	}
+	if(!(HAL_GPIO_ReadPin(Right_SW3_GPIO_Port, Right_SW3_Pin)))
+	{
+		// i am here
+		val = 3;
+		softkey = R3;
+	}
+
+	if(!(HAL_GPIO_ReadPin(Right_SW4_GPIO_Port, Right_SW4_Pin)))
+	{
+		// i am here
+		val = 4;
+		softkey = R4;
+	}
+
+	if(!(HAL_GPIO_ReadPin(Left_SW1_GPIO_Port, Left_SW1_Pin)))
+	{
+		// i am here
+		val = 5;
+		softkey = L1;
+	}
+
+	if(!(HAL_GPIO_ReadPin(Left_SW2_GPIO_Port, Left_SW2_Pin)))
+	{
+		// i am here
+		val = 6;
+		softkey = L2;
+	}
+	if(!(HAL_GPIO_ReadPin(Left_SW3_GPIO_Port, Left_SW3_Pin)))
+	{
+		// i am here
+		val = 7;
+		softkey = L3;
+	}
+
+	if(!(HAL_GPIO_ReadPin(Left_SW4_GPIO_Port, Left_SW4_Pin)))
+	{
+		// i am here
+		val = 8;
+		softkey = L4;
+	}
+
+	if (pval != val) {
+		pval = val;
+	}
+
+	return softkey;
 
 }
 
@@ -212,6 +220,14 @@ void Matrix_keypad_test(void)
 	for(;;)
 	{
 		keyRead = keyPad_Scan();
+		if (keyRead == 0)
+		{
+
+		}
+		else if (keyRead == 0x3020)	// to be checked later
+		{
+
+		}
 	}
 }
 

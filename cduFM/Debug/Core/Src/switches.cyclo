@@ -1,8 +1,8 @@
-../Core/Src/switches.c:15:10:Read_Port	1
-../Core/Src/switches.c:20:6:KeyS_init	1
-../Core/Src/switches.c:27:10:keyPad_Scan	14
-../Core/Src/switches.c:91:6:decode_keycode	3
-../Core/Src/switches.c:117:6:keyPad_Scan4SisTick	2
-../Core/Src/switches.c:146:6:soft_keysTest	10
-../Core/Src/switches.c:206:6:Matrix_keypad_test	1
-../Core/Src/switches.c:219:6:test_sw	1
+../Core/Src/switches.c:16:10:Read_Port	1
+../Core/Src/switches.c:21:6:KeyS_init	1
+../Core/Src/switches.c:28:10:keyPad_Scan	14
+../Core/Src/switches.c:92:6:decode_keycode	3
+../Core/Src/switches.c:118:6:keyPad_Scan4SisTick	2
+../Core/Src/switches.c:147:11:soft_keysTest	10
+../Core/Src/switches.c:214:6:Matrix_keypad_test	1
+../Core/Src/switches.c:235:6:test_sw	1
