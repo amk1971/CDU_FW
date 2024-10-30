@@ -44,7 +44,7 @@ UART_HandleTypeDef huart2;
 UART_HandleTypeDef huart3;
 
 uint16_t keyRead;
-
+NavParams NavScreenParams;
 extern lcdCmdDisp_id currentScreen;
 extern softKey_t softkey;
 
@@ -100,6 +100,9 @@ int main(void)
   MX_USART2_UART_Init();
   MX_USART3_UART_Init();
 
+  NavScreenParams.Active = 118.0;
+  NavScreenParams.Standby = 108.4;
+
   InitializeLCD();
 //  Matrix_keypad_test();
   KeyS_init();
@@ -111,7 +114,7 @@ int main(void)
 		  if(soft_keysTest() == L1)
 		  {
 			  currentScreen = lcdDisp_nav;
-			  DispNAVscreen();
+			  DispNAVscreen(&NavScreenParams);
 		  }
 		  if(soft_keysTest() == L2)
 		  {
@@ -127,7 +130,8 @@ int main(void)
 
 	  case lcdDisp_nav:
 		  keyRead = keyPad_Scan();
-		  if (keyRead == 0x00)	// to be checked later
+		  NavScreenStateMachine();
+		  if (keyRead == 0x101)	// to be checked later
 		  {
 			  currentScreen = lcdDisp_home;
 			  DispHomeScreen();

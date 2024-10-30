@@ -58,24 +58,6 @@ returnStatus DispTACANscreen(void)
 	return success;
 }
 
-returnStatus DispNAVscreen(void)
-{
-	UpdateParamLCD(Left1, "S 110.10");
-	UpdateParamLCD(Left2, "");
-	UpdateParamLCD(Left3, "VOL");
-	UpdateParamLCD(Left4, "PROG");
-	UpdateParamLCD(Center1, "NAV");
-	UpdateParamLCD(Center2, "A 118.00");
-	UpdateParamLCD(Center3, "");
-	UpdateParamLCD(Center4, "");
-	UpdateParamLCD(Center5, "");
-	UpdateParamLCD(Right1, "P 1");
-	UpdateParamLCD(Right2, "P 2");
-	UpdateParamLCD(Right3, "P 3");
-	UpdateParamLCD(Right4, "P 4");
-
-	return success;
-}
 
 returnStatus DispADFscreen(void)
 {

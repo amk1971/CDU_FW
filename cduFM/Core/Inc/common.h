@@ -14,4 +14,9 @@ typedef enum
 	success,
 }returnStatus;
 
+typedef struct NAVPARAMS {
+	float Active, Standby;
+} NavParams;
+
+
 #endif /* INC_NEXTIONLCD_H_ */
