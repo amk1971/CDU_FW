@@ -1,6 +1,7 @@
 ../Core/Src/nextionLcd.c:28:14:InitializeLCD	2
 ../Core/Src/nextionLcd.c:42:14:DispTACANscreen	1
-../Core/Src/nextionLcd.c:61:14:DispNAVscreen	1
-../Core/Src/nextionLcd.c:80:14:DispADFscreen	1
-../Core/Src/nextionLcd.c:99:14:DispHomeScreen	1
-../Core/Src/nextionLcd.c:118:14:UpdateParamLCD	40
+../Core/Src/nextionLcd.c:62:14:DispADFscreen	1
+../Core/Src/nextionLcd.c:81:14:DispHomeScreen	1
+../Core/Src/nextionLcd.c:100:14:UpdateParamLCD	40
+../Core/Src/nextionLcd.c:338:14:configfontcolorLCD	40
+../Core/Src/nextionLcd.c:579:14:configBgcolorLCD	40

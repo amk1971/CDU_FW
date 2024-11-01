@@ -43,11 +43,13 @@
 UART_HandleTypeDef huart2;
 UART_HandleTypeDef huart3;
 
-uint16_t keyRead;
+//uint16_t keyRead;
 NavParams NavScreenParams;
 extern lcdCmdDisp_id currentScreen;
 extern softKey_t softkey;
 
+extern MkeyStatus_t MkeyStatus;
+extern keyPad_t keyPad;
 
 
 /* USER CODE BEGIN PV */
@@ -129,40 +131,42 @@ int main(void)
 		  break;
 
 	  case lcdDisp_nav:
-		  keyRead = keyPad_Scan();
+		  MkeyStatus = keyPad_Scan();
+
 		  NavScreenStateMachine();
-		  if (keyRead == 0x101)	// to be checked later
+		  if (keyPad.key == 0x101)	// to be checked later
 		  {
 			  currentScreen = lcdDisp_home;
 			  DispHomeScreen();
 		  }
-		  else if(keyRead == 0)
+		  else if(keyPad.key == 0)
 		  {
 			  // do nothing here
 		  }
 		  break;
 
 	  case lcdDisp_adf:
-		  keyRead = keyPad_Scan();
-		  if (keyRead == 0x00)	// to be checked later
+		  MkeyStatus = keyPad_Scan();
+
+		  if (keyPad.key == 0x101)	// to be checked later
 		  {
 			  currentScreen = lcdDisp_home;
 			  DispHomeScreen();
 		  }
-		  else if(keyRead == 0)
+		  else if(keyPad.key == 0)
 		  {
 			  // do nothing here
 		  }
 		  break;
 
 	  case lcdDisp_tacan:
-		  keyRead = keyPad_Scan();
-		  if (keyRead == 0x00)	// to be checked later
+		  MkeyStatus = keyPad_Scan();
+		  if (keyPad.key == 0x101)	// to be checked later
 		  {
 			  currentScreen = lcdDisp_home;
 			  DispHomeScreen();
 		  }
-		  else if(keyRead == 0)
+		  else if(keyPad.key == 0)
 		  {
 			  // do nothing here
 		  }

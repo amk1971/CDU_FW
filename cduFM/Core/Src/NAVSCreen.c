@@ -13,7 +13,16 @@ typedef enum
 {
 	Idle = 0,
 	SwapKey,
+	page0,
+	page1,
 	RightSoftKey1,
+	RightSoftKey2,
+	RightSoftKey3,
+	RightSoftKey4,
+	RightSoftKey5,
+	RightSoftKey6,
+	RightSoftKey7,
+	RightSoftKey8,
 	StandByEdit
 } NAVSCREENState;
 

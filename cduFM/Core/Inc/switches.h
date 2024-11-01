@@ -10,11 +10,7 @@
 
 #include <stdint.h>
 
-//typedef struct
-//{
-//	uint16_t key;
-//
-//}global_t;
+
 
 typedef struct
 {
@@ -23,6 +19,14 @@ typedef struct
 	uint16_t key;
 
 }keyPad_t;
+
+typedef enum
+{
+	Press,
+	nPress,
+	Hold,
+
+}MkeyStatus_t;
 
 typedef enum
 {
@@ -38,5 +42,7 @@ typedef enum
 
 }softKey_t;
 
+
+MkeyStatus_t keyPad_Scan(void);
 
 #endif /* INC_SWITCHES_H_ */

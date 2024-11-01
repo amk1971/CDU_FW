@@ -13,6 +13,40 @@
 keyPad_t keyPad;
 softKey_t softkey;
 
+MkeyStatus_t MkeyStatus;
+
+struct CYCLICBUFFER {
+	uint16_t buff[32];
+	char Head, Tail;
+}ScanKode;
+
+// Unused keys as: '!', '"', '#', '$', '%'
+
+char decode_str[] = {'e', 'g', 'C', 'D', 'E', 'F', 'e', 'H', 'I', 'b',
+					 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T',
+					 'A', 'B', 'W', 'X', 'Y', 'Z', '0', '1', '2', '3',
+					 '4', '5', '6', '7', '8', '9', 'r', 'G', 's', 'p',
+					 'n', 'd', 't', 'h', 'c', 'o', '_', '.', '/', '^',
+					 'v', '+', '-', '!', '"', '#', '$', '%'
+			};
+
+const char* interpret_char(char c){
+	switch(c){
+	case 'e': return "ENT";
+	case 'b': return "BACK";
+	case 's': return "SWAP";
+	case 'p': return "PREV";
+	case 'n': return "NEXT";
+	case 'd': return "DIM";
+	case 't': return "BRT";
+	case 'h': return "HOME";
+	case 'c': return "CLR";
+	case 'o': return "OK";
+	case '_': return "SPACE";
+	default: return c;
+	}
+}
+
 uint16_t Read_Port(GPIO_TypeDef *GPIOx)
 {
     return (uint16_t)(GPIOx->IDR);  // Read and return the entire port input register
@@ -25,9 +59,9 @@ void KeyS_init()
 	keyPad.key = 0;
 }
 
-uint16_t keyPad_Scan(void)
+MkeyStatus_t keyPad_Scan(void)
 {
-	uint16_t key = 0;
+//	uint16_t key = 0;
 
 	for(uint8_t r = 0; r < keyPad.RowS; r++)
 	{
@@ -46,7 +80,7 @@ uint16_t keyPad_Scan(void)
 		HAL_GPIO_WritePin(ROW7_GPIO_Port, ROW7_Pin, (r == 6) ? GPIO_PIN_RESET : GPIO_PIN_SET);
 		HAL_GPIO_WritePin(ROW8_GPIO_Port, ROW8_Pin, (r == 7) ? GPIO_PIN_RESET : GPIO_PIN_SET);
 
-		HAL_Delay(5);
+		//HAL_Delay(5);
 
 		for(int c = 0; c < keyPad.ColumnS; c++)
 		{
@@ -72,8 +106,9 @@ uint16_t keyPad_Scan(void)
 
 				if(!(HAL_GPIO_ReadPin(columnPort, columnPin)))
 				{
-					key |= 1<<c;
-					key |= 1<<(r+8);
+					keyPad.key |= 1<<c;
+					keyPad.key |= r<<8;
+//					MkeyStatus = Press;
 				}
 
 				while(!(HAL_GPIO_ReadPin(columnPort, columnPin)))
@@ -81,15 +116,15 @@ uint16_t keyPad_Scan(void)
 					HAL_Delay(1);
 				}
 
-				return key;
+				return Press;
 			}
 		}
 	}
 
-	return key;
+	return nPress;
 }
 
-void decode_keycode(void)
+char decode_keycode(void)
 {
 	uint8_t i, j, col, row, index;
 
@@ -101,23 +136,29 @@ void decode_keycode(void)
 			break;
 		}
 	}
-	row = keyPad.key >> 8;
+
+	for(i = 1, j = 1 ; j <= 8 ; i <<= 1, j++)
+		{
+			if (((keyPad.key & 0xFF00) >> 8) == i)
+			{
+				row = j;
+				break;
+			}
+		}
 
 	index = col | (row << 3);
 
-	char decode_str[] = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P',
-	        'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', // Uppercase letters
-	        '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'  // Digits
-			};
+	char tkey = decode_str[index];
 
-	char Tkey = decode_str[index];
+	tkey = interpret_char(tkey);
 
+	return tkey;
 
 }
 
-void keyPad_Scan4SisTick(void)
+void keyPad_Scan4SysTick(void)
 {
-
+	static char keys[8];
 	for(uint8_t r = 0; r < keyPad.RowS; r++)
 	{
 
@@ -140,8 +181,25 @@ void keyPad_Scan4SisTick(void)
 					((c5c6_F & 0b00001100) << 2) |
 					((c7c8_A & 0b00000011) << 6);
 
-		keyPad.key = c | (r<<8);
+		if(keys[r] != c){
+			ScanKode.buff[ScanKode.Head++] = c;
+			ScanKode.Head &= 31;
+		}
+
+		keys[r] = c;
+
+		//keyPad.key = c | (r<<8);
 	}
+}
+
+uint16_t get_ScanKode_from_buffer(void ){
+	uint16_t Kode;
+	if(ScanKode.Head != ScanKode.Tail){
+		Kode = ScanKode.buff[ScanKode.Tail++];
+		ScanKode.Tail &= 31;
+		return Kode;
+	}
+	return 0;
 }
 
 softKey_t soft_keysTest(void)
@@ -211,20 +269,24 @@ softKey_t soft_keysTest(void)
 
 }
 
-void Matrix_keypad_test(void)
+void Matrix_keypad_Basic_test(void)
 {
-	uint16_t keyRead;
+	uint16_t keyRead[10];
+	int i = 0;
 
 	KeyS_init();
 
 	for(;;)
 	{
-		keyRead = keyPad_Scan();
-		if (keyRead == 0)
+		MkeyStatus = keyPad_Scan();
+		if (MkeyStatus == Press)
 		{
-
+			keyRead[i] = keyPad.key;
+			i++;
+			if(i >= 9)
+				i=0;
 		}
-		else if (keyRead == 0x3020)	// to be checked later
+		else if (MkeyStatus == nPress)	// to be checked later
 		{
 
 		}
@@ -235,5 +297,4 @@ void Matrix_keypad_test(void)
 void test_sw(void)
 {
 	soft_keysTest();
-
 }

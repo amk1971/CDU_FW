@@ -8,7 +8,15 @@
 #ifndef INC_NEXTIONLCD_H_
 #define INC_NEXTIONLCD_H_
 
+#include <stdio.h>
 #include "common.h"
+
+#define BLACKFONT     0;
+#define WHITEFONT     65535;
+#define REDFONT	      63488;
+
+#define BLACKBG       65535;
+#define TRANSPARENTBG 123; //THIS COLOR WILL BE USE TO BE SAME AS THE BACKGROUND, TBD
 
 typedef enum
 {
@@ -19,7 +27,6 @@ typedef enum
 	lcdDisp_adf
 
 }lcdCmdDisp_id;
-
 
 typedef enum
 {
