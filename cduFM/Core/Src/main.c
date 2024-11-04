@@ -106,7 +106,7 @@ int main(void)
   NavScreenParams.Standby = 108.4;
 
   InitializeLCD();
-//  Matrix_keypad_test();
+  //Matrix_keypad_Basic_test();
   KeyS_init();
   while (1)
   {
@@ -134,7 +134,7 @@ int main(void)
 		  MkeyStatus = keyPad_Scan();
 
 		  NavScreenStateMachine();
-		  if (keyPad.key == 0x101)	// to be checked later
+		  if (keyPad.key == 0x001)	// to be checked later
 		  {
 			  currentScreen = lcdDisp_home;
 			  DispHomeScreen();
