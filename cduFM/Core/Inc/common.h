@@ -8,6 +8,8 @@
 #ifndef INC_COMMON_H_
 #define INC_COMMON_H_
 
+#include <stdbool.h>
+
 typedef enum
 {
 	failure = 0,
@@ -16,6 +18,7 @@ typedef enum
 
 typedef struct NAVPARAMS {
 	float Active, Standby;
+	bool page;
 } NavParams;
 
 

@@ -104,6 +104,7 @@ int main(void)
 
   NavScreenParams.Active = 118.0;
   NavScreenParams.Standby = 108.4;
+  NavScreenParams.page = false; // means page0
 
   InitializeLCD();
   //Matrix_keypad_Basic_test();

@@ -43,23 +43,34 @@ returnStatus DispNAVscreen(NavParams * Params)
 	static NavParams oldParams;
 	char Text[50];
 
-	//sprintf(Text, "S %f", Params->Standby);
-	//UpdateParamLCD(Left1, Text);
-	ChangeNavParam(StandbyFreq, (void *) &Params->Standby);
+	sprintf(Text, "S %f", Params->Standby);
+	UpdateParamLCD(Left1, Text);
+//	ChangeNavParam(StandbyFreq, (void *) &Params->Standby);
 	UpdateParamLCD(Left2, "");
 	UpdateParamLCD(Left3, "VOL");
 	UpdateParamLCD(Left4, "PROG");
 	UpdateParamLCD(Center1, "NAV");
-	//sprintf(Text, "A %f", Params->Active);
-	//UpdateParamLCD(Center2, Text);
-	ChangeNavParam(ActiveFreq, (void *) &Params->Active);
+	sprintf(Text, "A %f", Params->Active);
+	UpdateParamLCD(Center2, Text);
+//	ChangeNavParam(ActiveFreq, (void *) &Params->Active);
 	UpdateParamLCD(Center3, "");
 	UpdateParamLCD(Center4, "");
 	UpdateParamLCD(Center5, "");
-	UpdateParamLCD(Right1, "P 1");
-	UpdateParamLCD(Right2, "P 2");
-	UpdateParamLCD(Right3, "P 3");
-	UpdateParamLCD(Right4, "P 4");
+
+	if(!(Params->page))
+	{
+		UpdateParamLCD(Right1, "P 1");
+		UpdateParamLCD(Right2, "P 2");
+		UpdateParamLCD(Right3, "P 3");
+		UpdateParamLCD(Right4, "P 4");
+	}
+	else
+	{
+		UpdateParamLCD(Right1, "P 5");
+		UpdateParamLCD(Right2, "P 6");
+		UpdateParamLCD(Right3, "P 7");
+		UpdateParamLCD(Right4, "P 8");
+	}
 
 	return success;
 }
@@ -74,18 +85,36 @@ returnStatus ChangeNavParam(NavParamNumber PNum, void * PVal){
 		sprintf(Text, "S %f", *(float *)PVal);
 		UpdateParamLCD(Left1, Text);
 	}
-
 }
 
 void NavScreenStateMachine(void ){
 
 	switch (NavScreenState){
 	case Idle:
-		if(soft_keysTest() == L1){
+		if(soft_keysTest() == L1)
+		{
 			NavScreenState = StandByEdit;
 		}
 		break;
 	case StandByEdit:
+
+		break;
+
+	case SwapKey:
+		if (keyPad.key == 0x008)
+		  {
+
+		  }
+
+		break;
+	case page0:
+
+		break;
+	case page1:
+
+		break;
+
+	default:
 		break;
 	}
 
