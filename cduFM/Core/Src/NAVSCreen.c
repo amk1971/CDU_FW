@@ -26,6 +26,9 @@ typedef enum
 	StandByEdit
 } NAVSCREENState;
 
+extern NavParams NavScreenParams;
+extern keyPad_t keyPad;
+
 typedef enum {
 	ActiveFreq = 0,
 	StandbyFreq,
@@ -74,6 +77,7 @@ returnStatus DispNAVscreen(NavParams * Params)
 
 	return success;
 }
+
 returnStatus ChangeNavParam(NavParamNumber PNum, void * PVal){
 	char Text[50];
 
@@ -87,6 +91,14 @@ returnStatus ChangeNavParam(NavParamNumber PNum, void * PVal){
 	}
 }
 
+void swapFreq(NavParams * Param)
+{
+	// Swap Active and Standby
+	float temp = Param->Active;
+	Param->Active = Param->Standby;
+	Param->Standby = temp;
+}
+
 void NavScreenStateMachine(void ){
 
 	switch (NavScreenState){
@@ -97,13 +109,20 @@ void NavScreenStateMachine(void ){
 		}
 		break;
 	case StandByEdit:
+		configBgcolorLCD(Left1, BLACKBG);
+		configfontcolorLCD(Left1, WHITEFONT);
+		if(keyPad.key == 0x001) //BACK
+		{
+
+		}
+
 
 		break;
 
 	case SwapKey:
-		if (keyPad.key == 0x008)
+		if (keyPad.key == 0x008) //SWAP
 		  {
-
+			swapFreq(&NavScreenParams);
 		  }
 
 		break;

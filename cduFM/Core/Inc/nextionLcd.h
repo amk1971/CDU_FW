@@ -11,12 +11,12 @@
 #include <stdio.h>
 #include "common.h"
 
-#define BLACKFONT     0;
-#define WHITEFONT     65535;
-#define REDFONT	      63488;
+#define BLACKFONT     0
+#define WHITEFONT     65535
+#define REDFONT	      63488
 
-#define BLACKBG       65535;
-#define TRANSPARENTBG 123; //THIS COLOR WILL BE USE TO BE SAME AS THE BACKGROUND, TBD
+#define BLACKBG       65535
+#define TRANSPARENTBG 123 //THIS COLOR WILL BE USE TO BE SAME AS THE BACKGROUND, TBD
 
 typedef enum
 {
