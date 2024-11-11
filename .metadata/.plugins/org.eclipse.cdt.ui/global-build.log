@@ -1,21 +1,58 @@
-17:01:53 **** Incremental Build of configuration Debug for project cduFM ****
+16:01:27 **** Incremental Build of configuration Debug for project cduFM ****
 make -j4 all 
-arm-none-eabi-gcc "../Core/Src/switches.c" -mcpu=cortex-m0 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F091xC -c -I../Core/Inc -I../Drivers/STM32F0xx_HAL_Driver/Inc -I../Drivers/STM32F0xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F0xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/switches.d" -MT"Core/Src/switches.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Core/Src/switches.o"
-../Core/Src/switches.c: In function 'decode_keycode':
-../Core/Src/switches.c:112:14: warning: unused variable 'Tkey' [-Wunused-variable]
-  112 |         char Tkey = decode_str[index];
-      |              ^~~~
-../Core/Src/switches.c: In function 'Matrix_keypad_test':
-../Core/Src/switches.c:211:18: warning: variable 'keyRead' set but not used [-Wunused-but-set-variable]
-  211 |         uint16_t keyRead;
-      |                  ^~~~~~~
-arm-none-eabi-gcc -o "cduFM.elf" @"objects.list"   -mcpu=cortex-m0 -T"D:\Projects\CDU\CDU_FW\cduFM\STM32F091VCTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="cduFM.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+arm-none-eabi-gcc "../Core/Src/NAVSCreen.c" -mcpu=cortex-m0 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F091xC -c -I../Core/Inc -I../Drivers/STM32F0xx_HAL_Driver/Inc -I../Drivers/STM32F0xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F0xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/NAVSCreen.d" -MT"Core/Src/NAVSCreen.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Core/Src/NAVSCreen.o"
+../Core/Src/NAVSCreen.c: In function 'DispNAVscreen':
+../Core/Src/NAVSCreen.c:48:26: warning: unused variable 'oldParams' [-Wunused-variable]
+   48 |         static NavParams oldParams;
+      |                          ^~~~~~~~~
+../Core/Src/NAVSCreen.c: In function 'NavScreenStateMachine':
+../Core/Src/NAVSCreen.c:111:20: warning: implicit declaration of function 'soft_keysTest' [-Wimplicit-function-declaration]
+  111 |                 if(soft_keysTest() == L1)
+      |                    ^~~~~~~~~~~~~
+../Core/Src/NAVSCreen.c:114:25: warning: implicit declaration of function 'configBgcolorLCD' [-Wimplicit-function-declaration]
+  114 |                         configBgcolorLCD(Left1, BLACKBG);
+      |                         ^~~~~~~~~~~~~~~~
+../Core/Src/NAVSCreen.c:115:25: warning: implicit declaration of function 'configfontcolorLCD' [-Wimplicit-function-declaration]
+  115 |                         configfontcolorLCD(Left1, WHITEFONT);
+      |                         ^~~~~~~~~~~~~~~~~~
+../Core/Src/NAVSCreen.c:118:23: warning: implicit declaration of function 'get_ScanKode_from_buffer' [-Wimplicit-function-declaration]
+  118 |                 ret = get_ScanKode_from_buffer();
+      |                       ^~~~~~~~~~~~~~~~~~~~~~~~
+../Core/Src/NAVSCreen.c:187:26: warning: passing argument 1 of 'swapFreq' from incompatible pointer type [-Wincompatible-pointer-types]
+  187 |                 swapFreq(&Params);
+      |                          ^~~~~~~
+      |                          |
+      |                          NavParams ** {aka struct NAVPARAMS **}
+../Core/Src/NAVSCreen.c:96:27: note: expected 'NavParams *' {aka 'struct NAVPARAMS *'} but argument is of type 'NavParams **' {aka 'struct NAVPARAMS **'}
+   96 | void swapFreq(NavParams * Param)
+      |               ~~~~~~~~~~~~^~~~~
+../Core/Src/NAVSCreen.c:197:31: warning: passing argument 1 of 'DispNAVscreen' from incompatible pointer type [-Wincompatible-pointer-types]
+  197 |                 DispNAVscreen(&Params);
+      |                               ^~~~~~~
+      |                               |
+      |                               NavParams ** {aka struct NAVPARAMS **}
+../Core/Src/NAVSCreen.c:46:40: note: expected 'NavParams *' {aka 'struct NAVPARAMS *'} but argument is of type 'NavParams **' {aka 'struct NAVPARAMS **'}
+   46 | returnStatus DispNAVscreen(NavParams * Params)
+      |                            ~~~~~~~~~~~~^~~~~~
+../Core/Src/NAVSCreen.c:205:31: warning: passing argument 1 of 'DispNAVscreen' from incompatible pointer type [-Wincompatible-pointer-types]
+  205 |                 DispNAVscreen(&Params);
+      |                               ^~~~~~~
+      |                               |
+      |                               NavParams ** {aka struct NAVPARAMS **}
+../Core/Src/NAVSCreen.c:46:40: note: expected 'NavParams *' {aka 'struct NAVPARAMS *'} but argument is of type 'NavParams **' {aka 'struct NAVPARAMS **'}
+   46 | returnStatus DispNAVscreen(NavParams * Params)
+      |                            ~~~~~~~~~~~~^~~~~~
+../Core/Src/NAVSCreen.c: In function 'ChangeNavParam':
+../Core/Src/NAVSCreen.c:94:1: warning: control reaches end of non-void function [-Wreturn-type]
+   94 | }
+      | ^
+arm-none-eabi-gcc -o "cduFM.elf" @"objects.list"   -mcpu=cortex-m0 -T"D:\Projects\CDU\CDU_FW\cduFM\STM32F091VCTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="cduFM.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -u _printf_float -u _scanf_float -Wl,--start-group -lc -lm -Wl,--end-group
 Finished building target: cduFM.elf
  
 arm-none-eabi-size  cduFM.elf 
 arm-none-eabi-objdump -h -S cduFM.elf  > "cduFM.list"
    text	   data	    bss	    dec	    hex	filename
-  15644	    100	   2172	  17916	   45fc	cduFM.elf
+  48512	    476	   2316	  51304	   c868	cduFM.elf
 Finished building: default.size.stdout
  
 Finished building: cduFM.list

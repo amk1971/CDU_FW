@@ -8,6 +8,8 @@
 #include "nextionlcd.h"
 #include "switches.h"
 
+bool flag = false;
+
 
 typedef enum
 {
@@ -99,42 +101,166 @@ void swapFreq(NavParams * Param)
 	Param->Standby = temp;
 }
 
-void NavScreenStateMachine(void ){
+uint16_t NavScreenStateMachine(NavParams * Params){
 
+	uint16_t ret;
+	char Text[50];
 	switch (NavScreenState){
 	case Idle:
+
 		if(soft_keysTest() == L1)
 		{
 			NavScreenState = StandByEdit;
+			configBgcolorLCD(Left1, BLACKBG);
+			configfontcolorLCD(Left1, WHITEFONT);
+		}
+
+		ret = get_ScanKode_from_buffer();
+		if (ret == 0x008)
+		{
+			NavScreenState = SwapKey;
+		}
+		if (ret == 0x020) // NEXT button
+		{
+			NavScreenState = page1;
+		}
+		if (ret == 0x110) // using B button instead of BACK
+		{
+			NavScreenState = page0;
+		}
+		if(soft_keysTest() == R1)
+		{
+			configBgcolorLCD(Right1, BLACKBG);
+			configfontcolorLCD(Right1, WHITEFONT);
+			if(!(Params->page))
+				NavScreenState = RightSoftKey1;
+			else if(Params->page)
+				NavScreenState = RightSoftKey5;
+		}
+		if(soft_keysTest() == R2)
+		{
+			configBgcolorLCD(Right2, BLACKBG);
+			configfontcolorLCD(Right2, WHITEFONT);
+			if(!(Params->page))
+				NavScreenState = RightSoftKey2;
+			else if(Params->page)
+				NavScreenState = RightSoftKey6;
+		}
+		if(soft_keysTest() == R3)
+		{
+			configBgcolorLCD(Right3, BLACKBG);
+			configfontcolorLCD(Right3, WHITEFONT);
+			if(!(Params->page))
+				NavScreenState = RightSoftKey3;
+			else if(Params->page)
+				NavScreenState = RightSoftKey7;
+		}
+		if(soft_keysTest() == R4)
+		{
+			configBgcolorLCD(Right4, BLACKBG);
+			configfontcolorLCD(Right4, WHITEFONT);
+			if(!(Params->page))
+				NavScreenState = RightSoftKey4;
+			else if(Params->page)
+				NavScreenState = RightSoftKey8;
 		}
 		break;
-	case StandByEdit:
-		configBgcolorLCD(Left1, BLACKBG);
-		configfontcolorLCD(Left1, WHITEFONT);
-		if(keyPad.key == 0x001) //BACK
+	case StandByEdit:	//Use BACK button to edit and OK to confirm and save .
+						//The new standby frequency is saved only when OK button is pressed.
+						//If the OK button is not pressed with in 30 sec then the standby frequency reverts to old value.
+
+		ret = get_ScanKode_from_buffer();
+		if(ret == 0x110) // using B button instead of BACK
 		{
 
 		}
-
+		if(ret == 0x110) // OK Button
+		{
+			NavScreenState = idle;
+			configBgcolorLCD(Left1, TRANSPARENTBG);
+			configfontcolorLCD(Left1, BLACKFONT);
+		}
 
 		break;
 
 	case SwapKey:
-		if (keyPad.key == 0x008) //SWAP
-		  {
-			swapFreq(&NavScreenParams);
-		  }
+		swapFreq(&Params);
+		ChangeNavParam(StandbyFreq, (void *) &Params->Standby);
+		ChangeNavParam(ActiveFreq, (void *) &Params->Active);
+		NavScreenState = Idle;
 
 		break;
+
 	case page0:
 
-		break;
-	case page1:
+		Params->page = false;
+		DispNAVscreen(&Params);
+		NavScreenState = Idle;
 
 		break;
+
+	case page1:
+
+		Params->page = true;	// means page1
+		DispNAVscreen(&Params);
+		NavScreenState = Idle;
+
+		break;
+
+	case RightSoftKey1:
+
+		UpdateParamLCD(Center4, "PROG");
+		sprintf(Text, "P1 %f", Params->P1);
+		UpdateParamLCD(Center5, Text);
+		ret = get_ScanKode_from_buffer();
+		if(ret == 0x110) // using B button instead of BACK
+		{
+			configBgcolorLCD(Center5, BLACKBG);
+			configfontcolorLCD(Center5, WHITEFONT);
+		}
+
+		if(ret == 0x110) // OK Button
+		{
+			NavScreenState = idle;
+
+			configBgcolorLCD(Right1, TRANSPARENTBG);
+			configfontcolorLCD(Right1, BLACKFONT);
+
+			configBgcolorLCD(Center5, TRANSPARENTBG);
+			configfontcolorLCD(Center5, BLACKFONT);
+
+			UpdateParamLCD(Center4, "");
+			UpdateParamLCD(Center5, "");
+		}
+
+			break;
+
+	case RightSoftKey2:
+			break;
+
+	case RightSoftKey3:
+			break;
+
+	case RightSoftKey4:
+			break;
+
+	case RightSoftKey5:
+			break;
+
+	case RightSoftKey6:
+			break;
+
+	case RightSoftKey7:
+			break;
+
+	case RightSoftKey8:
+			break;
+
 
 	default:
 		break;
 	}
+
+	return ret;
 
 }

@@ -51,6 +51,8 @@ extern softKey_t softkey;
 extern MkeyStatus_t MkeyStatus;
 extern keyPad_t keyPad;
 
+uint16_t key;
+
 
 /* USER CODE BEGIN PV */
 
@@ -105,6 +107,10 @@ int main(void)
   NavScreenParams.Active = 118.0;
   NavScreenParams.Standby = 108.4;
   NavScreenParams.page = false; // means page0
+  NavScreenParams.P1 = 123.45;
+  NavScreenParams.P3 = 354.85;
+  NavScreenParams.P6 = 534.15;
+  NavScreenParams.P8 = 878.98;
 
   InitializeLCD();
   //Matrix_keypad_Basic_test();
@@ -132,10 +138,10 @@ int main(void)
 		  break;
 
 	  case lcdDisp_nav:
-		  MkeyStatus = keyPad_Scan();
+		  //MkeyStatus = keyPad_Scan();
 
-		  NavScreenStateMachine();
-		  if (keyPad.key == 0x001)	// to be checked later
+		  key = NavScreenStateMachine(&NavScreenParams);
+		  if (keyPad.key == 0x002)	// HOME button
 		  {
 			  currentScreen = lcdDisp_home;
 			  DispHomeScreen();
