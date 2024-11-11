@@ -93,12 +93,11 @@ returnStatus ChangeNavParam(NavParamNumber PNum, void * PVal){
 	}
 }
 
-void swapFreq(NavParams * Param)
+void swapFreq(float *param1, float *param2)
 {
-	// Swap Active and Standby
-	float temp = Param->Active;
-	Param->Active = Param->Standby;
-	Param->Standby = temp;
+	float temp = *param1;
+	*param1 = *param2;
+	*param2 = temp;
 }
 
 uint16_t NavScreenStateMachine(NavParams * Params){
@@ -184,7 +183,7 @@ uint16_t NavScreenStateMachine(NavParams * Params){
 		break;
 
 	case SwapKey:
-		swapFreq(&Params);
+		swapFreq(&Params->Active,&Params->Standby);
 		ChangeNavParam(StandbyFreq, (void *) &Params->Standby);
 		ChangeNavParam(ActiveFreq, (void *) &Params->Active);
 		NavScreenState = Idle;
