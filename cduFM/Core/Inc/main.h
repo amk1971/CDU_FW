@@ -31,6 +31,8 @@ extern "C" {
 #include "nextionLcd.h"
 #include "switches.h"
 
+#define CLIENTCODE
+
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 

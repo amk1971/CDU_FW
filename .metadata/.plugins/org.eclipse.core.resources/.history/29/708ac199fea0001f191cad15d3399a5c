@@ -258,11 +258,9 @@ uint16_t NavScreenStateMachine(NavParams * Params){
 			configBgcolorLCD(Center5, BLACKBG);
 			configfontcolorLCD(Center5, WHITEFONT);
 
-			char str[10];
-
 			while(ret != 0x110) // OK Button
 			{
-
+				char str[10];
 				sprintf(str, "P1 %f", Params->P1);
 				int len = strlen(str);
 				if(ret == 0x110) // using B button instead of BACK
