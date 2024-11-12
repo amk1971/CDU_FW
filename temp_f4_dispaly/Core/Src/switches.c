@@ -173,6 +173,16 @@ void keyPad_Scan4SysTick(void)
 		HAL_GPIO_WritePin(ROW8_GPIO_Port, ROW8_Pin, (r == 7) ? GPIO_PIN_RESET : GPIO_PIN_SET);
 
 
+
+		#ifdef MYCODE
+		uint16_t c1c4_C = Read_Port(GPIOC);
+		uint16_t c5c8_A = Read_Port(GPIOA);
+
+		uint8_t c = ((c1c4_C & 0b00001111) << 0) |
+					((c5c8_A & 0b00001111) << 4);
+		#endif
+
+		#ifdef CLIENTCODE
 		uint16_t c1c4_C = Read_Port(GPIOC);
 		uint16_t c5c6_F	= Read_Port(GPIOF);
 		uint16_t c7c8_A = Read_Port(GPIOA);
@@ -180,6 +190,9 @@ void keyPad_Scan4SysTick(void)
 		uint8_t c = ((c1c4_C & 0b00001111) << 0) |
 					((c5c6_F & 0b00001100) << 2) |
 					((c7c8_A & 0b00000011) << 6);
+		#endif
+
+
 
 		if(keys[r] != c){
 			ScanKode.buff[(int)ScanKode.Head++] = ((uint16_t) r << 8) | (~(uint16_t)c & 0xFF);

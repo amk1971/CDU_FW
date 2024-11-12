@@ -104,8 +104,8 @@ int main(void)
   MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
 
-  NavScreenParams.Active = 118.0;
-  NavScreenParams.Standby = 108.4;
+  NavScreenParams.Active = 118.025;
+  NavScreenParams.Standby = 108.45;
   NavScreenParams.page = false; // means page0
   NavScreenParams.P1 = 123.45;
   NavScreenParams.P3 = 354.85;
@@ -146,12 +146,12 @@ int main(void)
 		  //MkeyStatus = keyPad_Scan();
 
 		  key = NavScreenStateMachine(&NavScreenParams);
-		  if (keyPad.key == 0x002)	// HOME button
+		  if (key == 0x002)	// HOME button
 		  {
 			  currentScreen = lcdDisp_home;
 			  DispHomeScreen();
 		  }
-		  else if(keyPad.key == 0)
+		  else if(key == 0)
 		  {
 			  // do nothing here
 		  }

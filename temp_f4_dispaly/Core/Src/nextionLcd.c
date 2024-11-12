@@ -81,18 +81,56 @@ returnStatus DispADFscreen(void)
 returnStatus DispHomeScreen(void)
 {
 	UpdateParamLCD(Left1, "NAV");
+	configBgcolorLCD(Left1, TRANSPARENTBG);
+	configfontcolorLCD(Left1, BLACKFONT);
+
 	UpdateParamLCD(Left2, "ADF");
+	configBgcolorLCD(Left2, TRANSPARENTBG);
+	configfontcolorLCD(Left2, BLACKFONT);
+
 	UpdateParamLCD(Left3, "TACAN");
+	configBgcolorLCD(Left3, TRANSPARENTBG);
+	configfontcolorLCD(Left3, BLACKFONT);
+
 	UpdateParamLCD(Left4, "");
+	configBgcolorLCD(Left4, TRANSPARENTBG);
+	configfontcolorLCD(Left4, BLACKFONT);
+
 	UpdateParamLCD(Center1, "HOME");
+	configBgcolorLCD(Center1, TRANSPARENTBG);
+	configfontcolorLCD(Center1, BLACKFONT);
+
 	UpdateParamLCD(Center2, "");
+	configBgcolorLCD(Center2, TRANSPARENTBG);
+	configfontcolorLCD(Center2, BLACKFONT);
+
 	UpdateParamLCD(Center3, "");
+	configBgcolorLCD(Center3, TRANSPARENTBG);
+	configfontcolorLCD(Center3, BLACKFONT);
+
 	UpdateParamLCD(Center4, "");
+	configBgcolorLCD(Center4, TRANSPARENTBG);
+	configfontcolorLCD(Center4, BLACKFONT);
+
 	UpdateParamLCD(Center5, "");
+	configBgcolorLCD(Center5, TRANSPARENTBG);
+	configfontcolorLCD(Center5, BLACKFONT);
+
 	UpdateParamLCD(Right1, "HF");
+	configBgcolorLCD(Right1, TRANSPARENTBG);
+	configfontcolorLCD(Right1, REDFONT);
+
 	UpdateParamLCD(Right2, "VHF");
+	configBgcolorLCD(Right2, TRANSPARENTBG);
+	configfontcolorLCD(Right2, REDFONT);
+
 	UpdateParamLCD(Right3, "UHF");
+	configBgcolorLCD(Right3, TRANSPARENTBG);
+	configfontcolorLCD(Right3, REDFONT);
+
 	UpdateParamLCD(Right4, "");
+	configBgcolorLCD(Right4, TRANSPARENTBG);
+	configfontcolorLCD(Right4, BLACKFONT);
 
 	return success;
 }

@@ -141,12 +141,12 @@ int main(void)
 		  //MkeyStatus = keyPad_Scan();
 
 		  key = NavScreenStateMachine(&NavScreenParams);
-		  if (keyPad.key == 0x002)	// HOME button
+		  if (key == 0x002)	// HOME button
 		  {
 			  currentScreen = lcdDisp_home;
 			  DispHomeScreen();
 		  }
-		  else if(keyPad.key == 0)
+		  else if(key == 0)
 		  {
 			  // do nothing here
 		  }

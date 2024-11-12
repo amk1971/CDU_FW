@@ -104,6 +104,9 @@ uint16_t NavScreenStateMachine(NavParams * Params){
 
 	uint16_t ret;
 	char Text[50];
+
+	ret = get_ScanKode_from_buffer();
+
 	switch (NavScreenState){
 	case Idle:
 
@@ -114,8 +117,8 @@ uint16_t NavScreenStateMachine(NavParams * Params){
 			configfontcolorLCD(Left1, WHITEFONT);
 		}
 
-		ret = get_ScanKode_from_buffer();
-		if (ret == 0x008)
+//		ret = get_ScanKode_from_buffer();
+		if (ret == 0x008) // SWAP key
 		{
 			NavScreenState = SwapKey;
 		}
@@ -164,16 +167,53 @@ uint16_t NavScreenStateMachine(NavParams * Params){
 				NavScreenState = RightSoftKey8;
 		}
 		break;
-	case StandByEdit:	//Use BACK button to edit and OK to confirm and save .
-						//The new standby frequency is saved only when OK button is pressed.
-						//If the OK button is not pressed with in 30 sec then the standby frequency reverts to old value.
+	case StandByEdit:
 
-		ret = get_ScanKode_from_buffer();
 		if(ret == 0x110) // using B button instead of BACK
 		{
+			char text[10] = "";      // Initialize and clear display text
+			bool decimal_added = 0;
+			UpdateParamLCD(Left1, text);
 
+			while (ret != 0x004) // OK Button
+			{
+				ret = get_ScanKode_from_buffer();
+
+				if (ret != 0)
+				{
+					int len = strlen(text);
+
+					if (ret == 0x508) // using X key instead of CLR
+					{
+						if (len > 2) {   // Ensure there's something to delete beyond the prefix "S "
+							text[len - 1] = '\0';  // Remove last character
+							if (text[len - 2] == '.')
+							{
+								decimal_added = 0;
+							}
+							UpdateParamLCD(Left1, text);
+						}
+					}
+					else if (ret == 0x2E && !decimal_added && len < 9)
+					{
+						strncat(text, ".", 1);
+						decimal_added = 1;
+						UpdateParamLCD(Left1, text);
+					}
+					else if (ret >= 0x30 && ret <= 0x39 && len < 9)
+					{
+						char keyChar = (char) ret;
+						strncat(text, &keyChar, 1);
+						UpdateParamLCD(Left1, text);
+					}
+				}
+			}
+			Params->Standby = atof(text);
+			NavScreenState = idle;
+			configBgcolorLCD(Left1, TRANSPARENTBG);
+			configfontcolorLCD(Left1, BLACKFONT);
 		}
-		if(ret == 0x110) // OK Button
+		if(ret == 0x004) // OK Button
 		{
 			NavScreenState = idle;
 			configBgcolorLCD(Left1, TRANSPARENTBG);
@@ -208,27 +248,58 @@ uint16_t NavScreenStateMachine(NavParams * Params){
 
 	case RightSoftKey1:
 
-		UpdateParamLCD(Center4, "PROG");
 		sprintf(Text, "P1 %f", Params->P1);
 		UpdateParamLCD(Center5, Text);
-		ret = get_ScanKode_from_buffer();
-		if(ret == 0x110) // using B button instead of BACK
+//		ret = get_ScanKode_from_buffer();
+		if(soft_keysTest() == L4)
 		{
+			UpdateParamLCD(Center4, "PROG");
+
 			configBgcolorLCD(Center5, BLACKBG);
 			configfontcolorLCD(Center5, WHITEFONT);
+
+			while(ret != 0x110) // OK Button
+			{
+				char str[10];
+				sprintf(str, "P1 %f", Params->P1);
+				int len = strlen(str);
+				if(ret == 0x110) // using B button instead of BACK
+				{
+					if (len > 2)
+					{
+						str[len-1]='\0';
+						len--;
+					}
+					UpdateParamLCD(Center5, str);
+				}
+				else if (ret >= 0x30 && ret <= 0x39 && len < 9)
+				{
+					char keyChar = (char) ret;
+					strncat(str, &keyChar, 1);
+					UpdateParamLCD(Center5, str);
+				}
+
+			}
+			Params->P1 = atof(str);
+			configBgcolorLCD(Right1, TRANSPARENTBG);
+			configfontcolorLCD(Right1, BLACKFONT);
 		}
 
 		if(ret == 0x110) // OK Button
 		{
 			NavScreenState = idle;
 
+			Params->Standby =  Params->P1;
+			sprintf(Text, "S %f", Params->Standby);
+			UpdateParamLCD(Left1, Text);
+
 			configBgcolorLCD(Right1, TRANSPARENTBG);
 			configfontcolorLCD(Right1, BLACKFONT);
 
-			configBgcolorLCD(Center5, TRANSPARENTBG);
-			configfontcolorLCD(Center5, BLACKFONT);
+//			configBgcolorLCD(Center5, TRANSPARENTBG);
+//			configfontcolorLCD(Center5, BLACKFONT);
 
-			UpdateParamLCD(Center4, "");
+//			UpdateParamLCD(Center4, "");
 			UpdateParamLCD(Center5, "");
 		}
 

@@ -15,8 +15,8 @@
 #define WHITEFONT     65535
 #define REDFONT	      63488
 
-#define BLACKBG       65535
-#define TRANSPARENTBG 123 //THIS COLOR WILL BE USE TO BE SAME AS THE BACKGROUND, TBD
+#define BLACKBG       0
+#define TRANSPARENTBG 5693 //THIS COLOR WILL BE USE TO BE SAME AS THE BACKGROUND, TBD
 
 typedef enum
 {
@@ -52,5 +52,8 @@ returnStatus DispHomeScreen(void);
 //returnStatus ChangePage(lcdCmdPage_id Page_ID);
 returnStatus UpdateParamLCD(lcdCmdParam_id Param_ID, char * Parm_Vlaue);
 returnStatus ReadParamLCD(lcdCmdParam_id Param_ID, void * Param_Value);
+
+returnStatus configBgcolorLCD(lcdCmdParam_id Param_ID, int Param_Value);
+returnStatus configfontcolorLCD(lcdCmdParam_id Param_ID, int Param_Value);
 
 #endif /* INC_NEXTIONLCD_H_ */
