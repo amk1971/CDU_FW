@@ -233,7 +233,7 @@ uint16_t NavScreenStateMachine(NavParams * Params){
 	case page0:
 
 		Params->page = false;
-		DispNAVscreen(&Params);
+		DispNAVscreen(Params);
 		NavScreenState = Idle;
 
 		break;
@@ -241,7 +241,7 @@ uint16_t NavScreenStateMachine(NavParams * Params){
 	case page1:
 
 		Params->page = true;	// means page1
-		DispNAVscreen(&Params);
+		DispNAVscreen(Params);
 		NavScreenState = Idle;
 
 		break;
@@ -259,11 +259,12 @@ uint16_t NavScreenStateMachine(NavParams * Params){
 			configfontcolorLCD(Center5, WHITEFONT);
 
 			char str[10];
-
-			while(ret != 0x110) // OK Button
+			sprintf(str, "P1 %f", Params->P1);
+			while(ret != 0x004) // OK Button
 			{
+				ret = get_ScanKode_from_buffer();
 
-				sprintf(str, "P1 %f", Params->P1);
+
 				int len = strlen(str);
 				if(ret == 0x110) // using B button instead of BACK
 				{
@@ -285,6 +286,9 @@ uint16_t NavScreenStateMachine(NavParams * Params){
 			Params->P1 = atof(str);
 			configBgcolorLCD(Right1, TRANSPARENTBG);
 			configfontcolorLCD(Right1, BLACKFONT);
+
+			configBgcolorLCD(Center5, TRANSPARENTBG);
+			configfontcolorLCD(Center5, BLACKFONT);
 		}
 
 		if(ret == 0x110) // OK Button
