@@ -22,9 +22,9 @@ struct CYCLICBUFFER {
 
 // Unused keys as: '!', '"', '#', '$', '%'
 
-char decode_str[] = {'e', 'g', 'C', '7', '8', '9', 'e', 'H', 'I', '1',
-					 '2', '3', 'M', 'N', 'O', 'P', 'Q', 'R', '4', '5',
-					 '6', 'B', 'W', 'X', 'Y', 'Z', '0', '1', '.', '0',
+char decode_str[] = {'e', 'g', 'C', '7', '8', '9', 'e', 'H', '1', '2',
+					 '3', '3', 'M', 'N', 'O', 'P', '4', '4', '5', '6',
+					 '6', 'B', 'W', 'X', '7', '6', '7', '8', '9', '0',
 					 '4', '5', '6', '7', '8', '9', 'r', 'G', 's', 'p',
 					 'n', 'd', 't', 'h', 'c', 'o', '_', '.', '/', '^',
 					 'v', '+', '-', '!', '"', '#', '$', '%'
@@ -124,29 +124,29 @@ MkeyStatus_t keyPad_Scan(void)
 	return nPress;
 }
 
-char decode_keycode(void)
+char decode_keycode(uint16_t SCode)
 {
 	uint8_t i, j, col, row, index;
 
-	for(i = 1, j = 1 ; j <= 8 ; i <<= 1, j++)
+	for(i = 1, j = 0 ; j < 8 ; i <<= 1, j++)
 	{
-		if ((keyPad.key & 0xFF) == i)
+		if ((SCode & 0xFF) == i)
 		{
 			col = j;
 			break;
 		}
 	}
 
-	for(i = 1, j = 1 ; j <= 8 ; i <<= 1, j++)
-		{
-			if (((keyPad.key & 0xFF00) >> 8) == i)
-			{
-				row = j;
-				break;
-			}
-		}
-
-	index = col | (row << 3);
+//	for(i = 1, j = 1 ; j <= 8 ; i <<= 1, j++)
+//		{
+//			if (((SCode & 0xFF00) >> 8) == i)
+//			{
+//				row = j;
+//				break;
+//			}
+//		}
+	row = SCode >> 5;
+	index = col | row;
 
 	char tkey = decode_str[index];
 

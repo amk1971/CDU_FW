@@ -7,6 +7,8 @@
 
 #include "nextionlcd.h"
 #include "switches.h"
+#include "stdlib.h"
+#include "string.h"
 
 bool flag = false;
 
@@ -17,14 +19,7 @@ typedef enum
 	SwapKey,
 	page0,
 	page1,
-	RightSoftKey1,
-	RightSoftKey2,
-	RightSoftKey3,
-	RightSoftKey4,
-	RightSoftKey5,
-	RightSoftKey6,
-	RightSoftKey7,
-	RightSoftKey8,
+	RightSoftKey,
 	StandByEdit
 } NAVSCREENState;
 
@@ -45,7 +40,7 @@ returnStatus ChangeNavParam(NavParamNumber PNum, void * PVal);
 
 returnStatus DispNAVscreen(NavParams * Params)
 {
-	static NavParams oldParams;
+//	static NavParams oldParams;
 	char Text[50];
 
 	sprintf(Text, "S %f", Params->Standby);
@@ -77,6 +72,11 @@ returnStatus DispNAVscreen(NavParams * Params)
 		UpdateParamLCD(Right4, "P 8");
 	}
 
+	configfontcolorLCD(Right1, BLACKFONT);
+	configfontcolorLCD(Right2, BLACKFONT);
+	configfontcolorLCD(Right3, BLACKFONT);
+	configfontcolorLCD(Right4, BLACKFONT);
+
 	return success;
 }
 
@@ -93,9 +93,9 @@ returnStatus ChangeNavParam(NavParamNumber PNum, void * PVal){
 	}
 }
 
-void swapFreq(float *param1, float *param2)
+void swapFreq(double *param1, double *param2)
 {
-	float temp = *param1;
+	double temp = *param1;
 	*param1 = *param2;
 	*param2 = temp;
 }
@@ -103,7 +103,10 @@ void swapFreq(float *param1, float *param2)
 uint16_t NavScreenStateMachine(NavParams * Params){
 
 	uint16_t ret;
-	char Text[50];
+	char Text[20];
+	lcdCmdParam_id Position;
+	double * Label;
+	char Format[20];
 
 	ret = get_ScanKode_from_buffer();
 
@@ -122,103 +125,145 @@ uint16_t NavScreenStateMachine(NavParams * Params){
 		{
 			NavScreenState = SwapKey;
 		}
+
 		if (ret == 0x020) // NEXT button
 		{
 			NavScreenState = page1;
 		}
+
 		if (ret == 0x110) // using B button instead of BACK
 		{
 			NavScreenState = page0;
 		}
-		if(soft_keysTest() == R1)
+
+		else if(soft_keysTest() == R1)
 		{
-			configBgcolorLCD(Right1, BLACKBG);
-			configfontcolorLCD(Right1, WHITEFONT);
-			if(!(Params->page))
-				NavScreenState = RightSoftKey1;
-			else if(Params->page)
-				NavScreenState = RightSoftKey5;
+			Position = Right1;
+			NavScreenState = RightSoftKey;
+
+			if(!(Params->page)){
+				Label = &Params->P1;
+				strncpy(Format, "P1 %0.3f", 9);
+			}else {
+				Label = &Params->P5;
+				strncpy(Format, "P5 %0.3f", 9);
+
+			}
+			configBgcolorLCD(Position, BLACKBG);
+			configfontcolorLCD(Position, WHITEFONT);
+			sprintf(Text, Format, * Label);
+			UpdateParamLCD(Center5, Text);
 		}
-		if(soft_keysTest() == R2)
+
+		else if(soft_keysTest() == R2)
 		{
-			configBgcolorLCD(Right2, BLACKBG);
-			configfontcolorLCD(Right2, WHITEFONT);
-			if(!(Params->page))
-				NavScreenState = RightSoftKey2;
-			else if(Params->page)
-				NavScreenState = RightSoftKey6;
+			Position = Right2;
+			NavScreenState = RightSoftKey;
+
+			if(!(Params->page)){
+				Label = &Params->P2;
+				strncpy(Format, "P2 %0.3f", 9);
+			}else {
+				Label = &Params->P6;
+				strncpy(Format, "P6 %0.3f", 9);
+
+			}
+			configBgcolorLCD(Position, BLACKBG);
+			configfontcolorLCD(Position, WHITEFONT);
+			sprintf(Text, Format, * Label);
+			UpdateParamLCD(Center5, Text);
 		}
-		if(soft_keysTest() == R3)
+
+		else if(soft_keysTest() == R3)
 		{
-			configBgcolorLCD(Right3, BLACKBG);
-			configfontcolorLCD(Right3, WHITEFONT);
-			if(!(Params->page))
-				NavScreenState = RightSoftKey3;
-			else if(Params->page)
-				NavScreenState = RightSoftKey7;
+			Position = Right3;
+			NavScreenState = RightSoftKey;
+
+			if(!(Params->page)){
+				Label = &Params->P3;
+				strncpy(Format, "P3 %0.3f", 9);
+			}else {
+				Label = &Params->P7;
+				strncpy(Format, "P7 %0.3f", 9);
+
+			}
+			configBgcolorLCD(Position, BLACKBG);
+			configfontcolorLCD(Position, WHITEFONT);
+			sprintf(Text, Format, * Label);
+			UpdateParamLCD(Center5, Text);
 		}
-		if(soft_keysTest() == R4)
+
+		else if(soft_keysTest() == R4)
 		{
-			configBgcolorLCD(Right4, BLACKBG);
-			configfontcolorLCD(Right4, WHITEFONT);
-			if(!(Params->page))
-				NavScreenState = RightSoftKey4;
-			else if(Params->page)
-				NavScreenState = RightSoftKey8;
+			Position = Right4;
+			NavScreenState = RightSoftKey;
+
+			if(!(Params->page)){
+				Label = &Params->P4;
+				strncpy(Format, "P4 %0.3f", 9);
+			}else {
+				Label = &Params->P8;
+				strncpy(Format, "P8 %0.3f", 9);
+
+			}
+			configBgcolorLCD(Position, BLACKBG);
+			configfontcolorLCD(Position, WHITEFONT);
+			sprintf(Text, Format, * Label);
+			UpdateParamLCD(Center5, Text);
 		}
+
 		break;
+
 	case StandByEdit:
 
-		if(ret == 0x110) // using B button instead of BACK
+		char text[9];
+		bool decimal_added = 0;
+
+//		sprintf(text, "S %f", Params->Standby);
+		snprintf(text, sizeof(text), "S %.3f", Params->Standby); // or "%.1f" if single decimal precision
+
+		while (ret != 0x004) // OK Button
 		{
-			char text[10] = "";      // Initialize and clear display text
-			bool decimal_added = 0;
-			UpdateParamLCD(Left1, text);
-
-			while (ret != 0x004) // OK Button
+			ret = get_ScanKode_from_buffer();
+			char keyVal = decode_keycode(ret);
+			if (ret != 0)
 			{
-				ret = get_ScanKode_from_buffer();
+				int len = strlen(text) ;
 
-				if (ret != 0)
+				if (ret == 0x110) // using B button instead of BACK
 				{
-					int len = strlen(text);
-
-					if (ret == 0x508) // using X key instead of CLR
-					{
-						if (len > 2) {   // Ensure there's something to delete beyond the prefix "S "
-							text[len - 1] = '\0';  // Remove last character
-							if (text[len - 2] == '.')
-							{
-								decimal_added = 0;
-							}
-							UpdateParamLCD(Left1, text);
+					if (len > 2) {   // Ensure there's something to delete beyond the prefix "S "
+						text[len - 1] = '\0';  // Remove last character
+						if (text[len - 2] == '.')
+						{
+							decimal_added = 0;
 						}
-					}
-					else if (ret == 0x2E && !decimal_added && len < 9)
-					{
-						strncat(text, ".", 1);
-						decimal_added = 1;
-						UpdateParamLCD(Left1, text);
-					}
-					else if (ret >= 0x30 && ret <= 0x39 && len < 9)
-					{
-						char keyChar = (char) ret;
-						strncat(text, &keyChar, 1);
+						len--;
 						UpdateParamLCD(Left1, text);
 					}
 				}
+				else if (ret == 0x408 && !decimal_added && len < 9)
+				{
+					strncat(text, ".", 1);
+					decimal_added = 1;
+					UpdateParamLCD(Left1, text);
+				}
+				else if (keyVal >= '0' && keyVal <= '9' && len < 9)
+				{
+					char keyChar = (char) keyVal;
+					strncat(text, &keyChar, 1);
+					UpdateParamLCD(Left1, text);
+				}
 			}
-			Params->Standby = atof(text);
-			NavScreenState = idle;
-			configBgcolorLCD(Left1, TRANSPARENTBG);
-			configfontcolorLCD(Left1, BLACKFONT);
 		}
-		if(ret == 0x004) // OK Button
-		{
-			NavScreenState = idle;
-			configBgcolorLCD(Left1, TRANSPARENTBG);
-			configfontcolorLCD(Left1, BLACKFONT);
-		}
+//		volatile char * removeit = &text[2];
+		Params->Standby = atof(&text[2]); // remove s_ first
+		NavScreenState = idle;
+		char txt[7];
+		snprintf(txt, sizeof(txt), "S %f", Params->Standby);
+		UpdateParamLCD(Left1, txt);
+		configBgcolorLCD(Left1, TRANSPARENTBG);
+		configfontcolorLCD(Left1, BLACKFONT);
 
 		break;
 
@@ -233,7 +278,7 @@ uint16_t NavScreenStateMachine(NavParams * Params){
 	case page0:
 
 		Params->page = false;
-		DispNAVscreen(&Params);
+		DispNAVscreen(Params);
 		NavScreenState = Idle;
 
 		break;
@@ -241,15 +286,14 @@ uint16_t NavScreenStateMachine(NavParams * Params){
 	case page1:
 
 		Params->page = true;	// means page1
-		DispNAVscreen(&Params);
+		DispNAVscreen(Params);
 		NavScreenState = Idle;
 
 		break;
 
-	case RightSoftKey1:
+	case RightSoftKey:
 
-		sprintf(Text, "P1 %f", Params->P1);
-		UpdateParamLCD(Center5, Text);
+
 //		ret = get_ScanKode_from_buffer();
 		if(soft_keysTest() == L4)
 		{
@@ -258,10 +302,13 @@ uint16_t NavScreenStateMachine(NavParams * Params){
 			configBgcolorLCD(Center5, BLACKBG);
 			configfontcolorLCD(Center5, WHITEFONT);
 
-			while(ret != 0x110) // OK Button
+			char str[10];
+			snprintf(str, sizeof(str), Format, * Label);
+			while(ret != 0x004) // OK Button
 			{
-				char str[10];
-				sprintf(str, "P1 %f", Params->P1);
+				ret = get_ScanKode_from_buffer();
+
+
 				int len = strlen(str);
 				if(ret == 0x110) // using B button instead of BACK
 				{
@@ -278,52 +325,33 @@ uint16_t NavScreenStateMachine(NavParams * Params){
 					strncat(str, &keyChar, 1);
 					UpdateParamLCD(Center5, str);
 				}
-
 			}
-			Params->P1 = atof(str);
-			configBgcolorLCD(Right1, TRANSPARENTBG);
-			configfontcolorLCD(Right1, BLACKFONT);
+			* Label = atof(&str[3]);
+			configBgcolorLCD(Position, TRANSPARENTBG);
+			configfontcolorLCD(Position, BLACKFONT);
+
+			configBgcolorLCD(Center5, TRANSPARENTBG);
+			configfontcolorLCD(Center5, BLACKFONT);
+
+			NavScreenState = idle;
+			UpdateParamLCD(Center4, "");
+			UpdateParamLCD(Center5, "");
 		}
 
 		if(ret == 0x110) // OK Button
 		{
 			NavScreenState = idle;
 
-			Params->Standby =  Params->P1;
+			Params->Standby = * Label;
 			sprintf(Text, "S %f", Params->Standby);
 			UpdateParamLCD(Left1, Text);
 
-			configBgcolorLCD(Right1, TRANSPARENTBG);
-			configfontcolorLCD(Right1, BLACKFONT);
+			configBgcolorLCD(Position, TRANSPARENTBG);
+			configfontcolorLCD(Position, BLACKFONT);
 
-//			configBgcolorLCD(Center5, TRANSPARENTBG);
-//			configfontcolorLCD(Center5, BLACKFONT);
-
-//			UpdateParamLCD(Center4, "");
 			UpdateParamLCD(Center5, "");
 		}
 
-			break;
-
-	case RightSoftKey2:
-			break;
-
-	case RightSoftKey3:
-			break;
-
-	case RightSoftKey4:
-			break;
-
-	case RightSoftKey5:
-			break;
-
-	case RightSoftKey6:
-			break;
-
-	case RightSoftKey7:
-			break;
-
-	case RightSoftKey8:
 			break;
 
 

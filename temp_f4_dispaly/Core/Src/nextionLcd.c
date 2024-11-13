@@ -146,7 +146,7 @@ returnStatus UpdateParamLCD(lcdCmdParam_id Param_ID, char * Param_Value)
 		case Left1:
 		{
 			strncpy(txBuffer, "t0.txt=\"", 9);
-			strncat(txBuffer, Param_Value, 5);
+			strncat(txBuffer, Param_Value, 9);
 			strncat(txBuffer, "\"", 2);
 			//len = sprintf((char *)txBuffer, "%s.txt=\"%s\"", param_ID, Param_Value);
 			if (HAL_UART_Transmit(&LCDUart, txBuffer, strlen(txBuffer), TIMEOUT) != HAL_OK)
@@ -299,9 +299,10 @@ returnStatus UpdateParamLCD(lcdCmdParam_id Param_ID, char * Param_Value)
 		}
 		case Center2:
 		{
-			strncpy(param_ID, "t9", 3);
-			len = sprintf((char *)txBuffer, "%s.txt=\"%s\"", param_ID, Param_Value);
-			if (HAL_UART_Transmit(&LCDUart, txBuffer, len, TIMEOUT) != HAL_OK)
+			strncpy(txBuffer, "t9.txt=\"", 9);
+			strncat(txBuffer, Param_Value, 9);
+			strncat(txBuffer, "\"", 2);
+			if (HAL_UART_Transmit(&LCDUart, txBuffer, strlen(txBuffer), TIMEOUT) != HAL_OK)
 			{
 				return failure;
 			}
@@ -350,9 +351,12 @@ returnStatus UpdateParamLCD(lcdCmdParam_id Param_ID, char * Param_Value)
 			}
 		case Center5:
 			{
+//				strncpy(txBuffer, "t12.txt=\"", 9);
+//				strncat(txBuffer, Param_Value, 10);
+//				strncat(txBuffer, "\"", 2);
 				strncpy(param_ID, "t12", 4);
 				len = sprintf((char *)txBuffer, "%s.txt=\"%s\"", param_ID, Param_Value);
-				if (HAL_UART_Transmit(&LCDUart, txBuffer, len, TIMEOUT) != HAL_OK)
+				if (HAL_UART_Transmit(&LCDUart, txBuffer, strlen(txBuffer), TIMEOUT) != HAL_OK)
 				{
 					return failure;
 				}
@@ -383,6 +387,7 @@ returnStatus configfontcolorLCD(lcdCmdParam_id Param_ID, int Param_Value)
 	{
 		case Left1:
 		{
+			strncpy(param_ID, "t0", 3);
 			len = sprintf((char *)txBuffer, "%s.pco=%d", param_ID, Param_Value);
 			if (HAL_UART_Transmit(&LCDUart, txBuffer, len, TIMEOUT) != HAL_OK)
 			{
@@ -624,6 +629,7 @@ returnStatus configBgcolorLCD(lcdCmdParam_id Param_ID, int Param_Value)
 	{
 		case Left1:
 		{
+			strncpy(param_ID, "t0", 3);
 			len = sprintf((char *)txBuffer, "%s.bco=%d", param_ID, Param_Value);
 			if (HAL_UART_Transmit(&LCDUart, txBuffer, len, TIMEOUT) != HAL_OK)
 			{

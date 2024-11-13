@@ -44,5 +44,8 @@ typedef enum
 
 
 MkeyStatus_t keyPad_Scan(void);
+uint16_t get_ScanKode_from_buffer(void );
+softKey_t soft_keysTest(void);
+char decode_keycode(uint16_t SCode);
 
 #endif /* INC_SWITCHES_H_ */

@@ -1,76 +1,10 @@
-15:44:21 **** Incremental Build of configuration Debug for project temp_f4_dispaly ****
+17:41:49 **** Incremental Build of configuration Debug for project temp_f4_dispaly ****
 make -j4 all 
-arm-none-eabi-gcc "../Core/Src/NAVSCreen.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F407xx -c -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/NAVSCreen.d" -MT"Core/Src/NAVSCreen.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/NAVSCreen.o"
-../Core/Src/NAVSCreen.c: In function 'DispNAVscreen':
-../Core/Src/NAVSCreen.c:48:26: warning: unused variable 'oldParams' [-Wunused-variable]
-   48 |         static NavParams oldParams;
-      |                          ^~~~~~~~~
-../Core/Src/NAVSCreen.c: In function 'NavScreenStateMachine':
-../Core/Src/NAVSCreen.c:108:15: warning: implicit declaration of function 'get_ScanKode_from_buffer' [-Wimplicit-function-declaration]
-  108 |         ret = get_ScanKode_from_buffer();
-      |               ^~~~~~~~~~~~~~~~~~~~~~~~
-../Core/Src/NAVSCreen.c:113:20: warning: implicit declaration of function 'soft_keysTest' [-Wimplicit-function-declaration]
-  113 |                 if(soft_keysTest() == L1)
-      |                    ^~~~~~~~~~~~~
-../Core/Src/NAVSCreen.c:184:51: warning: implicit declaration of function 'strlen' [-Wimplicit-function-declaration]
-  184 |                                         int len = strlen(text);
-      |                                                   ^~~~~~
-../Core/Src/NAVSCreen.c:10:1: note: include '<string.h>' or provide a declaration of 'strlen'
-    9 | #include "switches.h"
-  +++ |+#include <string.h>
-   10 | 
-../Core/Src/NAVSCreen.c:184:51: warning: incompatible implicit declaration of built-in function 'strlen' [-Wbuiltin-declaration-mismatch]
-  184 |                                         int len = strlen(text);
-      |                                                   ^~~~~~
-../Core/Src/NAVSCreen.c:184:51: note: include '<string.h>' or provide a declaration of 'strlen'
-../Core/Src/NAVSCreen.c:198:49: warning: implicit declaration of function 'strncat' [-Wimplicit-function-declaration]
-  198 |                                                 strncat(text, ".", 1);
-      |                                                 ^~~~~~~
-../Core/Src/NAVSCreen.c:198:49: note: include '<string.h>' or provide a declaration of 'strncat'
-../Core/Src/NAVSCreen.c:198:49: warning: incompatible implicit declaration of built-in function 'strncat' [-Wbuiltin-declaration-mismatch]
-../Core/Src/NAVSCreen.c:198:49: note: include '<string.h>' or provide a declaration of 'strncat'
-../Core/Src/NAVSCreen.c:205:49: warning: incompatible implicit declaration of built-in function 'strncat' [-Wbuiltin-declaration-mismatch]
-  205 |                                                 strncat(text, &keyChar, 1);
-      |                                                 ^~~~~~~
-../Core/Src/NAVSCreen.c:205:49: note: include '<string.h>' or provide a declaration of 'strncat'
-../Core/Src/NAVSCreen.c:210:43: warning: implicit declaration of function 'atof' [-Wimplicit-function-declaration]
-  210 |                         Params->Standby = atof(text);
-      |                                           ^~~~
-../Core/Src/NAVSCreen.c:233:31: warning: passing argument 1 of 'DispNAVscreen' from incompatible pointer type [-Wincompatible-pointer-types]
-  233 |                 DispNAVscreen(&Params);
-      |                               ^~~~~~~
-      |                               |
-      |                               NavParams ** {aka struct NAVPARAMS **}
-../Core/Src/NAVSCreen.c:46:40: note: expected 'NavParams *' {aka 'struct NAVPARAMS *'} but argument is of type 'NavParams **' {aka 'struct NAVPARAMS **'}
-   46 | returnStatus DispNAVscreen(NavParams * Params)
-      |                            ~~~~~~~~~~~~^~~~~~
-../Core/Src/NAVSCreen.c:241:31: warning: passing argument 1 of 'DispNAVscreen' from incompatible pointer type [-Wincompatible-pointer-types]
-  241 |                 DispNAVscreen(&Params);
-      |                               ^~~~~~~
-      |                               |
-      |                               NavParams ** {aka struct NAVPARAMS **}
-../Core/Src/NAVSCreen.c:46:40: note: expected 'NavParams *' {aka 'struct NAVPARAMS *'} but argument is of type 'NavParams **' {aka 'struct NAVPARAMS **'}
-   46 | returnStatus DispNAVscreen(NavParams * Params)
-      |                            ~~~~~~~~~~~~^~~~~~
-../Core/Src/NAVSCreen.c: In function 'ChangeNavParam':
-../Core/Src/NAVSCreen.c:94:1: warning: control reaches end of non-void function [-Wreturn-type]
-   94 | }
-      | ^
-../Core/Src/NAVSCreen.c: In function 'NavScreenStateMachine':
-../Core/Src/NAVSCreen.c:198:49: warning: 'strncat' specified bound 1 equals source length [-Wstringop-overflow=]
-  198 |                                                 strncat(text, ".", 1);
-      |                                                 ^~~~~~~~~~~~~~~~~~~~~
-arm-none-eabi-gcc -o "temp_f4_dispaly.elf" @"objects.list"   -mcpu=cortex-m4 -T"D:\Projects\CDU\CDU_FW\temp_f4_dispaly\STM32F407VGTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="temp_f4_dispaly.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -u _printf_float -Wl,--start-group -lc -lm -Wl,--end-group
-Finished building target: temp_f4_dispaly.elf
- 
 arm-none-eabi-size  temp_f4_dispaly.elf 
-arm-none-eabi-objdump -h -S temp_f4_dispaly.elf  > "temp_f4_dispaly.list"
    text	   data	    bss	    dec	    hex	filename
-  40920	    476	   2188	  43584	   aa40	temp_f4_dispaly.elf
+  42104	    536	   2232	  44872	   af48	temp_f4_dispaly.elf
 Finished building: default.size.stdout
  
-Finished building: temp_f4_dispaly.list
- 
 
-15:44:22 Build Finished. 0 errors, 13 warnings. (took 711ms)
+17:41:49 Build Finished. 0 errors, 0 warnings. (took 254ms)
 

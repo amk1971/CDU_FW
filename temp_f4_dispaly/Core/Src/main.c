@@ -105,9 +105,10 @@ int main(void)
   /* USER CODE BEGIN 2 */
 
   NavScreenParams.Active = 118.025;
-  NavScreenParams.Standby = 108.45;
+  NavScreenParams.Standby = 108.475;
   NavScreenParams.page = false; // means page0
-  NavScreenParams.P1 = 123.45;
+  NavScreenParams.P1 = 223.50;
+  NavScreenParams.P2 = 123.45;
   NavScreenParams.P3 = 354.85;
   NavScreenParams.P6 = 534.15;
   NavScreenParams.P8 = 878.98;
