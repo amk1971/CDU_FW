@@ -1,121 +1,207 @@
-18:04:00 **** Build of configuration Debug for project cduFM ****
+10:40:30 **** Incremental Build of configuration Debug for project temp_f4_dispaly ****
 make -j4 all 
-arm-none-eabi-gcc -mcpu=cortex-m0 -g3 -DDEBUG -c -x assembler-with-cpp -MMD -MP -MF"Core/Startup/startup_stm32f091vctx.d" -MT"Core/Startup/startup_stm32f091vctx.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Core/Startup/startup_stm32f091vctx.o" "../Core/Startup/startup_stm32f091vctx.s"
-arm-none-eabi-gcc "../Core/Src/NAVSCreen.c" -mcpu=cortex-m0 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F091xC -c -I../Core/Inc -I../Drivers/STM32F0xx_HAL_Driver/Inc -I../Drivers/STM32F0xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F0xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/NAVSCreen.d" -MT"Core/Src/NAVSCreen.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Core/Src/NAVSCreen.o"
-arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m0 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F091xC -c -I../Core/Inc -I../Drivers/STM32F0xx_HAL_Driver/Inc -I../Drivers/STM32F0xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F0xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Core/Src/main.o"
-arm-none-eabi-gcc "../Core/Src/nextionLcd.c" -mcpu=cortex-m0 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F091xC -c -I../Core/Inc -I../Drivers/STM32F0xx_HAL_Driver/Inc -I../Drivers/STM32F0xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F0xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/nextionLcd.d" -MT"Core/Src/nextionLcd.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Core/Src/nextionLcd.o"
-arm-none-eabi-gcc "../Core/Src/stm32f0xx_hal_msp.c" -mcpu=cortex-m0 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F091xC -c -I../Core/Inc -I../Drivers/STM32F0xx_HAL_Driver/Inc -I../Drivers/STM32F0xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F0xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/stm32f0xx_hal_msp.d" -MT"Core/Src/stm32f0xx_hal_msp.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Core/Src/stm32f0xx_hal_msp.o"
-../Core/Src/NAVSCreen.c: In function 'ChangeNavParam':
-../Core/Src/NAVSCreen.c:94:1: warning: control reaches end of non-void function [-Wreturn-type]
-   94 | }
-      | ^
-../Core/Src/NAVSCreen.c: In function 'NavScreenStateMachine':
-../Core/Src/NAVSCreen.c:247:41: warning: 'strncat' specified bound 1 equals source length [-Wstringop-overflow=]
-  247 |                                         strncat(text, ".", 1);
-      |                                         ^~~~~~~~~~~~~~~~~~~~~
-../Core/Src/NAVSCreen.c:263:47: warning: '%f' directive output may be truncated writing between 3 and 317 bytes into a region of size 5 [-Wformat-truncation=]
-  263 |                 snprintf(txt, sizeof(txt), "S %f", Params->Standby);
-      |                                               ^~
-../Core/Src/NAVSCreen.c:263:44: note: assuming directive output of 8 bytes
-  263 |                 snprintf(txt, sizeof(txt), "S %f", Params->Standby);
-      |                                            ^~~~~~
-../Core/Src/NAVSCreen.c:263:17: note: 'snprintf' output between 6 and 320 bytes into a destination of size 7
-  263 |                 snprintf(txt, sizeof(txt), "S %f", Params->Standby);
-      |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-../Core/Src/NAVSCreen.c:306:25: warning: 'Label' may be used uninitialized [-Wmaybe-uninitialized]
-  306 |                         snprintf(str, sizeof(str), Format, * Label);
-      |                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-../Core/Src/NAVSCreen.c:108:18: note: 'Label' was declared here
-  108 |         double * Label;
-      |                  ^~~~~
-../Core/Src/NAVSCreen.c:330:25: warning: 'Position' may be used uninitialized [-Wmaybe-uninitialized]
-  330 |                         configBgcolorLCD(Position, TRANSPARENTBG);
-      |                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-../Core/Src/NAVSCreen.c:107:24: note: 'Position' was declared here
-  107 |         lcdCmdParam_id Position;
-      |                        ^~~~~~~~
-arm-none-eabi-gcc "../Core/Src/stm32f0xx_it.c" -mcpu=cortex-m0 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F091xC -c -I../Core/Inc -I../Drivers/STM32F0xx_HAL_Driver/Inc -I../Drivers/STM32F0xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F0xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/stm32f0xx_it.d" -MT"Core/Src/stm32f0xx_it.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Core/Src/stm32f0xx_it.o"
-../Core/Src/nextionLcd.c: In function 'UpdateParamLCD':
-../Core/Src/nextionLcd.c:148:33: warning: pointer targets in passing argument 1 of 'strncpy' differ in signedness [-Wpointer-sign]
-  148 |                         strncpy(txBuffer, "t0.txt=\"", 9);
-      |                                 ^~~~~~~~
-      |                                 |
-      |                                 uint8_t * {aka unsigned char *}
-In file included from ../Core/Src/nextionLcd.c:13:
-C:\ST\STM32CubeIDE_1.14.1\STM32CubeIDE\plugins\com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.win32_1.0.200.202406191623\tools\bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/include/string.h:44:19: note: expected 'char * restrict' but argument is of type 'uint8_t *' {aka 'unsigned char *'}
-   44 | char    *strncpy (char *__restrict, const char *__restrict, size_t);
-      |                   ^
-../Core/Src/nextionLcd.c:149:33: warning: pointer targets in passing argument 1 of 'strncat' differ in signedness [-Wpointer-sign]
-  149 |                         strncat(txBuffer, Param_Value, 5);
-      |                                 ^~~~~~~~
-      |                                 |
-      |                                 uint8_t * {aka unsigned char *}
-C:\ST\STM32CubeIDE_1.14.1\STM32CubeIDE\plugins\com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.win32_1.0.200.202406191623\tools\bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/include/string.h:42:19: note: expected 'char * restrict' but argument is of type 'uint8_t *' {aka 'unsigned char *'}
-   42 | char    *strncat (char *__restrict, const char *__restrict, size_t);
-      |                   ^
-../Core/Src/nextionLcd.c:150:33: warning: pointer targets in passing argument 1 of 'strncat' differ in signedness [-Wpointer-sign]
-  150 |                         strncat(txBuffer, "\"", 2);
-      |                                 ^~~~~~~~
-      |                                 |
-      |                                 uint8_t * {aka unsigned char *}
-C:\ST\STM32CubeIDE_1.14.1\STM32CubeIDE\plugins\com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.win32_1.0.200.202406191623\tools\bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/include/string.h:42:19: note: expected 'char * restrict' but argument is of type 'uint8_t *' {aka 'unsigned char *'}
-   42 | char    *strncat (char *__restrict, const char *__restrict, size_t);
-      |                   ^
-../Core/Src/nextionLcd.c:152:74: warning: pointer targets in passing argument 1 of 'strlen' differ in signedness [-Wpointer-sign]
-  152 |                         if (HAL_UART_Transmit(&LCDUart, txBuffer, strlen(txBuffer), TIMEOUT) != HAL_OK)
-      |                                                                          ^~~~~~~~
-      |                                                                          |
-      |                                                                          uint8_t * {aka unsigned char *}
-C:\ST\STM32CubeIDE_1.14.1\STM32CubeIDE\plugins\com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.win32_1.0.200.202406191623\tools\bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/include/string.h:41:18: note: expected 'const char *' but argument is of type 'uint8_t *' {aka 'unsigned char *'}
-   41 | size_t   strlen (const char *);
-      |                  ^~~~~~~~~~~~
-../Core/Src/main.c: In function 'main':
-../Core/Src/main.c:117:3: warning: implicit declaration of function 'KeyS_init' [-Wimplicit-function-declaration]
-  117 |   KeyS_init();
-      |   ^~~~~~~~~
-../Core/Src/main.c:131:27: warning: implicit declaration of function 'DispADFscreen'; did you mean 'DispNAVscreen'? [-Wimplicit-function-declaration]
-  131 |                           DispADFscreen();
-      |                           ^~~~~~~~~~~~~
-      |                           DispNAVscreen
-../Core/Src/stm32f0xx_it.c: In function 'SysTick_Handler':
-../Core/Src/stm32f0xx_it.c:129:9: warning: implicit declaration of function 'keyPad_Scan4SysTick' [-Wimplicit-function-declaration]
-  129 |         keyPad_Scan4SysTick();
-      |         ^~~~~~~~~~~~~~~~~~~
-../Core/Src/stm32f0xx_it.c: In function 'USART3_8_IRQHandler':
-../Core/Src/stm32f0xx_it.c:179:33: warning: statement with no effect [-Wunused-value]
-  179 |   HAL_UART_IRQHandler(&huart3);(&huart3);
-      |                                ~^~~~~~~~
-../Core/Src/main.c:143:25: warning: implicit declaration of function 'NavScreenStateMachine' [-Wimplicit-function-declaration]
-  143 |                   key = NavScreenStateMachine(&NavScreenParams);
-      |                         ^~~~~~~~~~~~~~~~~~~~~
-arm-none-eabi-gcc "../Core/Src/switches.c" -mcpu=cortex-m0 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F091xC -c -I../Core/Inc -I../Drivers/STM32F0xx_HAL_Driver/Inc -I../Drivers/STM32F0xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F0xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/switches.d" -MT"Core/Src/switches.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Core/Src/switches.o"
-arm-none-eabi-gcc "../Core/Src/syscalls.c" -mcpu=cortex-m0 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F091xC -c -I../Core/Inc -I../Drivers/STM32F0xx_HAL_Driver/Inc -I../Drivers/STM32F0xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F0xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/syscalls.d" -MT"Core/Src/syscalls.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Core/Src/syscalls.o"
-arm-none-eabi-gcc "../Core/Src/sysmem.c" -mcpu=cortex-m0 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F091xC -c -I../Core/Inc -I../Drivers/STM32F0xx_HAL_Driver/Inc -I../Drivers/STM32F0xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F0xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/sysmem.d" -MT"Core/Src/sysmem.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Core/Src/sysmem.o"
-arm-none-eabi-gcc "../Core/Src/system_stm32f0xx.c" -mcpu=cortex-m0 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F091xC -c -I../Core/Inc -I../Drivers/STM32F0xx_HAL_Driver/Inc -I../Drivers/STM32F0xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F0xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/system_stm32f0xx.d" -MT"Core/Src/system_stm32f0xx.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Core/Src/system_stm32f0xx.o"
-../Core/Src/switches.c: In function 'interpret_char':
-../Core/Src/switches.c:46:25: warning: returning 'char' from a function with return type 'const char *' makes pointer from integer without a cast [-Wint-conversion]
-   46 |         default: return c;
-      |                         ^
-../Core/Src/switches.c: In function 'decode_keycode':
-../Core/Src/switches.c:153:14: warning: assignment to 'char' from 'const char *' makes integer from pointer without a cast [-Wint-conversion]
-  153 |         tkey = interpret_char(tkey);
-      |              ^
-../Core/Src/switches.c: In function 'get_ScanKode_from_buffer':
-../Core/Src/switches.c:211:51: warning: array subscript has type 'char' [-Wchar-subscripts]
-  211 |                 Kode = ScanKode.buff[ScanKode.Tail++];
-      |                                      ~~~~~~~~~~~~~^~
-../Core/Src/switches.c: In function 'Matrix_keypad_Basic_test':
-../Core/Src/switches.c:287:18: warning: variable 'keyRead' set but not used [-Wunused-but-set-variable]
-  287 |         uint16_t keyRead[10];
-      |                  ^~~~~~~
-arm-none-eabi-gcc -o "cduFM.elf" @"objects.list"   -mcpu=cortex-m0 -T"D:\Projects\CDU\CDU_FW\cduFM\STM32F091VCTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="cduFM.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -u _printf_float -u _scanf_float -Wl,--start-group -lc -lm -Wl,--end-group
-Finished building target: cduFM.elf
- 
-arm-none-eabi-size  cduFM.elf 
-arm-none-eabi-objdump -h -S cduFM.elf  > "cduFM.list"
+arm-none-eabi-size  temp_f4_dispaly.elf 
    text	   data	    bss	    dec	    hex	filename
-  50436	    536	   2360	  53332	   d054	cduFM.elf
+  42440	    536	   2232	  45208	   b098	temp_f4_dispaly.elf
 Finished building: default.size.stdout
  
-Finished building: cduFM.list
+10:40:41 **** Incremental Build of configuration Debug for project temp_f4_dispaly ****
+make -j4 all 
+arm-none-eabi-size  temp_f4_dispaly.elf 
+   text	   data	    bss	    dec	    hex	filename
+  42440	    536	   2232	  45208	   b098	temp_f4_dispaly.elf
+Finished building: default.size.stdout
+ 
+10:42:20 **** Incremental Build of configuration Debug for project temp_f4_dispaly ****
+make -j4 all 
+arm-none-eabi-gcc "../Core/Src/NAVSCreen.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F407xx -c -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/NAVSCreen.d" -MT"Core/Src/NAVSCreen.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/NAVSCreen.o"
+../Core/Src/NAVSCreen.c: In function 'NavScreenStateMachine':
+../Core/Src/NAVSCreen.c:262:41: warning: 'strncat' specified bound 1 equals source length [-Wstringop-overflow=]
+  262 |                                         strncat(text, ".", 1);
+      |                                         ^~~~~~~~~~~~~~~~~~~~~
+../Core/Src/NAVSCreen.c:282:52: warning: 'snprintf' output may be truncated before the last format character [-Wformat-truncation=]
+  282 |                 snprintf(txt, sizeof(txt), "S %0.3f", Params->Standby);
+      |                                                    ^
+../Core/Src/NAVSCreen.c:282:17: note: 'snprintf' output between 6 and 317 bytes into a destination of size 7
+  282 |                 snprintf(txt, sizeof(txt), "S %0.3f", Params->Standby);
+      |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../Core/Src/NAVSCreen.c:325:25: warning: 'Label' may be used uninitialized [-Wmaybe-uninitialized]
+  325 |                         snprintf(str, sizeof(str), Format, *Label);
+      |                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../Core/Src/NAVSCreen.c:111:18: note: 'Label' was declared here
+  111 |         double * Label;
+      |                  ^~~~~
+../Core/Src/NAVSCreen.c:349:25: warning: 'Position' may be used uninitialized [-Wmaybe-uninitialized]
+  349 |                         configBgcolorLCD(Position, TRANSPARENTBG);
+      |                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../Core/Src/NAVSCreen.c:110:24: note: 'Position' was declared here
+  110 |         lcdCmdParam_id Position;
+      |                        ^~~~~~~~
+arm-none-eabi-gcc -o "temp_f4_dispaly.elf" @"objects.list"   -mcpu=cortex-m4 -T"D:\Projects\CDU\CDU_FW\temp_f4_dispaly\STM32F407VGTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="temp_f4_dispaly.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -u _printf_float -Wl,--start-group -lc -lm -Wl,--end-group
+C:/ST/STM32CubeIDE_1.14.1/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.win32_1.0.200.202406191623/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/bin/ld.exe: C:/ST/STM32CubeIDE_1.14.1/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.win32_1.0.200.202406191623/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libc_nano.a(libc_a-gettimeofdayr.o): in function `_gettimeofday_r':
+(.text._gettimeofday_r+0xe): warning: _gettimeofday is not implemented and will always fail
+Finished building target: temp_f4_dispaly.elf
+ 
+arm-none-eabi-size  temp_f4_dispaly.elf 
+arm-none-eabi-objdump -h -S temp_f4_dispaly.elf  > "temp_f4_dispaly.list"
+   text	   data	    bss	    dec	    hex	filename
+  42264	    536	   2232	  45032	   afe8	temp_f4_dispaly.elf
+Finished building: default.size.stdout
+ 
+Finished building: temp_f4_dispaly.list
+ 
+11:00:26 **** Incremental Build of configuration Debug for project temp_f4_dispaly ****
+make -j4 all 
+arm-none-eabi-gcc "../Core/Src/NAVSCreen.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F407xx -c -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/NAVSCreen.d" -MT"Core/Src/NAVSCreen.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/NAVSCreen.o"
+../Core/Src/NAVSCreen.c: In function 'NavScreenStateMachine':
+../Core/Src/NAVSCreen.c:263:41: warning: 'strncat' specified bound 1 equals source length [-Wstringop-overflow=]
+  263 |                                         strncat(text, ".", 1);
+      |                                         ^~~~~~~~~~~~~~~~~~~~~
+../Core/Src/NAVSCreen.c:283:52: warning: 'snprintf' output may be truncated before the last format character [-Wformat-truncation=]
+  283 |                 snprintf(txt, sizeof(txt), "S %0.3f", Params->Standby);
+      |                                                    ^
+../Core/Src/NAVSCreen.c:283:17: note: 'snprintf' output between 6 and 317 bytes into a destination of size 7
+  283 |                 snprintf(txt, sizeof(txt), "S %0.3f", Params->Standby);
+      |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../Core/Src/NAVSCreen.c:326:25: warning: 'Label' may be used uninitialized [-Wmaybe-uninitialized]
+  326 |                         snprintf(str, sizeof(str), Format, *Label);
+      |                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../Core/Src/NAVSCreen.c:111:18: note: 'Label' was declared here
+  111 |         double * Label;
+      |                  ^~~~~
+../Core/Src/NAVSCreen.c:350:25: warning: 'Position' may be used uninitialized [-Wmaybe-uninitialized]
+  350 |                         configBgcolorLCD(Position, TRANSPARENTBG);
+      |                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../Core/Src/NAVSCreen.c:110:24: note: 'Position' was declared here
+  110 |         lcdCmdParam_id Position;
+      |                        ^~~~~~~~
+arm-none-eabi-gcc -o "temp_f4_dispaly.elf" @"objects.list"   -mcpu=cortex-m4 -T"D:\Projects\CDU\CDU_FW\temp_f4_dispaly\STM32F407VGTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="temp_f4_dispaly.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -u _printf_float -Wl,--start-group -lc -lm -Wl,--end-group
+C:/ST/STM32CubeIDE_1.14.1/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.win32_1.0.200.202406191623/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/bin/ld.exe: C:/ST/STM32CubeIDE_1.14.1/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.win32_1.0.200.202406191623/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libc_nano.a(libc_a-gettimeofdayr.o): in function `_gettimeofday_r':
+(.text._gettimeofday_r+0xe): warning: _gettimeofday is not implemented and will always fail
+Finished building target: temp_f4_dispaly.elf
+ 
+arm-none-eabi-size  temp_f4_dispaly.elf 
+arm-none-eabi-objdump -h -S temp_f4_dispaly.elf  > "temp_f4_dispaly.list"
+   text	   data	    bss	    dec	    hex	filename
+  42272	    536	   2232	  45040	   aff0	temp_f4_dispaly.elf
+Finished building: default.size.stdout
+ 
+Finished building: temp_f4_dispaly.list
+ 
+11:01:16 **** Incremental Build of configuration Debug for project temp_f4_dispaly ****
+make -j4 all 
+arm-none-eabi-gcc "../Core/Src/NAVSCreen.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F407xx -c -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/NAVSCreen.d" -MT"Core/Src/NAVSCreen.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/NAVSCreen.o"
+../Core/Src/NAVSCreen.c: In function 'NavScreenStateMachine':
+../Core/Src/NAVSCreen.c:263:41: warning: 'strncat' specified bound 1 equals source length [-Wstringop-overflow=]
+  263 |                                         strncat(text, ".", 1);
+      |                                         ^~~~~~~~~~~~~~~~~~~~~
+../Core/Src/NAVSCreen.c:283:52: warning: 'snprintf' output may be truncated before the last format character [-Wformat-truncation=]
+  283 |                 snprintf(txt, sizeof(txt), "S %0.3f", Params->Standby);
+      |                                                    ^
+../Core/Src/NAVSCreen.c:283:17: note: 'snprintf' output between 6 and 317 bytes into a destination of size 7
+  283 |                 snprintf(txt, sizeof(txt), "S %0.3f", Params->Standby);
+      |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../Core/Src/NAVSCreen.c:326:25: warning: 'Label' may be used uninitialized [-Wmaybe-uninitialized]
+  326 |                         snprintf(str, sizeof(str), Format, *Label);
+      |                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../Core/Src/NAVSCreen.c:111:18: note: 'Label' was declared here
+  111 |         double * Label;
+      |                  ^~~~~
+../Core/Src/NAVSCreen.c:350:25: warning: 'Position' may be used uninitialized [-Wmaybe-uninitialized]
+  350 |                         configBgcolorLCD(Position, TRANSPARENTBG);
+      |                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../Core/Src/NAVSCreen.c:110:24: note: 'Position' was declared here
+  110 |         lcdCmdParam_id Position;
+      |                        ^~~~~~~~
+arm-none-eabi-gcc -o "temp_f4_dispaly.elf" @"objects.list"   -mcpu=cortex-m4 -T"D:\Projects\CDU\CDU_FW\temp_f4_dispaly\STM32F407VGTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="temp_f4_dispaly.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -u _printf_float -Wl,--start-group -lc -lm -Wl,--end-group
+C:/ST/STM32CubeIDE_1.14.1/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.win32_1.0.200.202406191623/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/bin/ld.exe: C:/ST/STM32CubeIDE_1.14.1/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.win32_1.0.200.202406191623/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libc_nano.a(libc_a-gettimeofdayr.o): in function `_gettimeofday_r':
+(.text._gettimeofday_r+0xe): warning: _gettimeofday is not implemented and will always fail
+Finished building target: temp_f4_dispaly.elf
+ 
+arm-none-eabi-size  temp_f4_dispaly.elf 
+arm-none-eabi-objdump -h -S temp_f4_dispaly.elf  > "temp_f4_dispaly.list"
+   text	   data	    bss	    dec	    hex	filename
+  42272	    536	   2232	  45040	   aff0	temp_f4_dispaly.elf
+Finished building: default.size.stdout
+ 
+Finished building: temp_f4_dispaly.list
+ 
+11:03:04 **** Incremental Build of configuration Debug for project temp_f4_dispaly ****
+make -j4 all 
+arm-none-eabi-gcc "../Core/Src/NAVSCreen.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F407xx -c -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/NAVSCreen.d" -MT"Core/Src/NAVSCreen.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/NAVSCreen.o"
+../Core/Src/NAVSCreen.c: In function 'NavScreenStateMachine':
+../Core/Src/NAVSCreen.c:264:41: warning: 'strncat' specified bound 1 equals source length [-Wstringop-overflow=]
+  264 |                                         strncat(text, ".", 1);
+      |                                         ^~~~~~~~~~~~~~~~~~~~~
+../Core/Src/NAVSCreen.c:284:52: warning: 'snprintf' output may be truncated before the last format character [-Wformat-truncation=]
+  284 |                 snprintf(txt, sizeof(txt), "S %0.3f", Params->Standby);
+      |                                                    ^
+../Core/Src/NAVSCreen.c:284:17: note: 'snprintf' output between 6 and 317 bytes into a destination of size 7
+  284 |                 snprintf(txt, sizeof(txt), "S %0.3f", Params->Standby);
+      |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../Core/Src/NAVSCreen.c:327:25: warning: 'Label' may be used uninitialized [-Wmaybe-uninitialized]
+  327 |                         snprintf(str, sizeof(str), Format, *Label);
+      |                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../Core/Src/NAVSCreen.c:111:18: note: 'Label' was declared here
+  111 |         double * Label;
+      |                  ^~~~~
+../Core/Src/NAVSCreen.c:351:25: warning: 'Position' may be used uninitialized [-Wmaybe-uninitialized]
+  351 |                         configBgcolorLCD(Position, TRANSPARENTBG);
+      |                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../Core/Src/NAVSCreen.c:110:24: note: 'Position' was declared here
+  110 |         lcdCmdParam_id Position;
+      |                        ^~~~~~~~
+arm-none-eabi-gcc -o "temp_f4_dispaly.elf" @"objects.list"   -mcpu=cortex-m4 -T"D:\Projects\CDU\CDU_FW\temp_f4_dispaly\STM32F407VGTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="temp_f4_dispaly.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -u _printf_float -Wl,--start-group -lc -lm -Wl,--end-group
+C:/ST/STM32CubeIDE_1.14.1/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.win32_1.0.200.202406191623/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/bin/ld.exe: C:/ST/STM32CubeIDE_1.14.1/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.win32_1.0.200.202406191623/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libc_nano.a(libc_a-gettimeofdayr.o): in function `_gettimeofday_r':
+(.text._gettimeofday_r+0xe): warning: _gettimeofday is not implemented and will always fail
+Finished building target: temp_f4_dispaly.elf
+ 
+arm-none-eabi-size  temp_f4_dispaly.elf 
+arm-none-eabi-objdump -h -S temp_f4_dispaly.elf  > "temp_f4_dispaly.list"
+   text	   data	    bss	    dec	    hex	filename
+  42272	    536	   2232	  45040	   aff0	temp_f4_dispaly.elf
+Finished building: default.size.stdout
+ 
+Finished building: temp_f4_dispaly.list
+ 
+11:05:31 **** Incremental Build of configuration Debug for project temp_f4_dispaly ****
+make -j4 all 
+arm-none-eabi-gcc "../Core/Src/NAVSCreen.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F407xx -c -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/NAVSCreen.d" -MT"Core/Src/NAVSCreen.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/NAVSCreen.o"
+../Core/Src/NAVSCreen.c: In function 'NavScreenStateMachine':
+../Core/Src/NAVSCreen.c:225:24: warning: unused variable 'end_time' [-Wunused-variable]
+  225 |                 time_t end_time = time(NULL);
+      |                        ^~~~~~~~
+../Core/Src/NAVSCreen.c:264:41: warning: 'strncat' specified bound 1 equals source length [-Wstringop-overflow=]
+  264 |                                         strncat(text, ".", 1);
+      |                                         ^~~~~~~~~~~~~~~~~~~~~
+../Core/Src/NAVSCreen.c:284:52: warning: 'snprintf' output may be truncated before the last format character [-Wformat-truncation=]
+  284 |                 snprintf(txt, sizeof(txt), "S %0.3f", Params->Standby);
+      |                                                    ^
+../Core/Src/NAVSCreen.c:284:17: note: 'snprintf' output between 6 and 317 bytes into a destination of size 7
+  284 |                 snprintf(txt, sizeof(txt), "S %0.3f", Params->Standby);
+      |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../Core/Src/NAVSCreen.c:327:25: warning: 'Label' may be used uninitialized [-Wmaybe-uninitialized]
+  327 |                         snprintf(str, sizeof(str), Format, *Label);
+      |                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../Core/Src/NAVSCreen.c:111:18: note: 'Label' was declared here
+  111 |         double * Label;
+      |                  ^~~~~
+../Core/Src/NAVSCreen.c:351:25: warning: 'Position' may be used uninitialized [-Wmaybe-uninitialized]
+  351 |                         configBgcolorLCD(Position, TRANSPARENTBG);
+      |                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../Core/Src/NAVSCreen.c:110:24: note: 'Position' was declared here
+  110 |         lcdCmdParam_id Position;
+      |                        ^~~~~~~~
+arm-none-eabi-gcc -o "temp_f4_dispaly.elf" @"objects.list"   -mcpu=cortex-m4 -T"D:\Projects\CDU\CDU_FW\temp_f4_dispaly\STM32F407VGTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="temp_f4_dispaly.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -u _printf_float -Wl,--start-group -lc -lm -Wl,--end-group
+C:/ST/STM32CubeIDE_1.14.1/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.win32_1.0.200.202406191623/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/bin/ld.exe: C:/ST/STM32CubeIDE_1.14.1/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.win32_1.0.200.202406191623/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libc_nano.a(libc_a-gettimeofdayr.o): in function `_gettimeofday_r':
+(.text._gettimeofday_r+0xe): warning: _gettimeofday is not implemented and will always fail
+Finished building target: temp_f4_dispaly.elf
+ 
+arm-none-eabi-size  temp_f4_dispaly.elf 
+arm-none-eabi-objdump -h -S temp_f4_dispaly.elf  > "temp_f4_dispaly.list"
+   text	   data	    bss	    dec	    hex	filename
+  42272	    536	   2232	  45040	   aff0	temp_f4_dispaly.elf
+Finished building: default.size.stdout
+ 
+Finished building: temp_f4_dispaly.list
  

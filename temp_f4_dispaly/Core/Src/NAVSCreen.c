@@ -7,8 +7,7 @@
 
 #include "nextionlcd.h"
 #include "switches.h"
-#include "stdlib.h"
-#include "string.h"
+#include "common.h"
 
 bool flag = false;
 
@@ -83,14 +82,18 @@ returnStatus DispNAVscreen(NavParams * Params)
 returnStatus ChangeNavParam(NavParamNumber PNum, void * PVal){
 	char Text[50];
 
-	if(PNum == ActiveFreq){
+	if(PNum == ActiveFreq)
+	{
 		sprintf(Text, "A %f", *(float *)PVal);
 		UpdateParamLCD(Center2, Text);
 	}
-	if(PNum == StandbyFreq){
+	if(PNum == StandbyFreq)
+	{
 		sprintf(Text, "S %f", *(float *)PVal);
 		UpdateParamLCD(Left1, Text);
 	}
+
+	return success;
 }
 
 void swapFreq(double *param1, double *param2)
@@ -136,24 +139,24 @@ uint16_t NavScreenStateMachine(NavParams * Params){
 			NavScreenState = page0;
 		}
 
-		else if(soft_keysTest() == R1)
-		{
-			Position = Right1;
-			NavScreenState = RightSoftKey;
-
-			if(!(Params->page)){
-				Label = &Params->P1;
-				strncpy(Format, "P1 %0.3f", 9);
-			}else {
-				Label = &Params->P5;
-				strncpy(Format, "P5 %0.3f", 9);
-
-			}
-			configBgcolorLCD(Position, BLACKBG);
-			configfontcolorLCD(Position, WHITEFONT);
-			sprintf(Text, Format, * Label);
-			UpdateParamLCD(Center5, Text);
-		}
+//		else if(soft_keysTest() == R1)
+//		{
+//			Position = Right1;
+//			NavScreenState = RightSoftKey;
+//
+//			if(!(Params->page)){
+//				Label = &Params->P1;
+//				strncpy(Format, "P1 %0.3f", 9);
+//			}else {
+//				Label = &Params->P5;
+//				strncpy(Format, "P5 %0.3f", 9);
+//
+//			}
+//			configBgcolorLCD(Position, BLACKBG);
+//			configfontcolorLCD(Position, WHITEFONT);
+//			sprintf(Text, Format, * Label);
+//			UpdateParamLCD(Center5, Text);
+//		}
 
 		else if(soft_keysTest() == R2)
 		{
@@ -218,12 +221,26 @@ uint16_t NavScreenStateMachine(NavParams * Params){
 
 		char text[9];
 		bool decimal_added = 0;
+		time_t start_time = time(NULL);  // Initialize the timer
+		time_t end_time = time(NULL);
 
 //		sprintf(text, "S %f", Params->Standby);
 		snprintf(text, sizeof(text), "S %.3f", Params->Standby); // or "%.1f" if single decimal precision
 
+		char previous_value[9];
+		strncpy(previous_value, text, sizeof(previous_value));    // Store the initial value
+
 		while (ret != 0x004) // OK Button
 		{
+			// Check elapsed time
+			int diff = difftime(time(NULL), start_time);
+			if (diff >= 5)
+			{
+				strncpy(text, previous_value, sizeof(text));
+				UpdateParamLCD(Left1, text);
+				break;
+			}
+
 			ret = get_ScanKode_from_buffer();
 			char keyVal = decode_keycode(ret);
 			if (ret != 0)
@@ -254,13 +271,17 @@ uint16_t NavScreenStateMachine(NavParams * Params){
 					strncat(text, &keyChar, 1);
 					UpdateParamLCD(Left1, text);
 				}
+
+				// Reset the timer each time there's new input
+				start_time = time(NULL);
 			}
 		}
 //		volatile char * removeit = &text[2];
 		Params->Standby = atof(&text[2]); // remove s_ first
 		NavScreenState = idle;
+
 		char txt[7];
-		snprintf(txt, sizeof(txt), "S %f", Params->Standby);
+		snprintf(txt, sizeof(txt), "S %0.3f", Params->Standby);
 		UpdateParamLCD(Left1, txt);
 		configBgcolorLCD(Left1, TRANSPARENTBG);
 		configfontcolorLCD(Left1, BLACKFONT);
@@ -303,7 +324,7 @@ uint16_t NavScreenStateMachine(NavParams * Params){
 			configfontcolorLCD(Center5, WHITEFONT);
 
 			char str[10];
-			snprintf(str, sizeof(str), Format, * Label);
+			snprintf(str, sizeof(str), Format, *Label);
 			while(ret != 0x004) // OK Button
 			{
 				ret = get_ScanKode_from_buffer();

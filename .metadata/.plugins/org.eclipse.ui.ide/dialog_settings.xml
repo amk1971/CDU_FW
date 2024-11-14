@@ -9,6 +9,8 @@
 		<item key="SmartImportRootWizardPage.STORE_NESTED_PROJECTS" value="true"/>
 		<item key="SmartImportRootWizardPage.STORE_CONFIGURE_NATURES" value="true"/>
 		<list key="org.eclipse.ui.internal.wizards.datatransfer.SmartImportRootWizardPage.knownSources">
+			<item value="D:\Projects\CDU\CDU_FW\CDU_Cube"/>
+			<item value="D:\Projects\CDU\CDU_FW\CDU_Firmware_v1_11_02_2024"/>
 			<item value="D:\Projects\CDU\CDU_FW\temp_f4_dispaly"/>
 			<item value="D:\Projects\CDU\CDU_FW\cduFM"/>
 			<item value="D:\Projects\CDU\CDU_FW"/>
@@ -16,5 +18,9 @@
 			<item value="D:\Projects\CDU\CDU_FW\RCP_COM"/>
 			<item value="D:\Projects\CDU\CDU_FW\RCU_NAV_NoErrorMsg"/>
 		</list>
+	</section>
+	<section name="ChooseWorkspaceDialogSettings">
+		<item key="DIALOG_X_ORIGIN" value="544"/>
+		<item key="DIALOG_Y_ORIGIN" value="285"/>
 	</section>
 </section>
