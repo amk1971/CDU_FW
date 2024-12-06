@@ -1,5 +1,8 @@
 # Prerequisites
 *.d
+*.pmod
+*.xml
+*.index
 
 # Object files
 *.o
