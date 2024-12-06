@@ -3,6 +3,7 @@
 *.pmod
 *.xml
 *.index
+~$*
 
 # Object files
 *.o
