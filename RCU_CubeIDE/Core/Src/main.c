@@ -335,7 +335,14 @@ static void MX_UART4_Init(void)
     Error_Handler();
   }
   /* USER CODE BEGIN UART4_Init 2 */
+  // Enable RX interrupt
+      __HAL_UART_ENABLE_IT(&huart4, UART_IT_RXNE);
+      // Enable TX interrupt (disabled initially, enabled dynamically when sending)
+      __HAL_UART_ENABLE_IT(&huart4, UART_IT_TXE);
 
+      // Enable NVIC for UART IRQ
+      HAL_NVIC_SetPriority(UART4_IRQn, 0, 0);
+      HAL_NVIC_EnableIRQ(UART4_IRQn);
   /* USER CODE END UART4_Init 2 */
 
 }
@@ -368,7 +375,14 @@ static void MX_UART5_Init(void)
     Error_Handler();
   }
   /* USER CODE BEGIN UART5_Init 2 */
+  // Enable RX interrupt
+      __HAL_UART_ENABLE_IT(&huart5, UART_IT_RXNE);
+      // Enable TX interrupt (disabled initially, enabled dynamically when sending)
+      __HAL_UART_ENABLE_IT(&huart5, UART_IT_TXE);
 
+      // Enable NVIC for UART IRQ
+      HAL_NVIC_SetPriority(UART5_IRQn, 0, 0);
+      HAL_NVIC_EnableIRQ(UART5_IRQn);
   /* USER CODE END UART5_Init 2 */
 
 }
@@ -434,7 +448,14 @@ static void MX_USART2_UART_Init(void)
     Error_Handler();
   }
   /* USER CODE BEGIN USART2_Init 2 */
+  // Enable RX interrupt
+      __HAL_UART_ENABLE_IT(&huart2, UART_IT_RXNE);
+      // Enable TX interrupt (disabled initially, enabled dynamically when sending)
+      __HAL_UART_ENABLE_IT(&huart2, UART_IT_TXE);
 
+      // Enable NVIC for UART IRQ
+      HAL_NVIC_SetPriority(USART2_IRQn, 0, 0);
+      HAL_NVIC_EnableIRQ(USART2_IRQn);
   /* USER CODE END USART2_Init 2 */
 
 }
@@ -1616,7 +1637,7 @@ void PORTS_Task(void *pvParameters) {
 
 		// send message to serial port
 			txtlen = strlen(msg);
-			HAL_UART_Transmit(handle, msg, txtlen, 100);
+			HAL_UART_Transmit_IT(handle, msg, txtlen);
 		}
 
 		vTaskDelay(100);
