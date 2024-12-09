@@ -290,9 +290,11 @@ static void MX_USART2_UART_Init(void)
   {
     Error_Handler();
   }
+
+  //huart2.Instance->CR1 |= USART_CR1_FIFOEN;
   /* USER CODE BEGIN USART2_Init 2 */
   __HAL_UART_ENABLE_IT(&huart2, UART_IT_RXNE);
-  __HAL_UART_ENABLE_IT(&huart2, UART_IT_TXE);
+  //__HAL_UART_ENABLE_IT(&huart2, UART_IT_TXE);
 
   HAL_NVIC_SetPriority(USART2_IRQn, 0, 0);
   HAL_NVIC_EnableIRQ(USART2_IRQn);

@@ -160,26 +160,37 @@ void RCC_CRS_IRQHandler(void)
 void USART2_IRQHandler(void)
 {
   /* USER CODE BEGIN USART2_IRQn 0 */
-
-	if (__HAL_UART_GET_FLAG(&huart2, UART_FLAG_RXNE) != RESET)
+volatile uint32_t Source = huart2.Instance->ISR;
+	if (__HAL_UART_GET_IT(&huart2, UART_IT_RXNE))
 	{
-		BuffUART2.RXbuffer[BuffUART2.RXindex++] = huart2.Instance->RDR;// USART2->DR;
+		BuffUART2.RXbuffer[BuffUART2.RXindex++] = huart2.Instance->RDR & 0x0FF;// USART2->DR;
 		BuffUART2.RXindex &= BUFLENMASK;
 		BuffUART2.RXbuffer[BuffUART2.RXindex] = 0;         	// truncate string
+
+		__HAL_UART_CLEAR_IT(&huart2, UART_IT_RXNE);
 	}
 
-	if (__HAL_UART_GET_IT_SOURCE(&huart2, UART_IT_TXE) != RESET)
+	if (__HAL_UART_GET_IT_SOURCE(&huart2, UART_IT_ORE) )
+	{
+
+		__HAL_UART_CLEAR_IT(&huart2, UART_IT_ORE);
+	}
+
+
+	if (__HAL_UART_GET_IT(&huart2, UART_IT_TXE) )
 	{
 		if (BuffUART2.TXindex == BuffUART2.LoadIndex)		// all buffer chars sent
 			{
 				__HAL_UART_DISABLE_IT(&huart2, UART_IT_TXE);
-				__HAL_UART_ENABLE_IT(&huart2, UART_IT_TC);
-
+				//__HAL_UART_ENABLE_IT(&huart2, UART_IT_TC);
+				BuffUART2.LoadIndex = 0;
+				BuffUART2.TXindex = 0;
 			}
-		else		// pending chars in buffer
+		else		// pending chars in buffe0xffr
 			{
 				huart2.Instance->TDR = (uint8_t)BuffUART2.TXbuffer[BuffUART2.TXindex++];
 			}
+		__HAL_UART_CLEAR_IT(&huart2, UART_IT_TXE);
 	}
 
 	if (__HAL_UART_GET_IT_SOURCE(&huart2, UART_IT_TC) != RESET)
@@ -187,6 +198,7 @@ void USART2_IRQHandler(void)
 		BuffUART2.LoadIndex = 0;
 		BuffUART2.TXindex = 0;
 		__HAL_UART_DISABLE_IT(&huart2, UART_IT_TC);
+		__HAL_UART_CLEAR_IT(&huart2, 0xffffffff);
 	}
 
 	return;		// by-pass default handler
