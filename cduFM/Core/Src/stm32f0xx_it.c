@@ -51,7 +51,7 @@
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-
+extern SerialStruct BuffUART2;
 /* USER CODE END 0 */
 
 /* External variables --------------------------------------------------------*/
@@ -160,6 +160,37 @@ void RCC_CRS_IRQHandler(void)
 void USART2_IRQHandler(void)
 {
   /* USER CODE BEGIN USART2_IRQn 0 */
+
+	if (__HAL_UART_GET_FLAG(&huart2, UART_FLAG_RXNE) != RESET)
+	{
+		BuffUART2.RXbuffer[BuffUART2.RXindex++] = huart2.Instance->TDR;// USART2->DR;
+		BuffUART2.RXindex &= BUFLENMASK;
+		BuffUART2.RXbuffer[BuffUART2.RXindex] = 0;         	// truncate string
+	}
+
+	if (__HAL_UART_GET_IT_SOURCE(&huart2, UART_IT_TXE) != RESET)
+	{
+		if (BuffUART2.TXindex == BuffUART2.LoadIndex)		// all buffer chars sent
+			{
+				__HAL_UART_DISABLE_IT(&huart2, UART_IT_TXE);
+				__HAL_UART_ENABLE_IT(&huart2, UART_IT_TC);
+
+			}
+		else		// pending chars in buffer
+			{
+				huart2.Instance->RDR = (uint8_t)BuffUART2.TXbuffer[BuffUART2.TXindex++];
+			}
+	}
+
+	if (__HAL_UART_GET_IT_SOURCE(&huart2, UART_IT_TC) != RESET)
+	{
+		BuffUART2.LoadIndex = 0;
+		BuffUART2.TXindex = 0;
+		__HAL_UART_DISABLE_IT(&huart2, UART_IT_TC);
+	}
+
+	return;		// by-pass default handler
+
 
   /* USER CODE END USART2_IRQn 0 */
   HAL_UART_IRQHandler(&huart2);

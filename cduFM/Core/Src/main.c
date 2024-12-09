@@ -43,6 +43,8 @@
 UART_HandleTypeDef huart2;
 UART_HandleTypeDef huart3;
 
+SerialStruct BuffUART2;
+
 //uint16_t keyRead;
 NavParams NavScreenParams;
 extern lcdCmdDisp_id currentScreen;
@@ -69,6 +71,8 @@ static void MX_USART3_UART_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+
+
 
 /* USER CODE END 0 */
 
@@ -260,7 +264,11 @@ static void MX_USART2_UART_Init(void)
     Error_Handler();
   }
   /* USER CODE BEGIN USART2_Init 2 */
+  __HAL_UART_ENABLE_IT(&huart2, UART_IT_RXNE);
+  __HAL_UART_ENABLE_IT(&huart2, UART_IT_TXE);
 
+  HAL_NVIC_SetPriority(USART2_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(USART2_IRQn);
   /* USER CODE END USART2_Init 2 */
 
 }

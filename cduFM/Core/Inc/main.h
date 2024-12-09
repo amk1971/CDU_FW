@@ -28,6 +28,7 @@ extern "C" {
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f0xx_hal.h"
+#include "common.h"
 #include "nextionLcd.h"
 #include "switches.h"
 
