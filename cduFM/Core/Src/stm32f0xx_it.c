@@ -163,7 +163,7 @@ void USART2_IRQHandler(void)
 
 	if (__HAL_UART_GET_FLAG(&huart2, UART_FLAG_RXNE) != RESET)
 	{
-		BuffUART2.RXbuffer[BuffUART2.RXindex++] = huart2.Instance->TDR;// USART2->DR;
+		BuffUART2.RXbuffer[BuffUART2.RXindex++] = huart2.Instance->RDR;// USART2->DR;
 		BuffUART2.RXindex &= BUFLENMASK;
 		BuffUART2.RXbuffer[BuffUART2.RXindex] = 0;         	// truncate string
 	}
@@ -178,7 +178,7 @@ void USART2_IRQHandler(void)
 			}
 		else		// pending chars in buffer
 			{
-				huart2.Instance->RDR = (uint8_t)BuffUART2.TXbuffer[BuffUART2.TXindex++];
+				huart2.Instance->TDR = (uint8_t)BuffUART2.TXbuffer[BuffUART2.TXindex++];
 			}
 	}
 

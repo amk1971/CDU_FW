@@ -72,7 +72,34 @@ static void MX_USART3_UART_Init(void);
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 
+void UART_SendString(SerialStruct * BuffUART, const char *str, int NumChar) {
 
+	uint8_t n = 0;
+
+	BuffUART->TXbuflen = NumChar;//= strlen(str);
+	while (BuffUART->TXbuflen > (MAXBUFLEN - BuffUART->LoadIndex)) ;
+
+	while (BuffUART->TXbuflen--)
+	{
+		BuffUART->TXbuffer[BuffUART->LoadIndex++] = str[n++];
+	}
+
+	// Start transmission if this is first byte in buffer
+	if(BuffUART->TXindex == 0)
+	{
+		huart2.Instance->TDR = BuffUART->TXbuffer[BuffUART->TXindex++];
+		__HAL_UART_ENABLE_IT(&huart2, UART_IT_TXE);
+	}
+
+    //uint16_t len = strlen(str);
+    //for (uint16_t i = 0; i < len; i++) {
+    //    uint16_t BuffUART.next_head = (tx_head + 1) % UART_BUFFER_SIZE;
+    //    while (next_head == tx_tail); // Wait if buffer is full
+    //    tx_buffer[tx_head] = str[i];
+    //    tx_head = next_head;
+    //}
+    //__HAL_UART_ENABLE_IT(&huart1, UART_IT_TXE); // Enable TXE interrupt
+}
 
 /* USER CODE END 0 */
 
