@@ -51,7 +51,7 @@
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-
+extern SerialStruct BuffUART2;
 /* USER CODE END 0 */
 
 /* External variables --------------------------------------------------------*/
@@ -204,13 +204,58 @@ void SysTick_Handler(void)
   */
 void USART2_IRQHandler(void)
 {
-  /* USER CODE BEGIN USART2_IRQn 0 */
+	  /* USER CODE BEGIN USART2_IRQn 0 */
+	volatile uint32_t Source = huart2.Instance->SR;
+		if (huart2.Instance->SR & USART_SR_RXNE)
+		{
+			BuffUART2.RXbuffer[BuffUART2.RXindex++] = huart2.Instance->DR & 0x0FF;// USART2->DR;
+			BuffUART2.RXindex &= BUFLENMASK;
+			BuffUART2.RXbuffer[BuffUART2.RXindex] = 0;         	// truncate string
 
-  /* USER CODE END USART2_IRQn 0 */
-  HAL_UART_IRQHandler(&huart2);
-  /* USER CODE BEGIN USART2_IRQn 1 */
+//			__HAL_UART_CLEAR_IT(&huart2, UART_IT_RXNE);   don't need to clear UART_IT_RXNE manually; it's automatically handled by hardware when you read the data.
+		}
 
-  /* USER CODE END USART2_IRQn 1 */
+//		if (__HAL_UART_GET_IT_SOURCE(&huart2, UART_IT_ORE) )
+//		{
+//
+//			__HAL_UART_CLEAR_IT(&huart2, UART_IT_ORE);
+//		}
+
+
+		if (huart2.Instance->SR & USART_SR_TXE)
+		{
+			if (BuffUART2.TXindex == BuffUART2.LoadIndex)		// all buffer chars sent
+				{
+//					__HAL_UART_DISABLE_IT(&huart2, UART_IT_TXE);
+				huart2.Instance->CR1 &= ~USART_CR1_TXEIE;
+					//__HAL_UART_ENABLE_IT(&huart2, UART_IT_TC);
+					BuffUART2.LoadIndex = 0;
+					BuffUART2.TXindex = 0;
+				}
+			else		// pending chars in buffe0xffr
+				{
+					huart2.Instance->DR = (uint8_t)BuffUART2.TXbuffer[BuffUART2.TXindex++];
+				}
+//			__HAL_UART_CLEAR_IT(&huart2, UART_IT_TXE);
+//			USARTx->CR1 &= ~USART_CR1_TXEIE;
+		}
+
+//		if (__HAL_UART_GET_IT_SOURCE(&huart2, UART_IT_TC) != RESET)
+//		{
+//			BuffUART2.LoadIndex = 0;
+//			BuffUART2.TXindex = 0;
+//			__HAL_UART_DISABLE_IT(&huart2, UART_IT_TC);
+//			__HAL_UART_CLEAR_IT(&huart2, 0xffffffff);
+//		}
+
+		return;		// by-pass default handler
+
+
+	  /* USER CODE END USART2_IRQn 0 */
+	  HAL_UART_IRQHandler(&huart2);
+	  /* USER CODE BEGIN USART2_IRQn 1 */
+
+	  /* USER CODE END USART2_IRQn 1 */
 }
 
 /**

@@ -167,14 +167,14 @@ volatile uint32_t Source = huart2.Instance->ISR;
 		BuffUART2.RXindex &= BUFLENMASK;
 		BuffUART2.RXbuffer[BuffUART2.RXindex] = 0;         	// truncate string
 
-		__HAL_UART_CLEAR_IT(&huart2, UART_IT_RXNE);
+//		__HAL_UART_CLEAR_IT(&huart2, UART_IT_RXNE);
 	}
 
-	if (__HAL_UART_GET_IT_SOURCE(&huart2, UART_IT_ORE) )
-	{
-
-		__HAL_UART_CLEAR_IT(&huart2, UART_IT_ORE);
-	}
+//	if (__HAL_UART_GET_IT_SOURCE(&huart2, UART_IT_ORE) )
+//	{
+//
+//		__HAL_UART_CLEAR_IT(&huart2, UART_IT_ORE);
+//	}
 
 
 	if (__HAL_UART_GET_IT(&huart2, UART_IT_TXE) )
@@ -190,16 +190,16 @@ volatile uint32_t Source = huart2.Instance->ISR;
 			{
 				huart2.Instance->TDR = (uint8_t)BuffUART2.TXbuffer[BuffUART2.TXindex++];
 			}
-		__HAL_UART_CLEAR_IT(&huart2, UART_IT_TXE);
+//		__HAL_UART_CLEAR_IT(&huart2, UART_IT_TXE);
 	}
 
-	if (__HAL_UART_GET_IT_SOURCE(&huart2, UART_IT_TC) != RESET)
-	{
-		BuffUART2.LoadIndex = 0;
-		BuffUART2.TXindex = 0;
-		__HAL_UART_DISABLE_IT(&huart2, UART_IT_TC);
-		__HAL_UART_CLEAR_IT(&huart2, 0xffffffff);
-	}
+//	if (__HAL_UART_GET_IT_SOURCE(&huart2, UART_IT_TC) != RESET)
+//	{
+//		BuffUART2.LoadIndex = 0;
+//		BuffUART2.TXindex = 0;
+//		__HAL_UART_DISABLE_IT(&huart2, UART_IT_TC);
+//		__HAL_UART_CLEAR_IT(&huart2, 0xffffffff);
+//	}
 
 	return;		// by-pass default handler
 
