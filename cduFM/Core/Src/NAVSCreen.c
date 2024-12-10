@@ -104,7 +104,7 @@ uint16_t NavScreenStateMachine(NavParams * Params){
 
 	uint16_t ret;
 	static char lblText[20];
-	lcdCmdParam_id Position;
+	static lcdCmdParam_id Position;
 	static double * Label;
 	static char Format[20];
 	softKey_t softkey;

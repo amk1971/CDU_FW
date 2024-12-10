@@ -57,7 +57,7 @@ extern "C" {
 /* Exported functions prototypes ---------------------------------------------*/
 void Error_Handler(void);
 void UART_SendString(SerialStruct * BuffUART, const char *str, int NumChar);
-
+softKey_t check_soft_keys(void);
 /* USER CODE BEGIN EFP */
 
 /* USER CODE END EFP */
