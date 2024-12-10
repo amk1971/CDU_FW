@@ -105,15 +105,16 @@ uint16_t NavScreenStateMachine(NavParams * Params){
 	uint16_t ret;
 	char Text[20];
 	lcdCmdParam_id Position;
-	double * Label;
-	char Format[20];
+	static double * Label;
+	static char Format[20];
+	softKey_t softkey;
 
 	ret = get_ScanKode_from_buffer();
-
+	softkey = check_soft_keys();
 	switch (NavScreenState){
 	case Idle:
 
-		if(soft_keysTest() == L1)
+		if(softkey == L1)
 		{
 			NavScreenState = StandByEdit;
 			configBgcolorLCD(Left1, BLACKBG);
@@ -136,7 +137,7 @@ uint16_t NavScreenStateMachine(NavParams * Params){
 			NavScreenState = page0;
 		}
 
-		else if(soft_keysTest() == R1)
+		else if(softkey == R1)
 		{
 			Position = Right1;
 			NavScreenState = RightSoftKey;
@@ -155,7 +156,7 @@ uint16_t NavScreenStateMachine(NavParams * Params){
 			UpdateParamLCD(Center5, Text);
 		}
 
-		else if(soft_keysTest() == R2)
+		else if(softkey == R2)
 		{
 			Position = Right2;
 			NavScreenState = RightSoftKey;
@@ -174,7 +175,7 @@ uint16_t NavScreenStateMachine(NavParams * Params){
 			UpdateParamLCD(Center5, Text);
 		}
 
-		else if(soft_keysTest() == R3)
+		else if(softkey == R3)
 		{
 			Position = Right3;
 			NavScreenState = RightSoftKey;
@@ -193,7 +194,7 @@ uint16_t NavScreenStateMachine(NavParams * Params){
 			UpdateParamLCD(Center5, Text);
 		}
 
-		else if(soft_keysTest() == R4)
+		else if(softkey == R4)
 		{
 			Position = Right4;
 			NavScreenState = RightSoftKey;
@@ -295,7 +296,7 @@ uint16_t NavScreenStateMachine(NavParams * Params){
 
 
 //		ret = get_ScanKode_from_buffer();
-		if(soft_keysTest() == L4)
+		if(softkey == L4)
 		{
 			UpdateParamLCD(Center4, "PROG");
 
@@ -310,7 +311,7 @@ uint16_t NavScreenStateMachine(NavParams * Params){
 
 
 				int len = strlen(str);
-				if(ret == 0x110) // using B button instead of BACK
+				if((ret == 0x110) || (ret == 001)) // using B button instead of BACK
 				{
 					if (len > 2)
 					{

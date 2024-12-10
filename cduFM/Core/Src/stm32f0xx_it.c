@@ -170,11 +170,11 @@ volatile uint32_t Source = huart2.Instance->ISR;
 //		__HAL_UART_CLEAR_IT(&huart2, UART_IT_RXNE);
 	}
 
-//	if (__HAL_UART_GET_IT_SOURCE(&huart2, UART_IT_ORE) )
-//	{
-//
-//		__HAL_UART_CLEAR_IT(&huart2, UART_IT_ORE);
-//	}
+	if (huart2.Instance->ISR & (1<<(UART_IT_ORE>>8 & 0x1F)))
+	{
+		//__HAL_UART_CLEAR_IT(&huart2, UART_IT_ORE);
+		huart2.Instance->ICR = 8;
+	}
 
 
 	if (__HAL_UART_GET_IT(&huart2, UART_IT_TXE) )

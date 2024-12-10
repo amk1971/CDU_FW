@@ -215,7 +215,7 @@ uint16_t get_ScanKode_from_buffer(void ){
 	return 0;
 }
 
-softKey_t soft_keysTest(void)
+softKey_t check_soft_keys(void)
 {
 	softkey = idle;
 	static char  pval = 0, val = 0;
@@ -224,27 +224,27 @@ softKey_t soft_keysTest(void)
 	{
 		// i am here
 		val = 1;
-		softkey = R1;
+		softkey = R4;
 	}
 
 	if(!(HAL_GPIO_ReadPin(Right_SW2_GPIO_Port, Right_SW2_Pin)))
 	{
 		// i am here
 		val = 2;
-		softkey = R2;
+		softkey = R3;
 	}
 	if(!(HAL_GPIO_ReadPin(Right_SW3_GPIO_Port, Right_SW3_Pin)))
 	{
 		// i am here
 		val = 3;
-		softkey = R3;
+		softkey = R2;
 	}
 
 	if(!(HAL_GPIO_ReadPin(Right_SW4_GPIO_Port, Right_SW4_Pin)))
 	{
 		// i am here
 		val = 4;
-		softkey = R4;
+		softkey = R1;
 	}
 
 	if(!(HAL_GPIO_ReadPin(Left_SW1_GPIO_Port, Left_SW1_Pin)))

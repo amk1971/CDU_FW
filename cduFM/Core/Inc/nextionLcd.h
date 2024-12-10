@@ -21,6 +21,7 @@
 typedef enum
 {
 	lcdDisp_home = 0,
+	lcdWaitForSW,
 	lcdDisp_nav,
 	lcdDisp_com,
 	lcdDisp_tacan,

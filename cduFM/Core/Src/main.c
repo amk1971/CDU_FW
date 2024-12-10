@@ -47,7 +47,7 @@ SerialStruct BuffUART2;
 
 //uint16_t keyRead;
 NavParams NavScreenParams;
-extern lcdCmdDisp_id currentScreen;
+extern lcdCmdDisp_id currentScreen, NextScreen;
 extern softKey_t softkey;
 
 extern MkeyStatus_t MkeyStatus;
@@ -110,6 +110,7 @@ void UART_SendString(SerialStruct * BuffUART, const char *str, int NumChar) {
 int main(void)
 {
 
+	softKey_t softKey;
   /* USER CODE BEGIN 1 */
 
   /* USER CODE END 1 */
@@ -148,24 +149,31 @@ int main(void)
   KeyS_init();
   while (1)
   {
+	  softKey = check_soft_keys();
 	  switch(currentScreen)
 	  {
 	  case lcdDisp_home:
-		  if(soft_keysTest() == L1)
+		  if(softkey == L1)
 		  {
-			  currentScreen = lcdDisp_nav;
+			  currentScreen = lcdWaitForSW;
+			  NextScreen = lcdDisp_nav;
 			  DispNAVscreen(&NavScreenParams);
 		  }
-		  if(soft_keysTest() == L2)
+		  if(softkey == L2)
 		  {
-			  currentScreen = lcdDisp_adf;
+			  currentScreen = lcdWaitForSW;
+			  NextScreen = lcdDisp_adf;
 			  DispADFscreen();
 		  }
-		  if(soft_keysTest() == L3)
+		  if(softkey == L3)
 		  {
-			  currentScreen = lcdDisp_tacan;
+			  currentScreen = lcdWaitForSW;
+			  NextScreen = lcdDisp_tacan;
 			  DispTACANscreen();
 		  }
+		  break;
+	  case lcdWaitForSW:
+		  if (softkey == idle) currentScreen = NextScreen;
 		  break;
 
 	  case lcdDisp_nav:

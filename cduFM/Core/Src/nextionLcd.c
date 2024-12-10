@@ -20,7 +20,7 @@ extern UART_HandleTypeDef LCDUart;
 returnStatus DispTACANscreen(void);
 returnStatus DispADFscreen(void);
 
-lcdCmdDisp_id currentScreen;
+lcdCmdDisp_id currentScreen, NextScreen;
 
 uint16_t TIMEOUT = 1000;
 uint8_t endCmd[3] = {0xff, 0xff, 0xff};
@@ -130,9 +130,9 @@ returnStatus DispHomeScreen(void)
 	configBgcolorLCD(Right3, TRANSPARENTBG);
 	configfontcolorLCD(Right3, REDFONT);
 
-	//UpdateParamLCD(Right4, "");
-	//configBgcolorLCD(Right4, TRANSPARENTBG);
-	//configfontcolorLCD(Right4, BLACKFONT);
+	UpdateParamLCD(Right4, "");
+	configBgcolorLCD(Right4, TRANSPARENTBG);
+	configfontcolorLCD(Right4, BLACKFONT);
 
 	return success;
 }
