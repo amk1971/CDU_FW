@@ -103,7 +103,7 @@ void swapFreq(double *param1, double *param2)
 uint16_t NavScreenStateMachine(NavParams * Params){
 
 	uint16_t ret;
-	char Text[20];
+	static char lblText[20];
 	lcdCmdParam_id Position;
 	static double * Label;
 	static char Format[20];
@@ -152,8 +152,8 @@ uint16_t NavScreenStateMachine(NavParams * Params){
 			}
 			configBgcolorLCD(Position, BLACKBG);
 			configfontcolorLCD(Position, WHITEFONT);
-			sprintf(Text, Format, * Label);
-			UpdateParamLCD(Center5, Text);
+			sprintf(lblText, Format, * Label);
+			UpdateParamLCD(Center5, lblText);
 		}
 
 		else if(softkey == R2)
@@ -171,8 +171,8 @@ uint16_t NavScreenStateMachine(NavParams * Params){
 			}
 			configBgcolorLCD(Position, BLACKBG);
 			configfontcolorLCD(Position, WHITEFONT);
-			sprintf(Text, Format, * Label);
-			UpdateParamLCD(Center5, Text);
+			sprintf(lblText, Format, * Label);
+			UpdateParamLCD(Center5, lblText);
 		}
 
 		else if(softkey == R3)
@@ -190,8 +190,8 @@ uint16_t NavScreenStateMachine(NavParams * Params){
 			}
 			configBgcolorLCD(Position, BLACKBG);
 			configfontcolorLCD(Position, WHITEFONT);
-			sprintf(Text, Format, * Label);
-			UpdateParamLCD(Center5, Text);
+			sprintf(lblText, Format, * Label);
+			UpdateParamLCD(Center5, lblText);
 		}
 
 		else if(softkey == R4)
@@ -209,8 +209,8 @@ uint16_t NavScreenStateMachine(NavParams * Params){
 			}
 			configBgcolorLCD(Position, BLACKBG);
 			configfontcolorLCD(Position, WHITEFONT);
-			sprintf(Text, Format, * Label);
-			UpdateParamLCD(Center5, Text);
+			sprintf(lblText, Format, * Label);
+			UpdateParamLCD(Center5, lblText);
 		}
 
 		break;
@@ -303,8 +303,9 @@ uint16_t NavScreenStateMachine(NavParams * Params){
 			configBgcolorLCD(Center5, BLACKBG);
 			configfontcolorLCD(Center5, WHITEFONT);
 
-			char str[10];
-			snprintf(str, sizeof(str), Format, * Label);
+			char str[20];
+			//snprintf(str, sizeof(str), Format, * Label);
+			strncpy(str, lblText, sizeof(str));
 			while(ret != 0x004) // OK Button
 			{
 				ret = get_ScanKode_from_buffer();
@@ -344,8 +345,8 @@ uint16_t NavScreenStateMachine(NavParams * Params){
 			NavScreenState = idle;
 
 			Params->Standby = * Label;
-			sprintf(Text, "S %f", Params->Standby);
-			UpdateParamLCD(Left1, Text);
+			sprintf(lblText, "S %f", Params->Standby);
+			UpdateParamLCD(Left1, lblText);
 
 			configBgcolorLCD(Position, TRANSPARENTBG);
 			configfontcolorLCD(Position, BLACKFONT);

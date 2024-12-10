@@ -81,7 +81,7 @@ returnStatus DispADFscreen(void)
 
 returnStatus DispHomeScreen(void)
 {
-	UpdateParamLCD(Left1, "aNAV");
+	UpdateParamLCD(Left1, "NAV");
 	HAL_Delay(50);
 	configBgcolorLCD(Left1, TRANSPARENTBG);
 	configfontcolorLCD(Left1, BLACKFONT);
