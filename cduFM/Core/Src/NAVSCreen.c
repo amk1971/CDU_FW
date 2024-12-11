@@ -108,6 +108,7 @@ uint16_t NavScreenStateMachine(NavParams * Params){
 	static double * Label;
 	static char Format[20];
 	softKey_t softkey;
+	bool decimal_added = 0;
 
 	ret = get_ScanKode_from_buffer();
 	softkey = check_soft_keys();
@@ -218,7 +219,7 @@ uint16_t NavScreenStateMachine(NavParams * Params){
 	case StandByEdit:
 
 		char text[9];
-		bool decimal_added = 0;
+
 
 //		sprintf(text, "S %f", Params->Standby);
 		snprintf(text, sizeof(text), "S %.3f", Params->Standby); // or "%.1f" if single decimal precision
@@ -306,11 +307,12 @@ uint16_t NavScreenStateMachine(NavParams * Params){
 			char str[20];
 			//snprintf(str, sizeof(str), Format, * Label);
 			strncpy(str, lblText, sizeof(str));
+			static uint32_t curTickValue;// = HAL_GetTick();
 			while(ret != 0x004) // OK Button
 			{
 				ret = get_ScanKode_from_buffer();
 				char keyVal = decode_keycode(ret);
-
+				if (ret == 0) curTickValue = HAL_GetTick() - 100;
 				int len = strlen(str);
 				if((ret == 0x110) || (ret == 001)) // using B button instead of BACK
 				{
@@ -321,15 +323,19 @@ uint16_t NavScreenStateMachine(NavParams * Params){
 					}
 					UpdateParamLCD(Center5, str);
 				}
-				else if (ret >= 0x30 && ret <= 0x39 && len < 9)
+				else if ((ret == 0x408) && (!decimal_added) && (len < 9) &&
+						((HAL_GetTick() - curTickValue) > 100))
 				{
-					char keyChar = (char) ret;
-					strncat(str, &keyChar, 1);
-					UpdateParamLCD(Center5, str);
+					curTickValue = HAL_GetTick();
+					strncat(text, ".", 1);
+					decimal_added = 1;
+					UpdateParamLCD(Center5, text);
 				}
-				else if (keyVal >= '0' && keyVal <= '9' && len < 9)
+				else if ((keyVal >= '0') && (keyVal <= '9') && (len < 9) &&
+						((HAL_GetTick() - curTickValue) > 100))
 				{
-					char keyChar = (char) keyVal;
+					char keyChar[2] = {(char) keyVal, 0};
+					curTickValue = HAL_GetTick();
 					strncat(str, &keyChar, 1);
 					UpdateParamLCD(Center5, str);
 				}
