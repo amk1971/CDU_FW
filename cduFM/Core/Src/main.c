@@ -44,6 +44,7 @@ UART_HandleTypeDef huart2;
 UART_HandleTypeDef huart3;
 
 SerialStruct BuffUART2;
+SerialStruct BuffUART3;
 
 //uint16_t keyRead;
 NavParams NavScreenParams;
@@ -72,12 +73,12 @@ static void MX_USART3_UART_Init(void);
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 
-void UART_SendString(SerialStruct * BuffUART, const char *str, int NumChar) {
+void UART_SendString(UART_HandleTypeDef *huart, SerialStruct * BuffUART, const char *str, int NumChar) {
 
 	uint8_t n = 0;
 
 	BuffUART->TXbuflen = NumChar;//= strlen(str);
-	while (BuffUART->TXbuflen > (MAXBUFLEN - BuffUART->LoadIndex)) ;
+	while (BuffUART->TXbuflen > (MAXBUFLEN - BuffUART->LoadIndex));
 
 	while (BuffUART->TXbuflen--)
 	{
@@ -87,8 +88,16 @@ void UART_SendString(SerialStruct * BuffUART, const char *str, int NumChar) {
 	// Start transmission if this is first byte in buffer
 	if(BuffUART->TXindex == 0)
 	{
-		huart2.Instance->TDR = BuffUART->TXbuffer[BuffUART->TXindex++];
-		__HAL_UART_ENABLE_IT(&huart2, UART_IT_TXE);
+		if (huart->Instance == USART2)
+		{
+			huart2.Instance->TDR = BuffUART->TXbuffer[BuffUART->TXindex++];
+			__HAL_UART_ENABLE_IT(&huart2, UART_IT_TXE);
+		}
+		else if (huart->Instance == USART3)
+		{
+			huart3.Instance->TDR = BuffUART->TXbuffer[BuffUART->TXindex++];
+			__HAL_UART_ENABLE_IT(&huart3, UART_IT_TXE);
+		}
 	}
 
     //uint16_t len = strlen(str);
@@ -101,6 +110,59 @@ void UART_SendString(SerialStruct * BuffUART, const char *str, int NumChar) {
     //__HAL_UART_ENABLE_IT(&huart1, UART_IT_TXE); // Enable TXE interrupt
 }
 
+void ConvertFloatToInt(float num, int *MHz, int *kHz) {
+	*MHz = (int)num; // Integer part as MHz
+	*kHz = (int)((num - *MHz) * 1000); // Fractional part as kHz
+
+	// Ensure kHz is scaled correctly (e.g., 108.4 -> 4 kHz)
+	if (*kHz % 100 == 0) {
+		*kHz /= 100; // Scale down to ensure 4 instead of 400
+	}
+	if (*kHz % 25 == 0) {
+	        *kHz /= 10; // Scale down to ensure 4 instead of 400
+	    }
+}
+
+void concatTwoChars(char* base, const char* woo) {
+    while (*base) { // Move to the end of the base string
+        base++;
+    }
+    while (*woo) { // Copy the characters from toAdd
+        *base = *woo;
+        base++;
+        woo++;
+    }
+    *base = '\0'; // Null terminate the resulting string
+}
+
+void Sender2rcu(int mode) { //TODO				construct and send a message (likely over UART)
+    char crlf[] = {'\r','\n', 0};
+    uint8_t str2[25]; // Array to hold the constructed string in ASCII
+
+    memset(str2, 0, sizeof(str2)); // Initialize the array with zeros
+
+    if (mode == 0) {
+        char m = 'a';
+        char k = 'f';
+        snprintf((char*)str2, sizeof(str2), "$PATNV27%c%cN", m, k);
+        char end2[3];
+//        checksum((char*)str2, end2);
+        concatTwoChars((char*)str2, end2);
+        concatTwoChars((char*)str2, crlf);
+    } else if (mode == 1) {
+    	char m = 's';
+    	char k = 'f';
+        snprintf((char*)str2, sizeof(str2), "$PATNV28%c%cN", m, k);
+        char end3[3];
+//        checksum((char*)str2, end3);
+        concatTwoChars((char*)str2, end3);
+        concatTwoChars((char*)str2, crlf);
+    }
+
+    HAL_UART_Transmit_IT(&huart3, str2, strlen((char*)str2));
+//    HAL_Delay(100);
+}
+
 /* USER CODE END 0 */
 
 /**
@@ -110,7 +172,7 @@ void UART_SendString(SerialStruct * BuffUART, const char *str, int NumChar) {
 int main(void)
 {
 
-	softKey_t softKey;
+  softKey_t softKey;
   /* USER CODE BEGIN 1 */
 
   /* USER CODE END 1 */
@@ -137,12 +199,19 @@ int main(void)
   MX_USART3_UART_Init();
 
   NavScreenParams.Active = 118.0;
+  NavScreenParams.MHz = 118;
+  NavScreenParams.KHz = 0;
   NavScreenParams.Standby = 108.4;
+  NavScreenParams.mhz = 108;
+  NavScreenParams.khz = 4;
   NavScreenParams.page = false; // means page0
   NavScreenParams.P1 = 123.45;
   NavScreenParams.P3 = 354.85;
   NavScreenParams.P6 = 534.15;
   NavScreenParams.P8 = 878.98;
+
+  static float freq_last = 118.0;
+  static float sfreq_last = 108.4;
 
   InitializeLCD();
   //Matrix_keypad_Basic_test();
@@ -172,14 +241,28 @@ int main(void)
 			  DispTACANscreen();
 		  }
 		  break;
+
 	  case lcdWaitForSW:
 		  if (softkey == idle) currentScreen = NextScreen;
+
 		  break;
 
 	  case lcdDisp_nav:
 		  //MkeyStatus = keyPad_Scan();
 
 		  key = NavScreenStateMachine(&NavScreenParams);
+
+
+
+		  if (NavScreenParams.Active != freq_last || NavScreenParams.Standby != sfreq_last)
+		  {
+			  Sender2rcu(0); //sending active
+			  Sender2rcu(1); //sending standby
+
+			  sfreq_last = NavScreenParams.Standby;
+			  freq_last = NavScreenParams.Active;
+		  }
+
 		  if (key == 0x002)	// HOME button
 		  {
 			  currentScreen = lcdDisp_home;
@@ -340,7 +423,11 @@ static void MX_USART3_UART_Init(void)
     Error_Handler();
   }
   /* USER CODE BEGIN USART3_Init 2 */
+  __HAL_UART_ENABLE_IT(&huart3, UART_IT_RXNE);
+  __HAL_UART_ENABLE_IT(&huart3, UART_IT_TXE);
 
+  HAL_NVIC_SetPriority(USART3_8_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(USART3_8_IRQn);
   /* USER CODE END USART3_Init 2 */
 
 }

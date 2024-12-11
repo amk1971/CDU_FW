@@ -20,8 +20,9 @@ typedef enum
 }returnStatus;
 
 typedef struct NAVPARAMS {
-	double Active, Standby, P1, P2, P3, P4, P5, P6, P7, P8;
-	bool page;
+	volatile double Active, Standby, P1, P2, P3, P4, P5, P6, P7, P8;
+	volatile bool page;
+	volatile int MHz, KHz, mhz, khz; // caps for active, small for standby
 } NavParams;
 
 

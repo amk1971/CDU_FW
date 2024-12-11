@@ -52,6 +52,7 @@
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 extern SerialStruct BuffUART2;
+extern SerialStruct BuffUART3;
 /* USER CODE END 0 */
 
 /* External variables --------------------------------------------------------*/
@@ -170,7 +171,7 @@ volatile uint32_t Source = huart2.Instance->ISR;
 //		__HAL_UART_CLEAR_IT(&huart2, UART_IT_RXNE);
 	}
 
-	if (huart2.Instance->ISR & (1<<(UART_IT_ORE>>8 & 0x1F)))
+	if (huart2.Instance->ISR & (1<<(UART_IT_ORE>>8 & 0x1F)))  //handling overrun error, if
 	{
 		//__HAL_UART_CLEAR_IT(&huart2, UART_IT_ORE);
 		huart2.Instance->ICR = 8;
@@ -216,14 +217,47 @@ volatile uint32_t Source = huart2.Instance->ISR;
   */
 void USART3_8_IRQHandler(void)
 {
-  /* USER CODE BEGIN USART3_8_IRQn 0 */
+	/* USER CODE BEGIN USART3_8_IRQn 0 */
+	volatile uint32_t Source = huart3.Instance->ISR;
 
-  /* USER CODE END USART3_8_IRQn 0 */
-  HAL_UART_IRQHandler(&huart3);(&huart3);
-  /* USER CODE BEGIN USART3_8_IRQn 1 */
+	// RXNE (Receive Not Empty) interrupt handling
+	if (__HAL_UART_GET_IT(&huart3, UART_IT_RXNE))
+	{
+		BuffUART3.RXbuffer[BuffUART3.RXindex++] = huart3.Instance->RDR & 0x0FF; // Read received data
+		BuffUART3.RXindex &= BUFLENMASK; // Mask to avoid buffer overflow
+		BuffUART3.RXbuffer[BuffUART3.RXindex] = 0; // Null-terminate string
+	}
 
-  /* USER CODE END USART3_8_IRQn 1 */
+	// ORE (Overrun Error) interrupt handling
+	if (huart3.Instance->ISR & (1 << (UART_IT_ORE >> 8 & 0x1F)))
+	{
+		huart3.Instance->ICR = 8; // Clear Overrun Error flag
+	}
+
+	// TXE (Transmit Data Register Empty) interrupt handling
+	if (__HAL_UART_GET_IT(&huart3, UART_IT_TXE))
+	{
+		if (BuffUART3.TXindex == BuffUART3.LoadIndex) // All buffer chars sent
+		  {
+			__HAL_UART_DISABLE_IT(&huart3, UART_IT_TXE); // Disable TXE interrupt
+			BuffUART3.LoadIndex = 0;
+			BuffUART3.TXindex = 0;
+		  }
+		else // Pending chars in buffer
+		  {
+			huart3.Instance->TDR = (uint8_t)BuffUART3.TXbuffer[BuffUART3.TXindex++];
+		  }
+	}
+
+	return;		// by-pass default handler
+
+	/* USER CODE END USART3_8_IRQn 0 */
+	HAL_UART_IRQHandler(&huart3); // Call HAL handler for any remaining processing
+	/* USER CODE BEGIN USART3_8_IRQn 1 */
+
+	/* USER CODE END USART3_8_IRQn 1 */
 }
+
 
 /* USER CODE BEGIN 1 */
 

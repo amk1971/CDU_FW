@@ -5,6 +5,6 @@
 ../Core/Src/switches.c:127:6:decode_keycode	3
 ../Core/Src/switches.c:159:6:keyPad_Scan4SysTick	3
 ../Core/Src/switches.c:208:10:get_ScanKode_from_buffer	2
-../Core/Src/switches.c:218:11:soft_keysTest	10
+../Core/Src/switches.c:218:11:check_soft_keys	10
 ../Core/Src/switches.c:285:6:Matrix_keypad_Basic_test	3
 ../Core/Src/switches.c:310:6:test_sw	1
