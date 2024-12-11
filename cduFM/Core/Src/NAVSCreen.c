@@ -84,11 +84,11 @@ returnStatus ChangeNavParam(NavParamNumber PNum, void * PVal){
 	char Text[50];
 
 	if(PNum == ActiveFreq){
-		sprintf(Text, "A %f", *(float *)PVal);
+		sprintf(Text, "A %f", *(double *)PVal);
 		UpdateParamLCD(Center2, Text);
 	}
 	if(PNum == StandbyFreq){
-		sprintf(Text, "S %f", *(float *)PVal);
+		sprintf(Text, "S %f", *(double *)PVal);
 		UpdateParamLCD(Left1, Text);
 	}
 }
@@ -309,7 +309,7 @@ uint16_t NavScreenStateMachine(NavParams * Params){
 			while(ret != 0x004) // OK Button
 			{
 				ret = get_ScanKode_from_buffer();
-
+				char keyVal = decode_keycode(ret);
 
 				int len = strlen(str);
 				if((ret == 0x110) || (ret == 001)) // using B button instead of BACK
@@ -324,6 +324,12 @@ uint16_t NavScreenStateMachine(NavParams * Params){
 				else if (ret >= 0x30 && ret <= 0x39 && len < 9)
 				{
 					char keyChar = (char) ret;
+					strncat(str, &keyChar, 1);
+					UpdateParamLCD(Center5, str);
+				}
+				else if (keyVal >= '0' && keyVal <= '9' && len < 9)
+				{
+					char keyChar = (char) keyVal;
 					strncat(str, &keyChar, 1);
 					UpdateParamLCD(Center5, str);
 				}

@@ -147,7 +147,7 @@ void Sender2rcu(int mode) { //TODO				construct and send a message (likely over 
         snprintf((char*)str2, sizeof(str2), "$PATNV27%c%cN", m, k);
         char end2[3];
 //        checksum((char*)str2, end2);
-        concatTwoChars((char*)str2, end2);
+//        concatTwoChars((char*)str2, end2);
         concatTwoChars((char*)str2, crlf);
     } else if (mode == 1) {
     	char m = 's';
@@ -155,11 +155,12 @@ void Sender2rcu(int mode) { //TODO				construct and send a message (likely over 
         snprintf((char*)str2, sizeof(str2), "$PATNV28%c%cN", m, k);
         char end3[3];
 //        checksum((char*)str2, end3);
-        concatTwoChars((char*)str2, end3);
+//        concatTwoChars((char*)str2, end3);
         concatTwoChars((char*)str2, crlf);
     }
 
-    HAL_UART_Transmit_IT(&huart3, str2, strlen((char*)str2));
+   // HAL_UART_Transmit_IT(&huart3, str2, strlen((char*)str2));
+    UART_SendString(&huart3, &BuffUART3, str2, strlen((char*)str2));
 //    HAL_Delay(100);
 }
 
@@ -210,8 +211,8 @@ int main(void)
   NavScreenParams.P6 = 534.15;
   NavScreenParams.P8 = 878.98;
 
-  static float freq_last = 118.0;
-  static float sfreq_last = 108.4;
+  static double freq_last = 118.0;
+  static double sfreq_last = 108.4;
 
   InitializeLCD();
   //Matrix_keypad_Basic_test();
