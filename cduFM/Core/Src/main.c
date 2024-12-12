@@ -111,7 +111,7 @@ void UART_SendString(UART_HandleTypeDef *huart, SerialStruct * BuffUART, const c
     //__HAL_UART_ENABLE_IT(&huart1, UART_IT_TXE); // Enable TXE interrupt
 }
 
-void ConvertFloatToInts(float num, int *MHz, int *KHz) {
+void ConvertFloatToInts(double num, int *MHz, int *KHz) {
 	*MHz = (int)num; // Integer part as MHz
 	*KHz = (int)((num - *MHz) * 1000 + 0.5); // Fractional part as kHz
 }
