@@ -136,10 +136,7 @@ uint16_t NavScreenStateMachine(NavParams * Params){
 		if (ret == 0x110) // using B button instead of BACK
 		{
 			NavScreenState = page0;
-		}
-
-		else if(softkey == R1)
-		{
+		} else if(softkey == R1) {
 			Position = Right1;
 			NavScreenState = RightSoftKey;
 
@@ -311,34 +308,39 @@ uint16_t NavScreenStateMachine(NavParams * Params){
 			while(ret != 0x004) // OK Button
 			{
 				ret = get_ScanKode_from_buffer();
-				char keyVal = decode_keycode(ret);
-				if (ret == 0) curTickValue = HAL_GetTick() - 100;
-				int len = strlen(str);
-				if((ret == 0x110) || (ret == 001)) // using B button instead of BACK
-				{
-					if (len > 2)
+				if (ret == 0) {
+					curTickValue = HAL_GetTick() - 100;
+				} else {
+					char keyVal = decode_keycode(ret);
+
+					int len = strlen(str);
+					if((ret == 0x110) || (ret == 001)) // using B button instead of BACK
 					{
-						str[len-1]='\0';
-						len--;
+						if (len > 2)
+						{
+							str[len-1]='\0';
+							len--;
+						}
+						UpdateParamLCD(Center5, str);
 					}
-					UpdateParamLCD(Center5, str);
+					else if ((ret == 0x408) && (!decimal_added) && (len < 9) &&
+							((HAL_GetTick() - curTickValue) > 100))
+					{
+						curTickValue = HAL_GetTick();
+						strncat(text, ".", 1);
+						decimal_added = 1;
+						UpdateParamLCD(Center5, text);
+					}
+					else if ((keyVal >= '0') && (keyVal <= '9') && (len < 9) &&
+							((HAL_GetTick() - curTickValue) > 100))
+					{
+						char keyChar[2] = {(char) keyVal, 0};
+						curTickValue = HAL_GetTick();
+						strncat(str, keyChar, 1);
+						UpdateParamLCD(Center5, str);
+					}
 				}
-				else if ((ret == 0x408) && (!decimal_added) && (len < 9) &&
-						((HAL_GetTick() - curTickValue) > 100))
-				{
-					curTickValue = HAL_GetTick();
-					strncat(text, ".", 1);
-					decimal_added = 1;
-					UpdateParamLCD(Center5, text);
-				}
-				else if ((keyVal >= '0') && (keyVal <= '9') && (len < 9) &&
-						((HAL_GetTick() - curTickValue) > 100))
-				{
-					char keyChar[2] = {(char) keyVal, 0};
-					curTickValue = HAL_GetTick();
-					strncat(str, &keyChar, 1);
-					UpdateParamLCD(Center5, str);
-				}
+
 			}
 			* Label = atof(&str[3]);
 			configBgcolorLCD(Position, TRANSPARENTBG);
@@ -372,6 +374,8 @@ uint16_t NavScreenStateMachine(NavParams * Params){
 	default:
 		break;
 	}
+
+
 
 	return ret;
 

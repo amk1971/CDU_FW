@@ -19,6 +19,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 
+
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 
@@ -110,17 +111,9 @@ void UART_SendString(UART_HandleTypeDef *huart, SerialStruct * BuffUART, const c
     //__HAL_UART_ENABLE_IT(&huart1, UART_IT_TXE); // Enable TXE interrupt
 }
 
-void ConvertFloatToInt(float num, int *MHz, int *kHz) {
+void ConvertFloatToInts(float num, int *MHz, int *KHz) {
 	*MHz = (int)num; // Integer part as MHz
-	*kHz = (int)((num - *MHz) * 1000); // Fractional part as kHz
-
-	// Ensure kHz is scaled correctly (e.g., 108.4 -> 4 kHz)
-	if (*kHz % 100 == 0) {
-		*kHz /= 100; // Scale down to ensure 4 instead of 400
-	}
-	if (*kHz % 25 == 0) {
-	        *kHz /= 10; // Scale down to ensure 4 instead of 400
-	    }
+	*KHz = (int)((num - *MHz) * 1000 + 0.5); // Fractional part as kHz
 }
 
 void concatTwoChars(char* base, const char* woo) {
@@ -135,33 +128,75 @@ void concatTwoChars(char* base, const char* woo) {
     *base = '\0'; // Null terminate the resulting string
 }
 
-void Sender2rcu(int mode) { //TODO				construct and send a message (likely over UART)
+//void Sender2rcu(int mode) { //TODO				construct and send a message (likely over UART)
+//    char crlf[] = {'\r','\n', 0};
+//    uint8_t str2[25]; // Array to hold the constructed string in ASCII
+//
+//    memset(str2, 0, sizeof(str2)); // Initialize the array with zeros
+//
+//    if (mode == 0) {
+//        char m = 'a';
+//        char k = 'f';
+//        snprintf((char*)str2, sizeof(str2), "$PATNV27%c%cN", m, k);
+//        char end2[3];
+////        checksum((char*)str2, end2);
+////        concatTwoChars((char*)str2, end2);
+//        concatTwoChars((char*)str2, crlf);
+//    } else if (mode == 1) {
+//    	char m = 's';
+//    	char k = 'f';
+//        snprintf((char*)str2, sizeof(str2), "$PATNV28%c%cN", m, k);
+//        char end3[3];
+////        checksum((char*)str2, end3);
+////        concatTwoChars((char*)str2, end3);
+//        concatTwoChars((char*)str2, crlf);
+//    }
+//
+//   // HAL_UART_Transmit_IT(&huart3, str2, strlen((char*)str2));
+//    UART_SendString(&huart3, &BuffUART3, str2, strlen((char*)str2));
+////    HAL_Delay(100);
+//}
+
+void Sender2rcu(const char * str, int mode) { //TODO				construct and send a message (likely over UART)
     char crlf[] = {'\r','\n', 0};
     uint8_t str2[25]; // Array to hold the constructed string in ASCII
 
     memset(str2, 0, sizeof(str2)); // Initialize the array with zeros
 
     if (mode == 0) {
-        char m = 'a';
-        char k = 'f';
+        char m = str[0];
+        char k = str[1];
         snprintf((char*)str2, sizeof(str2), "$PATNV27%c%cN", m, k);
-        char end2[3];
+//        char end2[3];
 //        checksum((char*)str2, end2);
 //        concatTwoChars((char*)str2, end2);
         concatTwoChars((char*)str2, crlf);
     } else if (mode == 1) {
-    	char m = 's';
-    	char k = 'f';
+        char m = str[0];
+        char k = str[1];
         snprintf((char*)str2, sizeof(str2), "$PATNV28%c%cN", m, k);
-        char end3[3];
+//        char end3[3];
 //        checksum((char*)str2, end3);
 //        concatTwoChars((char*)str2, end3);
         concatTwoChars((char*)str2, crlf);
+    } else if (mode == 2) {
+        char v = str[0];
+        snprintf((char*)str2, sizeof(str2), "$PATNV73%c", v);
+//        char end4[3];
+//        checksum((char*)str2, end4);
+//        concatTwoChars((char*)str2, end4);
+        concatTwoChars((char*)str2, crlf);
+    } else if (mode == 3) {
+//        snprintf((char*)str2, sizeof(str2), "$PATNV34%03d", obs);
+//        char end5[3];
+//        checksum((char*)str2, end5);
+//        concatTwoChars((char*)str2, end5);
+        concatTwoChars((char*)str2, crlf);
     }
 
-   // HAL_UART_Transmit_IT(&huart3, str2, strlen((char*)str2));
-    UART_SendString(&huart3, &BuffUART3, str2, strlen((char*)str2));
+//    HAL_UART_Transmit_IT(&huart5, str2, strlen((char*)str2));
 //    HAL_Delay(100);
+    UART_SendString(&huart3, &BuffUART3, str2, strlen((char*)str2));
 }
 
 /* USER CODE END 0 */
@@ -253,12 +288,25 @@ int main(void)
 
 		  key = NavScreenStateMachine(&NavScreenParams);
 
-
+		  ConvertFloatToInts(NavScreenParams.Active, &NavScreenParams.MHz, &NavScreenParams.KHz);
+		  ConvertFloatToInts(NavScreenParams.Standby, &NavScreenParams.mhz, &NavScreenParams.khz);
 
 		  if (NavScreenParams.Active != freq_last || NavScreenParams.Standby != sfreq_last)
 		  {
-			  Sender2rcu(0); //sending active
-			  Sender2rcu(1); //sending standby
+			  int MA = NavScreenParams.MHz - 48;
+			  int KA = (NavScreenParams.KHz/25) + 48;
+			  char m = (char)MA;
+			  char k = (char)KA;
+			  char Mfinal[3] = {m,k,0};
+			  Sender2rcu(Mfinal,0); //sending also to cdu for synchronization
+
+			  MA = NavScreenParams.mhz - 48;
+			  KA = (NavScreenParams.khz/25) + 48;
+			  m = (char)MA;
+			  k = (char)KA;
+			  char Sfinal[3] = {m,k,0};
+
+			  Sender2rcu(Sfinal,1); //sending also to cdu for synchronization
 
 			  sfreq_last = NavScreenParams.Standby;
 			  freq_last = NavScreenParams.Active;

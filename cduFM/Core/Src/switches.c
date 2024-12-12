@@ -126,7 +126,7 @@ MkeyStatus_t keyPad_Scan(void)
 
 char decode_keycode(uint16_t SCode)
 {
-	uint8_t i, j, col, row, index;
+	uint8_t i, j, row, index, col = 0;
 
 	for(i = 1, j = 0 ; j < 8 ; i <<= 1, j++)
 	{
@@ -137,20 +137,12 @@ char decode_keycode(uint16_t SCode)
 		}
 	}
 
-//	for(i = 1, j = 1 ; j <= 8 ; i <<= 1, j++)
-//		{
-//			if (((SCode & 0xFF00) >> 8) == i)
-//			{
-//				row = j;
-//				break;
-//			}
-//		}
-	row = SCode >> 5;
+	row = (SCode & 0xF00) >> 5;
 	index = col | row;
 
 	char tkey = decode_str[index];
 
-	tkey = interpret_char(tkey);
+//	tkey = interpret_char(tkey);
 
 	return tkey;
 
