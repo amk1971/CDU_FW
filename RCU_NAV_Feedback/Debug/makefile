@@ -9,8 +9,11 @@ RM := rm -rf
 
 # All of the sources participating in the build are defined here
 -include sources.mk
+-include Middlewares/Third_Party/FreeRTOS/Source/portable/MemMang/subdir.mk
+-include Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM3/subdir.mk
+-include Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS/subdir.mk
+-include Middlewares/Third_Party/FreeRTOS/Source/subdir.mk
 -include Drivers/STM32F1xx_HAL_Driver/Src/subdir.mk
--include Core/rtos/Src/subdir.mk
 -include Core/Startup/subdir.mk
 -include Core/Src/subdir.mk
 -include objects.mk
@@ -35,34 +38,34 @@ $(wildcard ../makefile.init) \
 $(wildcard ../makefile.targets) \
 
 
-BUILD_ARTIFACT_NAME := RCU_CubeIDE
+BUILD_ARTIFACT_NAME := RCU_NAV_Feedback
 BUILD_ARTIFACT_EXTENSION := elf
 BUILD_ARTIFACT_PREFIX :=
 BUILD_ARTIFACT := $(BUILD_ARTIFACT_PREFIX)$(BUILD_ARTIFACT_NAME)$(if $(BUILD_ARTIFACT_EXTENSION),.$(BUILD_ARTIFACT_EXTENSION),)
 
 # Add inputs and outputs from these tool invocations to the build variables 
 EXECUTABLES += \
-RCU_CubeIDE.elf \
+RCU_NAV_Feedback.elf \
 
 MAP_FILES += \
-RCU_CubeIDE.map \
+RCU_NAV_Feedback.map \
 
 SIZE_OUTPUT += \
 default.size.stdout \
 
 OBJDUMP_LIST += \
-RCU_CubeIDE.list \
+RCU_NAV_Feedback.list \
 
 
 # All Target
 all: main-build
 
 # Main-build Target
-main-build: RCU_CubeIDE.elf secondary-outputs
+main-build: RCU_NAV_Feedback.elf secondary-outputs
 
 # Tool invocations
-RCU_CubeIDE.elf RCU_CubeIDE.map: $(OBJS) $(USER_OBJS) D:\Projects\CDU_FW\RCU_CubeIDE\STM32F103VCTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "RCU_CubeIDE.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m3 -T"D:\Projects\CDU_FW\RCU_CubeIDE\STM32F103VCTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="RCU_CubeIDE.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -u _printf_float -Wl,--start-group -lc -lm -Wl,--end-group
+RCU_NAV_Feedback.elf RCU_NAV_Feedback.map: $(OBJS) $(USER_OBJS) D:\Projects\RCU_NAV_Feedback\STM32F103VCTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "RCU_NAV_Feedback.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m3 -T"D:\Projects\RCU_NAV_Feedback\STM32F103VCTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="RCU_NAV_Feedback.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -u _printf_float -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 
@@ -71,14 +74,14 @@ default.size.stdout: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
 	@echo 'Finished building: $@'
 	@echo ' '
 
-RCU_CubeIDE.list: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-objdump -h -S $(EXECUTABLES) > "RCU_CubeIDE.list"
+RCU_NAV_Feedback.list: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-objdump -h -S $(EXECUTABLES) > "RCU_NAV_Feedback.list"
 	@echo 'Finished building: $@'
 	@echo ' '
 
 # Other Targets
 clean:
-	-$(RM) RCU_CubeIDE.elf RCU_CubeIDE.list RCU_CubeIDE.map default.size.stdout
+	-$(RM) RCU_NAV_Feedback.elf RCU_NAV_Feedback.list RCU_NAV_Feedback.map default.size.stdout
 	-@echo ' '
 
 secondary-outputs: $(SIZE_OUTPUT) $(OBJDUMP_LIST)
