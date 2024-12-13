@@ -19,6 +19,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "cmsis_os.h"
+#include "rcuCduCom.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -89,6 +90,16 @@ int rxcount = 0;
 int faultcounter0 = 0;
 int faultcounter1 = 0;
 bool rxfree = false;
+
+extern unsigned char rxbuffcdu[1];
+extern char rxmsgcdu[25];
+extern int rxcountcdu;
+extern bool rxfreecdu;
+
+extern uint8_t responseCDU;
+
+uint8_t response = 0;
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -199,6 +210,25 @@ void toDelete(int index) {
   uint32_t millis() {
 	  return xTaskGetTickCount();
   };
+
+
+  void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
+      if (huart->Instance == UART4) {
+          // Process data from UART4
+          rxmsg[rxcount] = rxbuff[0];
+          rxcount++;
+          response = HAL_UART_Receive_IT(&huart4, rxbuff, 1); // Restart UART4 reception
+      } else if (huart->Instance == UART5) {
+          // Process data from UART5
+          rxmsgcdu[rxcountcdu] = rxbuffcdu[0];
+          rxcountcdu++;
+          responseCDU = HAL_UART_Receive_IT(&huart5, rxbuffcdu, 1); // Restart UART5 reception
+      }
+  }
+
+  osThreadId Task3handler;
+
+
 // TODO end
 /* USER CODE END PFP */
 
@@ -252,6 +282,9 @@ int main(void)
   GLCD_INIT();
   loadstate();
   /* USER CODE END 2 */
+  responseCDU = HAL_UART_Receive_IT(&huart5, rxbuffcdu, 1); // Start UART5 in interrupt mode
+  response = HAL_UART_Receive_IT(&huart4, rxbuff, 1); // Start UART4 in interrupt mode
+
 
   /* USER CODE BEGIN RTOS_MUTEX */
   /* add mutexes, ... */
@@ -279,6 +312,8 @@ int main(void)
   osThreadDef(Task2, task2_init, osPriorityNormal, 0, 128);
   Task2handler = osThreadCreate(osThread(Task2), NULL);
   /* USER CODE END RTOS_THREADS */
+  osThreadDef(Task3, task3_init, osPriorityNormal, 0, 128);	//128 is stack size (in bytes) requirements for the thread function.
+  Task3handler = osThreadCreate(osThread(Task3), NULL);
 
   /* Start scheduler */
   osKernelStart();
@@ -404,7 +439,7 @@ static void MX_UART4_Init(void)
   // Enable RX interrupt
       __HAL_UART_ENABLE_IT(&huart4, UART_IT_RXNE);
       // Enable TX interrupt (disabled initially, enabled dynamically when sending)
-      __HAL_UART_ENABLE_IT(&huart4, UART_IT_TXE);
+//      __HAL_UART_ENABLE_IT(&huart4, UART_IT_TXE);
 
       // Enable NVIC for UART IRQ
       HAL_NVIC_SetPriority(UART4_IRQn, 0, 0);
@@ -1309,7 +1344,8 @@ void Sender(const char * str, int mode) { //TODO
     }
 
     HAL_UART_Transmit(&huart4, str2, strlen((char*)str2), 500);
-    HAL_Delay(100);
+//    HAL_Delay(100);
+//    HAL_UART_Transmit_IT(&huart4, str2, strlen((char*)str2));
 }
 //void Sender(const char * str, int mode) {
 //  char crlf[] = {'\r','\n', 0};
@@ -2166,6 +2202,8 @@ void StartDefaultTask(void const * argument)
 		  char VSfinal[2] = {v,0};
 		  Sender(VSfinal,2); //set vol
 
+		  Sender2cdu(VSfinal,2); //sending also to cdu for synchronization
+
 	//	  Serial2.print("v");
 	//	  printFloat2(freq,3);
 	//	  Serial2.print(vol);
@@ -2186,6 +2224,9 @@ void StartDefaultTask(void const * argument)
 		  LCDPrint(toPrint);
 
 		  Sender("",3);
+
+		  Sender2cdu("",3);
+
 		  obs_last = obs;
 		  last = millis();
 		}
@@ -2197,12 +2238,16 @@ void StartDefaultTask(void const * argument)
 		  char Mfinal[3] = {m,k,0};
 		  Sender(Mfinal, 0); //set active
 
+		  Sender2cdu(Mfinal,0);
+
 		  MA = SM - 48;
 		  KA = (SK/25) + 48;
 		  m = (char)MA;
 		  k = (char)KA;
 		  char Sfinal[3] = {m,k,0};
 		  Sender(Sfinal, 1); //set standby
+
+		  Sender2cdu(Sfinal,0);
 
 	//	  Serial2.print("f");
 	//	  printFloat2(freq,3);
@@ -2217,6 +2262,47 @@ void StartDefaultTask(void const * argument)
 		}
 	  }
   /* USER CODE END 5 */
+}
+
+void task2_init(void const * argument)
+{
+  /* USER CODE BEGIN StartRxThread */
+  /* Infinite loop */
+
+  for(;;)
+  {
+//	response = HAL_UART_Receive(&huart4, rxbuff, 1, 1000);
+	if(response==HAL_OK) //if transfer is successful
+	{
+		if (faultcounter0 > 2)
+		{
+			glcd_clearline(7);
+		}
+		faultcounter0 = 0;
+
+		rxmsg[rxcount] = rxbuff[0];
+		rxcount++;
+		if (rxcount > 24) {
+			rxcount = 0;
+		}
+
+		if (rxbuff[0] == '\n')
+		{
+			rxmsg[rxcount] = 0;
+			rxcount = 0;
+			rxfree = true;
+		}
+	}
+	else { // no message in 1 seconds
+		__HAL_UART_FLUSH_DRREGISTER(&huart4);  // Clear the UART Data Register
+		rxcount = 0;
+		faultcounter0++;
+		if (faultcounter0 > 2) {
+			glcd_puts("Error 0", 0, 7);
+		}
+	}
+  }
+  /* USER CODE END StartRxThread */
 }
 
 /**
