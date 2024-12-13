@@ -5,10 +5,11 @@
  *      Author: LENOVO
  */
 
-#include "nextionlcd.h"
-#include "switches.h"
-#include "stdlib.h"
-#include "string.h"
+//#include "nextionlcd.h"
+//#include "switches.h"
+//#include "stdlib.h"
+//#include "string.h"
+#include "main.h"
 
 bool flag = false;
 

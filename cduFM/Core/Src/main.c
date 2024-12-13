@@ -73,6 +73,25 @@ static void MX_USART3_UART_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+uint8_t UART_ReceivString(SerialStruct * BuffUART, const char *str, int NumChar) {
+
+	uint8_t n = 0;
+
+	n = (BuffUART->RXindex - BuffUART->RXTail) & BUFLENMASK;
+
+	if((n < NumChar) || (NumChar <= 0)){
+		return 0;
+	}
+
+	n = 0;
+
+	while (NumChar--)
+	{
+		str[n++] = BuffUART->RXbuffer[BuffUART->RXTail++];
+	}
+	return NumChar;
+}
+
 
 void UART_SendString(UART_HandleTypeDef *huart, SerialStruct * BuffUART, const char *str, int NumChar) {
 

@@ -26,7 +26,7 @@ typedef struct NAVPARAMS {
 } NavParams;
 
 
-#define MAXBUFLEN	2048			// UART receive buffer size. Must be a multiple of 2
+#define MAXBUFLEN	1024			// UART receive buffer size. Must be a multiple of 2
 #define BUFLENMASK	MAXBUFLEN-1
 // UART data struct.
 // Contains buffers and pointers for non-blocking access to UART
@@ -35,6 +35,7 @@ typedef struct
 	uint8_t RXbuffer[MAXBUFLEN];	// receive buffer
 	uint8_t TXbuffer[MAXBUFLEN];	// transmit buffer
 	uint16_t RXindex;				// pointer to last received char in RXbuffer
+	uint16_t RXTail;				// pointer to last fetched char in RXbuffer
 	uint16_t TXindex;				// pointer to last transmitted char in TXbuffer
 	uint16_t LoadIndex;				// pointer to last written char to TXbuffer
 	uint16_t TXbuflen;				// TX buffer size
