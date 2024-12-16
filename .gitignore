@@ -5,13 +5,15 @@
 *.index
 ~$*
 
+/metadata/
+
 # Object files
 *.o
 *.ko
 *.obj
 *.elf
 *.mk
-*.list
+*.list  
 
 # Linker output
 *.ilk

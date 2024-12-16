@@ -9,6 +9,8 @@
 		<item key="SmartImportRootWizardPage.STORE_NESTED_PROJECTS" value="true"/>
 		<item key="SmartImportRootWizardPage.STORE_CONFIGURE_NATURES" value="true"/>
 		<list key="org.eclipse.ui.internal.wizards.datatransfer.SmartImportRootWizardPage.knownSources">
+			<item value="D:\Projects\CDU\RCU_NAV_Feedback"/>
+			<item value="D:\Projects\CDU\CDU_FW\RCP_NAV"/>
 			<item value="D:\Projects\CDU\CDU_FW\CDU_Cube"/>
 			<item value="D:\Projects\CDU\CDU_FW\CDU_Firmware_v1_11_02_2024"/>
 			<item value="D:\Projects\CDU\CDU_FW\temp_f4_dispaly"/>

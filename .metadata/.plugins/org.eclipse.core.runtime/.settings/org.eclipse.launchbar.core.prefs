@@ -1,8 +1,10 @@
 LaunchTargetManager/org.eclipse.launchbar.core.launchTargetType.local,Local/arch=x86_64
 LaunchTargetManager/org.eclipse.launchbar.core.launchTargetType.local,Local/name=Local
 LaunchTargetManager/org.eclipse.launchbar.core.launchTargetType.local,Local/os=win32
-configDescList=org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:RCU_CubeIDE Debug,org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:RCU_NAV_NoErrorMsg Debug,org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:cduFM Debug,org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:temp_f4_dispaly Debug,org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:RcuNavDemo Debug,org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:demoNextionComm Debug,org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:CDU_Cube
+configDescList=org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:RCU_CubeIDE Debug,org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:RCU_NAV_NoErrorMsg Debug,org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:cduFM Debug,org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:RcuNavDemo Debug,org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:demoNextionComm Debug,org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:CDU_Cube,org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:temp_f4_dispaly Debug,org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:RCU_NAV_Feedback Debug
 eclipse.preferences.version=1
+org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:CDU_Cube/activeLaunchMode=run
+org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:CDU_Cube/activeLaunchTarget=null\:---
 org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:RCU_CubeIDE\ Debug/activeLaunchMode=run
 org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:RCU_CubeIDE\ Debug/activeLaunchTarget=null\:---
 org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:RCU_NAV_NoErrorMsg\ Debug/activeLaunchMode=run

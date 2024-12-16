@@ -6,8 +6,9 @@
 		<item key="wholeword" value="false"/>
 		<item key="incremental" value="false"/>
 		<item key="isRegEx" value="false"/>
-		<item key="selection" value="atof"/>
+		<item key="selection" value=""/>
 		<list key="findhistory">
+			<item value="UART_SendString"/>
 			<item value="atof"/>
 			<item value="pageResponse"/>
 			<item value="USART1"/>
