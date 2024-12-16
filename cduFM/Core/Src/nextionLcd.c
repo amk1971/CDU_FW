@@ -22,7 +22,7 @@ returnStatus DispADFscreen(void);
 
 lcdCmdDisp_id currentScreen, NextScreen;
 
-uint16_t TIMEOUT = 1000;
+//uint16_t TIMEOUT = 1000;
 uint8_t endCmd[3] = {0xff, 0xff, 0xff};
 //uint8_t pageResponse[2] = {0, 0, 0};
 

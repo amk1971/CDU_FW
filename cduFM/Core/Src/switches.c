@@ -22,30 +22,30 @@ struct CYCLICBUFFER {
 
 // Unused keys as: '!', '"', '#', '$', '%'
 
-char decode_str[] = {'b', '-', 'o', 's', 'p', 'n', 'd', 't', '1', '2',
+char decode_str[] = {'b', 'h', 'o', 's', 'p', 'n', 'd', 't', '1', '2',
 					 '3', 'A', 'B', 'C', 'D', 'E', 'F', '4', '5', '6',
-					 'G', '-', '-', '-', 'K', 'L', '7', '8', '9', 'M',
-					 'N', '-', '-', 'Q', 'R', '.', '0', '/', '-', '-',
+					 'G', 'H', 'I', 'J', 'K', 'L', '7', '8', '9', 'M',
+					 'N', 'O', 'P', 'Q', 'R', '.', '0', '/', '-', '-',
 					 '-', '-', 'W', 'X', '-', '-', '-', '-', '-', 'Y',
 					 'Z', '+', '-', 'e', '-', '-', '-', '-'
 				};
 
-const char* interpret_char(char c){
-	switch(c){
-	case 'e': return "ENT";
-	case 'b': return "BACK";
-	case 's': return "SWAP";
-	case 'p': return "PREV";
-	case 'n': return "NEXT";
-	case 'd': return "DIM";
-	case 't': return "BRT";
-	case 'h': return "HOME";
-	case 'c': return "CLR";
-	case 'o': return "OK";
-	case '_': return "SPACE";
-	default: return c;
-	}
-}
+//const char* interpret_char(char c){
+//	switch(c){
+//	case 'e': return "ENT";
+//	case 'b': return "BACK";
+//	case 's': return "SWAP";
+//	case 'p': return "PREV";
+//	case 'n': return "NEXT";
+//	case 'd': return "DIM";
+//	case 't': return "BRT";
+//	case 'h': return "HOME";
+//	case 'c': return "CLR";
+//	case 'o': return "OK";
+//	case '_': return "SPACE";
+//	default: return c;
+//	}
+//}
 
 uint16_t Read_Port(GPIO_TypeDef *GPIOx)
 {

@@ -43,7 +43,7 @@ typedef enum
 	Center2,
 	Center3,
 	Center4,
-	Center5,
+	Center5
 }lcdCmdParam_id;
 
 returnStatus InitializeLCD(void);

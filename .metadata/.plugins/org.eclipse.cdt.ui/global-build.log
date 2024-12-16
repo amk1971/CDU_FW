@@ -1,14 +1,34 @@
-11:42:16 **** Incremental Build of configuration Debug for project RCU_NAV_Feedback ****
+19:45:11 **** Incremental Build of configuration Debug for project cduFM ****
 make -j4 all 
-arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m3 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F103xE -c -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -I../Middlewares/Third_Party/FreeRTOS/Source/include -I../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS -I../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM3 -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Core/Src/main.o"
-arm-none-eabi-gcc -o "RCU_NAV_Feedback.elf" @"objects.list"   -mcpu=cortex-m3 -T"D:\Projects\CDU\CDU_FW\rcu_nav_fb\RCU_NAV_Feedback\STM32F103VCTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="RCU_NAV_Feedback.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -u _printf_float -Wl,--start-group -lc -lm -Wl,--end-group
-Finished building target: RCU_NAV_Feedback.elf
+arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m0 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F091xC -c -I../Core/Inc -I../Drivers/STM32F0xx_HAL_Driver/Inc -I../Drivers/STM32F0xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F0xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Core/Src/main.o"
+../Core/Src/main.c: In function 'Sender2rcu':
+../Core/Src/main.c:216:42: warning: pointer targets in passing argument 3 of 'UART_SendString' differ in signedness [-Wpointer-sign]
+  216 |     UART_SendString(&huart3, &BuffUART3, str2, strlen((char*)str2));
+      |                                          ^~~~
+      |                                          |
+      |                                          uint8_t * {aka unsigned char *}
+../Core/Src/main.c:94:86: note: expected 'const char *' but argument is of type 'uint8_t *' {aka 'unsigned char *'}
+   94 | void UART_SendString(UART_HandleTypeDef *huart, SerialStruct * BuffUART, const char *str, int NumChar) {
+      |                                                                          ~~~~~~~~~~~~^~~
+../Core/Src/main.c: In function 'main':
+../Core/Src/main.c:291:27: warning: implicit declaration of function 'DispADFscreen'; did you mean 'DispNAVscreen'? [-Wimplicit-function-declaration]
+  291 |                           DispADFscreen();
+      |                           ^~~~~~~~~~~~~
+      |                           DispNAVscreen
+../Core/Src/main.c:309:25: warning: implicit declaration of function 'NavScreenStateMachine' [-Wimplicit-function-declaration]
+  309 |                   key = NavScreenStateMachine(&NavScreenParams);
+      |                         ^~~~~~~~~~~~~~~~~~~~~
+../Core/Src/main.c:228:13: warning: variable 'softKey' set but not used [-Wunused-but-set-variable]
+  228 |   softKey_t softKey;
+      |             ^~~~~~~
+arm-none-eabi-gcc -o "cduFM.elf" @"objects.list"   -mcpu=cortex-m0 -T"D:\Projects\CDU\CDU_FW\cduFM\STM32F091VCTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="cduFM.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -u _printf_float -u _scanf_float -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: cduFM.elf
  
-arm-none-eabi-size  RCU_NAV_Feedback.elf 
-arm-none-eabi-objdump -h -S RCU_NAV_Feedback.elf  > "RCU_NAV_Feedback.list"
+arm-none-eabi-size  cduFM.elf 
+arm-none-eabi-objdump -h -S cduFM.elf  > "cduFM.list"
    text	   data	    bss	    dec	    hex	filename
-  58980	    504	   6808	  66292	  102f4	RCU_NAV_Feedback.elf
+  47416	    548	   6728	  54692	   d5a4	cduFM.elf
 Finished building: default.size.stdout
  
-Finished building: RCU_NAV_Feedback.list
+Finished building: cduFM.list
  

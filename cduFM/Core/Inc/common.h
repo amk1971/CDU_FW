@@ -19,8 +19,17 @@ typedef enum
 	success,
 }returnStatus;
 
+
+typedef struct FREQUENCIES{
+	double freq;
+	int position;
+	uint8_t tileSize;
+	char name[10];
+}NavFreq_t;
+
+
 typedef struct NAVPARAMS {
-	volatile double Active, Standby, P1, P2, P3, P4, P5, P6, P7, P8;
+	NavFreq_t Active, Standby, P1, P2, P3, P4, P5, P6, P7, P8;
 	volatile bool page;
 	volatile int MHz, KHz, mhz, khz; // caps for active, small for standby
 } NavParams;

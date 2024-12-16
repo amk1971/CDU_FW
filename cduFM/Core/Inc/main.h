@@ -32,6 +32,8 @@ extern "C" {
 #include "nextionLcd.h"
 #include "switches.h"
 #include <string.h>
+#include <stdlib.h>
+#include <stdio.h>
 
 #define CLIENTCODE
 

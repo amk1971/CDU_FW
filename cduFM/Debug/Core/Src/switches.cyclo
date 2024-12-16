@@ -1,4 +1,3 @@
-../Core/Src/switches.c:33:13:interpret_char	13
 ../Core/Src/switches.c:50:10:Read_Port	1
 ../Core/Src/switches.c:55:6:KeyS_init	1
 ../Core/Src/switches.c:62:14:keyPad_Scan	14

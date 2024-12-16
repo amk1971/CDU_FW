@@ -55,8 +55,6 @@ extern softKey_t softkey;
 extern MkeyStatus_t MkeyStatus;
 extern keyPad_t keyPad;
 
-uint16_t key;
-
 
 /* USER CODE BEGIN PV */
 
@@ -73,11 +71,11 @@ static void MX_USART3_UART_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-uint8_t UART_ReceivString(SerialStruct * BuffUART, const char *str, int NumChar) {
+uint8_t UART_ReceivString(SerialStruct * BuffUART, char *str, int NumChar) {
 
 	uint8_t n = 0;
 
-	n = (BuffUART->RXindex - BuffUART->RXTail) & BUFLENMASK;
+	n = (BuffUART->RXindex - BuffUART->RXTail) & (BUFLENMASK);
 
 	if((n < NumChar) || (NumChar <= 0)){
 		return 0;
@@ -130,7 +128,7 @@ void UART_SendString(UART_HandleTypeDef *huart, SerialStruct * BuffUART, const c
     //__HAL_UART_ENABLE_IT(&huart1, UART_IT_TXE); // Enable TXE interrupt
 }
 
-void ConvertFloatToInts(double num, int *MHz, int *KHz) {
+void ConvertFloatToInts(double num, volatile int *MHz, volatile int *KHz) {
 	*MHz = (int)num; // Integer part as MHz
 	*KHz = (int)((num - *MHz) * 1000 + 0.5); // Fractional part as kHz
 }
@@ -228,6 +226,7 @@ int main(void)
 {
 
   softKey_t softKey;
+  uint8_t key;
   /* USER CODE BEGIN 1 */
 
   /* USER CODE END 1 */
@@ -253,24 +252,26 @@ int main(void)
   MX_USART2_UART_Init();
   MX_USART3_UART_Init();
 
-  NavScreenParams.Active = 118.0;
+  NavScreenParams.Active.freq = 118.0;
   NavScreenParams.MHz = 118;
   NavScreenParams.KHz = 0;
-  NavScreenParams.Standby = 108.4;
+  NavScreenParams.Standby.freq = 108.4;
+  NavScreenParams.Standby.tileSize = 2;
   NavScreenParams.mhz = 108;
   NavScreenParams.khz = 4;
   NavScreenParams.page = false; // means page0
-  NavScreenParams.P1 = 123.45;
-  NavScreenParams.P3 = 354.85;
-  NavScreenParams.P6 = 534.15;
-  NavScreenParams.P8 = 878.98;
+  NavScreenParams.P1.freq = 123.45;
+  NavScreenParams.P1.tileSize = 3;
+  NavScreenParams.P3.freq = 354.85;
+  NavScreenParams.P6.freq = 534.15;
+  NavScreenParams.P8.freq = 878.98;
 
   static double freq_last = 118.0;
   static double sfreq_last = 108.4;
 
   InitializeLCD();
   //Matrix_keypad_Basic_test();
-  KeyS_init();
+//  KeyS_init();
   while (1)
   {
 	  softKey = check_soft_keys();
@@ -307,17 +308,17 @@ int main(void)
 
 		  key = NavScreenStateMachine(&NavScreenParams);
 
-		  ConvertFloatToInts(NavScreenParams.Active, &NavScreenParams.MHz, &NavScreenParams.KHz);
-		  ConvertFloatToInts(NavScreenParams.Standby, &NavScreenParams.mhz, &NavScreenParams.khz);
+		  ConvertFloatToInts(NavScreenParams.Active.freq, &NavScreenParams.MHz, &NavScreenParams.KHz);
+		  ConvertFloatToInts(NavScreenParams.Standby.freq, &NavScreenParams.mhz, &NavScreenParams.khz);
 
-		  if (NavScreenParams.Active != freq_last || NavScreenParams.Standby != sfreq_last)
+		  if (NavScreenParams.Active.freq != freq_last || NavScreenParams.Standby.freq != sfreq_last)
 		  {
 			  int MA = NavScreenParams.MHz - 48;
 			  int KA = (NavScreenParams.KHz/25) + 48;
 			  char m = (char)MA;
 			  char k = (char)KA;
 			  char Mfinal[3] = {m,k,0};
-			  Sender2rcu(Mfinal,0); //sending also to cdu for synchronization
+			  Sender2rcu(Mfinal,0); //sending also to rcu for synchronization
 
 			  MA = NavScreenParams.mhz - 48;
 			  KA = (NavScreenParams.khz/25) + 48;
@@ -325,13 +326,13 @@ int main(void)
 			  k = (char)KA;
 			  char Sfinal[3] = {m,k,0};
 
-			  Sender2rcu(Sfinal,1); //sending also to cdu for synchronization
+			  Sender2rcu(Sfinal,1); //sending also to rcu for synchronization
 
-			  sfreq_last = NavScreenParams.Standby;
-			  freq_last = NavScreenParams.Active;
+			  sfreq_last = NavScreenParams.Standby.freq;
+			  freq_last = NavScreenParams.Active.freq;
 		  }
 
-		  if (key == 0x002)	// HOME button
+		  if (key == 'h')	// HOME button
 		  {
 			  currentScreen = lcdDisp_home;
 			  DispHomeScreen();

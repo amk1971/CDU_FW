@@ -5,10 +5,6 @@
  *      Author: LENOVO
  */
 
-//#include "nextionlcd.h"
-//#include "switches.h"
-//#include "stdlib.h"
-//#include "string.h"
 #include "main.h"
 
 bool flag = false;
@@ -34,7 +30,10 @@ typedef enum {
 }NavParamNumber;
 
 NAVSCREENState NavScreenState = Idle;
-int NAVScreenPage = 0;
+//int NAVScreenPage = 0;
+
+//--------------------------------
+
 
 returnStatus ChangeNavParam(NavParamNumber PNum, void * PVal);
 
@@ -44,14 +43,14 @@ returnStatus DispNAVscreen(NavParams * Params)
 //	static NavParams oldParams;
 	char Text[50];
 
-	sprintf(Text, "S %f", Params->Standby);
+	sprintf(Text, "S %0.3f", Params->Standby.freq);
 	UpdateParamLCD(Left1, Text);
 //	ChangeNavParam(StandbyFreq, (void *) &Params->Standby);
 	UpdateParamLCD(Left2, "");
 	UpdateParamLCD(Left3, "VOL");
 	UpdateParamLCD(Left4, "PROG");
 	UpdateParamLCD(Center1, "NAV");
-	sprintf(Text, "A %f", Params->Active);
+	sprintf(Text, "A %0.3f", Params->Active.freq);
 	UpdateParamLCD(Center2, Text);
 //	ChangeNavParam(ActiveFreq, (void *) &Params->Active);
 	UpdateParamLCD(Center3, "");
@@ -85,11 +84,11 @@ returnStatus ChangeNavParam(NavParamNumber PNum, void * PVal){
 	char Text[50];
 
 	if(PNum == ActiveFreq){
-		sprintf(Text, "A %f", *(double *)PVal);
+		sprintf(Text, "A %0.3f", *(double *)PVal);
 		UpdateParamLCD(Center2, Text);
 	}
 	if(PNum == StandbyFreq){
-		sprintf(Text, "S %f", *(double *)PVal);
+		sprintf(Text, "S %0.3f", *(double *)PVal);
 		UpdateParamLCD(Left1, Text);
 	}
 }
@@ -101,17 +100,87 @@ void swapFreq(double *param1, double *param2)
 	*param2 = temp;
 }
 
+uint8_t checkDot(char* arr){
+
+	uint8_t i = 0;
+	while(arr[i] != '\0'){
+		if(arr[i] == '.')
+			return 1;
+		else
+			i++;
+	}
+	return 0;
+}
+
+char* editFreq(NavFreq_t freq, const char *lblText, lcdCmdParam_id pos)
+{
+
+	volatile uint16_t ret;
+	volatile uint8_t keyVal = 0;
+	static char str[20];
+	strncpy(str, lblText, sizeof(str));
+	bool decimal_added = checkDot(str);
+	static uint32_t curTickValue;// = HAL_GetTick();
+	while(keyVal != 'o') // OK Button
+	{
+		ret = get_ScanKode_from_buffer();
+		if ((ret & 0x00FF) == 0) {				//Do not process Release Codes
+			curTickValue = HAL_GetTick() - 200;
+		}
+		else
+		{
+			keyVal = decode_keycode(ret);
+
+			int len = strlen(str);
+			if(keyVal == 'b') // BACK button
+			{
+				if (len > freq.tileSize)
+				{
+					if(str[len-1] == '.') decimal_added = 0;
+					str[len-1]='\0';
+					len--;
+				}
+				UpdateParamLCD(pos, str);
+			}
+			else if ((keyVal == '.') && (!decimal_added) && (len < (freq.tileSize + 7)) &&
+					((HAL_GetTick() - curTickValue) > 200))
+			{
+				curTickValue = HAL_GetTick();
+				strncat(str, ".", 1);
+				decimal_added = 1;
+				UpdateParamLCD(pos, str);
+			}
+			else if ((keyVal >= '0') && (keyVal <= '9') &&
+					((HAL_GetTick() - curTickValue) > 200))
+			{
+				if((decimal_added && (freq.tileSize + 7) < 10) || (!decimal_added && len < 6))
+				{
+					char keyChar[2] = {(char) keyVal, 0};
+					curTickValue = HAL_GetTick();
+					strncat(str, keyChar, 1);
+					UpdateParamLCD(pos, str);
+				}
+			}
+		}
+	}
+	return str;
+}
+
 uint16_t NavScreenStateMachine(NavParams * Params){
 
-	uint16_t ret;
-	static char lblText[20];
+
 	static lcdCmdParam_id Position;
 	static double * Label;
 	static char Format[20];
 	softKey_t softkey;
-	bool decimal_added = 0;
+
+	volatile uint16_t ret;
+	static char lblText[20];
+//	bool decimal_added;
+	volatile char keyVal;
 
 	ret = get_ScanKode_from_buffer();
+	keyVal = decode_keycode(ret);
 	softkey = check_soft_keys();
 	switch (NavScreenState){
 	case Idle:
@@ -124,17 +193,17 @@ uint16_t NavScreenStateMachine(NavParams * Params){
 		}
 
 //		ret = get_ScanKode_from_buffer();
-		if (ret == 0x008) // SWAP key
+		if (keyVal == 's') // SWAP key
 		{
 			NavScreenState = SwapKey;
 		}
 
-		if (ret == 0x020) // NEXT button
+		if (keyVal == 'n') // NEXT button
 		{
 			NavScreenState = page1;
 		}
 
-		if (ret == 0x110) // using B button instead of BACK
+		if (keyVal == 'b') // BACK button
 		{
 			NavScreenState = page0;
 		} else if(softkey == R1) {
@@ -142,11 +211,11 @@ uint16_t NavScreenStateMachine(NavParams * Params){
 			NavScreenState = RightSoftKey;
 
 			if(!(Params->page)){
-				Label = &Params->P1;
-				strncpy(Format, "P1 %0.3f", 9);
+				Label = &Params->P1.freq;
+				strncpy(Format, "P1 %0.3f", 10);
 			}else {
-				Label = &Params->P5;
-				strncpy(Format, "P5 %0.3f", 9);
+				Label = &Params->P5.freq;
+				strncpy(Format, "P5 %0.3f", 10);
 
 			}
 			configBgcolorLCD(Position, BLACKBG);
@@ -161,11 +230,11 @@ uint16_t NavScreenStateMachine(NavParams * Params){
 			NavScreenState = RightSoftKey;
 
 			if(!(Params->page)){
-				Label = &Params->P2;
-				strncpy(Format, "P2 %0.3f", 9);
+				Label = &Params->P2.freq;
+				strncpy(Format, "P2 %0.3f", 10);
 			}else {
-				Label = &Params->P6;
-				strncpy(Format, "P6 %0.3f", 9);
+				Label = &Params->P6.freq;
+				strncpy(Format, "P6 %0.3f", 10);
 
 			}
 			configBgcolorLCD(Position, BLACKBG);
@@ -180,11 +249,11 @@ uint16_t NavScreenStateMachine(NavParams * Params){
 			NavScreenState = RightSoftKey;
 
 			if(!(Params->page)){
-				Label = &Params->P3;
-				strncpy(Format, "P3 %0.3f", 9);
+				Label = &Params->P3.freq;
+				strncpy(Format, "P3 %0.3f", 10);
 			}else {
-				Label = &Params->P7;
-				strncpy(Format, "P7 %0.3f", 9);
+				Label = &Params->P7.freq;
+				strncpy(Format, "P7 %0.3f", 10);
 
 			}
 			configBgcolorLCD(Position, BLACKBG);
@@ -199,11 +268,11 @@ uint16_t NavScreenStateMachine(NavParams * Params){
 			NavScreenState = RightSoftKey;
 
 			if(!(Params->page)){
-				Label = &Params->P4;
-				strncpy(Format, "P4 %0.3f", 9);
+				Label = &Params->P4.freq;
+				strncpy(Format, "P4 %0.3f", 10);
 			}else {
-				Label = &Params->P8;
-				strncpy(Format, "P8 %0.3f", 9);
+				Label = &Params->P8.freq;
+				strncpy(Format, "P8 %0.3f", 10);
 
 			}
 			configBgcolorLCD(Position, BLACKBG);
@@ -216,51 +285,56 @@ uint16_t NavScreenStateMachine(NavParams * Params){
 
 	case StandByEdit:
 
-		char text[9];
+		Label = &Params->Standby.freq;
+		strncpy(Format, "S %0.3f", 10);
+		sprintf(lblText, Format, * Label);
 
+//		char text[9];
+//
+////		sprintf(text, "S %f", Params->Standby);
+//		snprintf(text, sizeof(text), "S %.3f", Params->Standby.freq);
+//
+//		while (ret != 0x004) // OK Button
+//		{
+//			ret = get_ScanKode_from_buffer();
+//			keyVal = decode_keycode(ret);
+//			if (ret != 0)
+//			{
+//				int len = strlen(text) ;
+//
+//				if (ret == 0x110) // using B button instead of BACK
+//				{
+//					if (len > 2) {   // Ensure there's something to delete beyond the prefix "S "
+//						text[len - 1] = '\0';  // Remove last character
+//						if (text[len - 2] == '.')
+//						{
+//							decimal_added = 0;
+//						}
+//						len--;
+////						UpdateParamLCD( , text);
+//					}
+//				}
+//				else if (ret == 0x408 && !decimal_added && len < 9)
+//				{
+//					strncat(text, ".", 1);
+//					decimal_added = 1;
+//					UpdateParamLCD(Left1, text);
+//				}
+//				else if (keyVal >= '0' && keyVal <= '9' && len < 9)
+//				{
+//					char keyChar = (char) keyVal;
+//					strncat(text, &keyChar, 1);
+//					UpdateParamLCD(Left1, text);
+//				}
+//			}
+//		}
 
-//		sprintf(text, "S %f", Params->Standby);
-		snprintf(text, sizeof(text), "S %.3f", Params->Standby); // or "%.1f" if single decimal precision
+		char* result = editFreq(Params->Standby, lblText, Left1);
 
-		while (ret != 0x004) // OK Button
-		{
-			ret = get_ScanKode_from_buffer();
-			char keyVal = decode_keycode(ret);
-			if (ret != 0)
-			{
-				int len = strlen(text) ;
-
-				if (ret == 0x110) // using B button instead of BACK
-				{
-					if (len > 2) {   // Ensure there's something to delete beyond the prefix "S "
-						text[len - 1] = '\0';  // Remove last character
-						if (text[len - 2] == '.')
-						{
-							decimal_added = 0;
-						}
-						len--;
-						UpdateParamLCD(Left1, text);
-					}
-				}
-				else if (ret == 0x408 && !decimal_added && len < 9)
-				{
-					strncat(text, ".", 1);
-					decimal_added = 1;
-					UpdateParamLCD(Left1, text);
-				}
-				else if (keyVal >= '0' && keyVal <= '9' && len < 9)
-				{
-					char keyChar = (char) keyVal;
-					strncat(text, &keyChar, 1);
-					UpdateParamLCD(Left1, text);
-				}
-			}
-		}
-//		volatile char * removeit = &text[2];
-		Params->Standby = atof(&text[2]); // remove s_ first
+		Params->Standby.freq = atof(&result[2]); // remove s_ first
 		NavScreenState = idle;
 		char txt[7];
-		snprintf(txt, sizeof(txt), "S %f", Params->Standby);
+		snprintf(txt, sizeof(txt), "S %0.3f", Params->Standby.freq);
 		UpdateParamLCD(Left1, txt);
 		configBgcolorLCD(Left1, TRANSPARENTBG);
 		configfontcolorLCD(Left1, BLACKFONT);
@@ -268,9 +342,9 @@ uint16_t NavScreenStateMachine(NavParams * Params){
 		break;
 
 	case SwapKey:
-		swapFreq(&Params->Active,&Params->Standby);
-		ChangeNavParam(StandbyFreq, (void *) &Params->Standby);
-		ChangeNavParam(ActiveFreq, (void *) &Params->Active);
+		swapFreq(&Params->Active.freq,&Params->Standby.freq);
+		ChangeNavParam(StandbyFreq, (void *) &Params->Standby.freq);
+		ChangeNavParam(ActiveFreq, (void *) &Params->Active.freq);
 		NavScreenState = Idle;
 
 		break;
@@ -293,8 +367,6 @@ uint16_t NavScreenStateMachine(NavParams * Params){
 
 	case RightSoftKey:
 
-
-//		ret = get_ScanKode_from_buffer();
 		if(softkey == L4)
 		{
 			UpdateParamLCD(Center4, "PROG");
@@ -302,51 +374,10 @@ uint16_t NavScreenStateMachine(NavParams * Params){
 			configBgcolorLCD(Center5, BLACKBG);
 			configfontcolorLCD(Center5, WHITEFONT);
 
-			char str[20];
-			//snprintf(str, sizeof(str), Format, * Label);
-			strncpy(str, lblText, sizeof(str));
-			static uint32_t curTickValue;// = HAL_GetTick();
-			while(ret != 0x004) // OK Button
-			{
-				ret = get_ScanKode_from_buffer();
-				if ((ret & 0x00FF) == 0) {				//Do not process Release Codes
-					curTickValue = HAL_GetTick() - 200;
-				} else {
-					char keyVal = decode_keycode(ret);
+			char* result = editFreq(Params->P1, lblText, Center5);
 
-					int len = strlen(str);
-					if((ret == 0x110) || (ret == 001)) // using B button instead of BACK
-					{
-						if (len > 3)
-						{
-							if(str[len-1] == '.') decimal_added = 0;
-							str[len-1]='\0';
-							len--;
-						}
-						UpdateParamLCD(Center5, str);
-					}
-					else if ((ret == 0x408) && (!decimal_added) && (len < 9) &&
-							((HAL_GetTick() - curTickValue) > 200))
-					{
-						curTickValue = HAL_GetTick();
-						strncat(str, ".", 1);
-						decimal_added = 1;
-						UpdateParamLCD(Center5, str);
-					}
-					else if ((keyVal >= '0') && (keyVal <= '9') &&
-							((HAL_GetTick() - curTickValue) > 200))
-					{
-						if((decimal_added && len < 9) || (!decimal_added && len < 6)){
-							char keyChar[2] = {(char) keyVal, 0};
-							curTickValue = HAL_GetTick();
-							strncat(str, keyChar, 1);
-							UpdateParamLCD(Center5, str);
-						}
-					}
-				}
-
-			}
-			* Label = atof(&str[3]);
+			* Label = atof(&result[3]);
+			Params->P1.freq = * Label;
 			configBgcolorLCD(Position, TRANSPARENTBG);
 			configfontcolorLCD(Position, BLACKFONT);
 
@@ -358,12 +389,12 @@ uint16_t NavScreenStateMachine(NavParams * Params){
 			UpdateParamLCD(Center5, "");
 		}
 
-		if(ret == 0x110) // OK Button
+		if(keyVal == 'o') // OK Button
 		{
 			NavScreenState = idle;
 
-			Params->Standby = * Label;
-			sprintf(lblText, "S %f", Params->Standby);
+			Params->Standby.freq = * Label;
+			sprintf(lblText, "S %0.3f", Params->Standby.freq);
 			UpdateParamLCD(Left1, lblText);
 
 			configBgcolorLCD(Position, TRANSPARENTBG);
@@ -381,6 +412,6 @@ uint16_t NavScreenStateMachine(NavParams * Params){
 
 
 
-	return ret;
+	return keyVal;
 
 }
