@@ -181,6 +181,7 @@ uint16_t NavScreenStateMachine(NavParams * Params){
 
 	ret = get_ScanKode_from_buffer();
 	keyVal = decode_keycode(ret);
+	if((ret & 0x00FF) == 0)  keyVal = 0; // Do not process release code
 	softkey = check_soft_keys();
 	switch (NavScreenState){
 	case Idle:

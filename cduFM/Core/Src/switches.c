@@ -198,13 +198,13 @@ void keyPad_Scan4SysTick(void)
 }
 
 uint16_t get_ScanKode_from_buffer(void ){
-	uint16_t Kode;
+	uint16_t Kode = 0;
 	if(ScanKode.Head != ScanKode.Tail){
 		Kode = ScanKode.buff[ScanKode.Tail++];
 		ScanKode.Tail &= 31;
 		return Kode;
 	}
-	return 0;
+	return Kode;
 }
 
 softKey_t check_soft_keys(void)
