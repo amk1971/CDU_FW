@@ -147,11 +147,8 @@ returnStatus UpdateParamLCD(lcdCmdParam_id Param_ID, char * Param_Value)
 	{
 		case Left1:
 		{
-			strncpy(txBuffer, "t0.txt=\"", 9);
-			strncat(txBuffer, Param_Value, 5);
-			strncat(txBuffer, "\"", 2);
-			//len = sprintf((char *)txBuffer, "%s.txt=\"%s\"", param_ID, Param_Value);
-
+			strncpy(param_ID, "t0", 3);
+			len = sprintf((char *)txBuffer, "%s.txt=\"%s\"", param_ID, Param_Value);
 
 			break;
 		}
@@ -510,17 +507,9 @@ returnStatus configBgcolorLCD(lcdCmdParam_id Param_ID, int Param_Value)
 	}
 	UART_SendString(&huart2, &BuffUART2, txBuffer, strlen(txBuffer));
 
-	//if (HAL_UART_Transmit(&LCDUart, txBuffer, strlen(txBuffer), TIMEOUT) != HAL_OK)
-	//{
-	//	return failure;
-	//}
 
 	UART_SendString(&huart2, &BuffUART2, (uint8_t *)endCmd, 3);
-	// Send termination bytes (0xFF 0xFF 0xFF)
-	//if (HAL_UART_Transmit(&LCDUart, (uint8_t *)endCmd, 3, TIMEOUT/10) != HAL_OK)
-	//{
-	//	return failure;
-	//}
+
 	return success;
 }
 

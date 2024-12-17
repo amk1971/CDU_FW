@@ -19,27 +19,6 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 
-
-/* Private includes ----------------------------------------------------------*/
-/* USER CODE BEGIN Includes */
-
-/* USER CODE END Includes */
-
-/* Private typedef -----------------------------------------------------------*/
-/* USER CODE BEGIN PTD */
-
-/* USER CODE END PTD */
-
-/* Private define ------------------------------------------------------------*/
-/* USER CODE BEGIN PD */
-
-/* USER CODE END PD */
-
-/* Private macro -------------------------------------------------------------*/
-/* USER CODE BEGIN PM */
-
-/* USER CODE END PM */
-
 /* Private variables ---------------------------------------------------------*/
 UART_HandleTypeDef huart2;
 UART_HandleTypeDef huart3;
@@ -55,19 +34,11 @@ extern softKey_t softkey;
 extern MkeyStatus_t MkeyStatus;
 extern keyPad_t keyPad;
 
-
-/* USER CODE BEGIN PV */
-
-/* USER CODE END PV */
-
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_USART2_UART_Init(void);
 static void MX_USART3_UART_Init(void);
-/* USER CODE BEGIN PFP */
-
-/* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
@@ -128,9 +99,38 @@ void UART_SendString(UART_HandleTypeDef *huart, SerialStruct * BuffUART, const c
     //__HAL_UART_ENABLE_IT(&huart1, UART_IT_TXE); // Enable TXE interrupt
 }
 
-void ConvertFloatToInts(double num, volatile int *MHz, volatile int *KHz) {
+
+void MhzKhz2freq(int MHz, int KHz, double* freq){
+	if (freq != NULL) {
+        *freq = MHz + (KHz / 1000.0);
+    }
+}
+
+
+void freq2MhzKhz(double num, volatile int *MHz, volatile int *KHz) {
 	*MHz = (int)num; // Integer part as MHz
 	*KHz = (int)((num - *MHz) * 1000 + 0.5); // Fractional part as kHz
+}
+
+void checksum(const char* str, char* result) {				//calculates a checksum from a given string and stores the result in a character array
+    unsigned int sum = 0;
+    const char* ptr = str;
+
+    if (*ptr != '\0') {
+        ptr += 6;			//starting after the first 6 characters (possibly skipping a header like e.g: "$PMRRV")
+    }
+
+    while (*ptr != '\0') {//// Loop through the rest of the string
+        sum += *ptr;		 // Sum up the ASCII values of the characters
+        ptr++;
+    }
+
+    sum &= 0xFF;	// Keep only the least significant byte of the sum
+
+    result[0] = ((sum >> 4) & 0xF) + 0x30;	// Convert high nibble (4 bits) to ASCII
+    result[1] = (sum & 0xF) + 0x30;			// Convert low nibble (4 bits) to ASCII
+
+    result[2] = '\0';
 }
 
 void concatTwoChars(char* base, const char* woo) {
@@ -145,35 +145,6 @@ void concatTwoChars(char* base, const char* woo) {
     *base = '\0'; // Null terminate the resulting string
 }
 
-//void Sender2rcu(int mode) { //TODO				construct and send a message (likely over UART)
-//    char crlf[] = {'\r','\n', 0};
-//    uint8_t str2[25]; // Array to hold the constructed string in ASCII
-//
-//    memset(str2, 0, sizeof(str2)); // Initialize the array with zeros
-//
-//    if (mode == 0) {
-//        char m = 'a';
-//        char k = 'f';
-//        snprintf((char*)str2, sizeof(str2), "$PATNV27%c%cN", m, k);
-//        char end2[3];
-////        checksum((char*)str2, end2);
-////        concatTwoChars((char*)str2, end2);
-//        concatTwoChars((char*)str2, crlf);
-//    } else if (mode == 1) {
-//    	char m = 's';
-//    	char k = 'f';
-//        snprintf((char*)str2, sizeof(str2), "$PATNV28%c%cN", m, k);
-//        char end3[3];
-////        checksum((char*)str2, end3);
-////        concatTwoChars((char*)str2, end3);
-//        concatTwoChars((char*)str2, crlf);
-//    }
-//
-//   // HAL_UART_Transmit_IT(&huart3, str2, strlen((char*)str2));
-//    UART_SendString(&huart3, &BuffUART3, str2, strlen((char*)str2));
-////    HAL_Delay(100);
-//}
-
 void Sender2rcu(const char * str, int mode) { //TODO				construct and send a message (likely over UART)
     char crlf[] = {'\r','\n', 0};
     uint8_t str2[25]; // Array to hold the constructed string in ASCII
@@ -183,36 +154,34 @@ void Sender2rcu(const char * str, int mode) { //TODO				construct and send a mes
     if (mode == 0) {
         char m = str[0];
         char k = str[1];
-        snprintf((char*)str2, sizeof(str2), "$PATNV27%c%cN", m, k);
-//        char end2[3];
-//        checksum((char*)str2, end2);
-//        concatTwoChars((char*)str2, end2);
+        snprintf((char*)str2, sizeof(str2), "$PATCN27%c%cN", m, k);
+        char end2[3];
+        checksum((char*)str2, end2);
+        concatTwoChars((char*)str2, end2);
         concatTwoChars((char*)str2, crlf);
     } else if (mode == 1) {
         char m = str[0];
         char k = str[1];
-        snprintf((char*)str2, sizeof(str2), "$PATNV28%c%cN", m, k);
-//        char end3[3];
-//        checksum((char*)str2, end3);
-//        concatTwoChars((char*)str2, end3);
+        snprintf((char*)str2, sizeof(str2), "$PATCN28%c%cN", m, k);
+        char end3[3];
+        checksum((char*)str2, end3);
+        concatTwoChars((char*)str2, end3);
         concatTwoChars((char*)str2, crlf);
     } else if (mode == 2) {
         char v = str[0];
-        snprintf((char*)str2, sizeof(str2), "$PATNV73%c", v);
-//        char end4[3];
-//        checksum((char*)str2, end4);
-//        concatTwoChars((char*)str2, end4);
+        snprintf((char*)str2, sizeof(str2), "$PATCN73%c", v);
+        char end4[3];
+        checksum((char*)str2, end4);
+        concatTwoChars((char*)str2, end4);
         concatTwoChars((char*)str2, crlf);
     } else if (mode == 3) {
-//        snprintf((char*)str2, sizeof(str2), "$PATNV34%03d", obs);
+//        snprintf((char*)str2, sizeof(str2), "$PATCN34%03d", obs);
 //        char end5[3];
 //        checksum((char*)str2, end5);
 //        concatTwoChars((char*)str2, end5);
         concatTwoChars((char*)str2, crlf);
     }
 
-//    HAL_UART_Transmit_IT(&huart5, str2, strlen((char*)str2));
-//    HAL_Delay(100);
     UART_SendString(&huart3, &BuffUART3, str2, strlen((char*)str2));
 }
 
@@ -253,12 +222,14 @@ int main(void)
   MX_USART3_UART_Init();
 
   NavScreenParams.Active.freq = 118.0;
-  NavScreenParams.MHz = 118;
-  NavScreenParams.KHz = 0;
+  freq2MhzKhz(NavScreenParams.Active.freq, &NavScreenParams.Active.MHz, &NavScreenParams.Active.KHz);
+//  NavScreenParams.Active.MHz = 118;
+//  NavScreenParams.Active.KHz = 0;
   NavScreenParams.Standby.freq = 108.4;
+  freq2MhzKhz(NavScreenParams.Standby.freq, &NavScreenParams.Standby.MHz, &NavScreenParams.Standby.KHz);
   NavScreenParams.Standby.tileSize = 2;
-  NavScreenParams.mhz = 108;
-  NavScreenParams.khz = 4;
+//  NavScreenParams.Standby.MHz = 108;
+//  NavScreenParams.Standby.KHz = 4;
   NavScreenParams.page = false; // means page0
   NavScreenParams.P1.freq = 123.45;
   NavScreenParams.P1.tileSize = 3;
@@ -308,20 +279,17 @@ int main(void)
 
 		  key = NavScreenStateMachine(&NavScreenParams);
 
-		  ConvertFloatToInts(NavScreenParams.Active.freq, &NavScreenParams.MHz, &NavScreenParams.KHz);
-		  ConvertFloatToInts(NavScreenParams.Standby.freq, &NavScreenParams.mhz, &NavScreenParams.khz);
-
 		  if (NavScreenParams.Active.freq != freq_last || NavScreenParams.Standby.freq != sfreq_last)
 		  {
-			  int MA = NavScreenParams.MHz - 48;
-			  int KA = (NavScreenParams.KHz/25) + 48;
+			  int MA = NavScreenParams.Active.MHz - 48;
+			  int KA = (NavScreenParams.Active.KHz/25) + 48;
 			  char m = (char)MA;
 			  char k = (char)KA;
 			  char Mfinal[3] = {m,k,0};
 			  Sender2rcu(Mfinal,0); //sending also to rcu for synchronization
 
-			  MA = NavScreenParams.mhz - 48;
-			  KA = (NavScreenParams.khz/25) + 48;
+			  MA = NavScreenParams.Standby.MHz - 48;
+			  KA = (NavScreenParams.Standby.KHz/25) + 48;
 			  m = (char)MA;
 			  k = (char)KA;
 			  char Sfinal[3] = {m,k,0};
@@ -330,6 +298,9 @@ int main(void)
 
 			  sfreq_last = NavScreenParams.Standby.freq;
 			  freq_last = NavScreenParams.Active.freq;
+
+			  freq2MhzKhz(NavScreenParams.Active.freq, &NavScreenParams.Active.MHz, &NavScreenParams.Active.KHz);
+			  freq2MhzKhz(NavScreenParams.Standby.freq, &NavScreenParams.Standby.MHz, &NavScreenParams.Standby.KHz);
 		  }
 
 		  if (key == 'h')	// HOME button

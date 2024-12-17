@@ -39,7 +39,6 @@ typedef enum
 	R2,
 	R3,
 	R4,
-
 }softKey_t;
 
 

@@ -30,13 +30,8 @@ typedef enum {
 }NavParamNumber;
 
 NAVSCREENState NavScreenState = Idle;
-//int NAVScreenPage = 0;
-
-//--------------------------------
-
 
 returnStatus ChangeNavParam(NavParamNumber PNum, void * PVal);
-
 
 returnStatus DispNAVscreen(NavParams * Params)
 {
@@ -110,6 +105,11 @@ uint8_t checkDot(char* arr){
 			i++;
 	}
 	return 0;
+}
+
+uint8_t checkFreqLimit(double editedfreq, double upLimit, double lowLimit)
+{
+
 }
 
 char* editFreq(NavFreq_t freq, const char *lblText, lcdCmdParam_id pos)
@@ -193,7 +193,6 @@ uint16_t NavScreenStateMachine(NavParams * Params){
 			configfontcolorLCD(Left1, WHITEFONT);
 		}
 
-//		ret = get_ScanKode_from_buffer();
 		if (keyVal == 's') // SWAP key
 		{
 			NavScreenState = SwapKey;
