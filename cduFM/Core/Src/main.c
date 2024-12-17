@@ -281,6 +281,10 @@ int main(void)
 
 		  if (NavScreenParams.Active.freq != freq_last || NavScreenParams.Standby.freq != sfreq_last)
 		  {
+
+			  freq2MhzKhz(NavScreenParams.Active.freq, &NavScreenParams.Active.MHz, &NavScreenParams.Active.KHz);
+			  freq2MhzKhz(NavScreenParams.Standby.freq, &NavScreenParams.Standby.MHz, &NavScreenParams.Standby.KHz);
+
 			  int MA = NavScreenParams.Active.MHz - 48;
 			  int KA = (NavScreenParams.Active.KHz/25) + 48;
 			  char m = (char)MA;
@@ -299,8 +303,6 @@ int main(void)
 			  sfreq_last = NavScreenParams.Standby.freq;
 			  freq_last = NavScreenParams.Active.freq;
 
-			  freq2MhzKhz(NavScreenParams.Active.freq, &NavScreenParams.Active.MHz, &NavScreenParams.Active.KHz);
-			  freq2MhzKhz(NavScreenParams.Standby.freq, &NavScreenParams.Standby.MHz, &NavScreenParams.Standby.KHz);
 		  }
 
 		  if (key == 'h')	// HOME button
