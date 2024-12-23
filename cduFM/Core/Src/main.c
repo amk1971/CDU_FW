@@ -26,8 +26,9 @@ UART_HandleTypeDef huart3;
 SerialStruct BuffUART2;
 SerialStruct BuffUART3;
 
-//uint16_t keyRead;
-NavParams NavScreenParams;
+ScreenParams NavScreenParams;
+ScreenParams AdfScreenParams;
+
 extern lcdCmdDisp_id currentScreen, NextScreen;
 extern softKey_t softkey;
 
@@ -221,6 +222,8 @@ int main(void)
   MX_USART2_UART_Init();
   MX_USART3_UART_Init();
 
+  //----------------------------------------------------------------------------------------------------------
+
   NavScreenParams.Active.freq = 118.0;
   freq2MhzKhz(NavScreenParams.Active.freq, &NavScreenParams.Active.MHz, &NavScreenParams.Active.KHz);
 //  NavScreenParams.Active.MHz = 118;
@@ -237,8 +240,31 @@ int main(void)
   NavScreenParams.P6.freq = 534.15;
   NavScreenParams.P8.freq = 878.98;
 
-  static double freq_last = 118.0;
-  static double sfreq_last = 108.4;
+  static double Nav_afreq_last = 118.0;
+  static double Nav_sfreq_last = 108.4;
+
+  //----------------------------------------------------------------------------------------------------------
+
+  AdfScreenParams.Active.freq = 108.0;
+  freq2MhzKhz(AdfScreenParams.Active.freq, &AdfScreenParams.Active.MHz, &AdfScreenParams.Active.KHz);
+//  AdfScreenParams.Active.MHz = 118;
+//  AdfScreenParams.Active.KHz = 0;
+  AdfScreenParams.Standby.freq = 118.4;
+  freq2MhzKhz(AdfScreenParams.Standby.freq, &AdfScreenParams.Standby.MHz, &AdfScreenParams.Standby.KHz);
+  AdfScreenParams.Standby.tileSize = 2;
+//  AdfScreenParams.Standby.MHz = 108;
+//  AdfScreenParams.Standby.KHz = 4;
+  AdfScreenParams.page = false; // means page0
+  AdfScreenParams.P1.freq = 125.45;
+  AdfScreenParams.P1.tileSize = 3;
+  AdfScreenParams.P3.freq = 334.85;
+  AdfScreenParams.P6.freq = 536.15;
+  AdfScreenParams.P8.freq = 877.98;
+
+  static double Adf_afreq_last = 108.0;
+  static double Adf_sfreq_last = 118.4;
+
+  //----------------------------------------------------------------------------------------------------------
 
   InitializeLCD();
   //Matrix_keypad_Basic_test();
@@ -259,7 +285,7 @@ int main(void)
 		  {
 			  currentScreen = lcdWaitForSW;
 			  NextScreen = lcdDisp_adf;
-			  DispADFscreen();
+			  DispADFscreen(&AdfScreenParams);
 		  }
 		  if(softkey == L3)
 		  {
@@ -279,7 +305,7 @@ int main(void)
 
 		  key = NavScreenStateMachine(&NavScreenParams);
 
-		  if (NavScreenParams.Active.freq != freq_last || NavScreenParams.Standby.freq != sfreq_last)
+		  if (NavScreenParams.Active.freq != Nav_afreq_last || NavScreenParams.Standby.freq != Nav_sfreq_last)
 		  {
 
 			  freq2MhzKhz(NavScreenParams.Active.freq, &NavScreenParams.Active.MHz, &NavScreenParams.Active.KHz);
@@ -300,8 +326,8 @@ int main(void)
 
 			  Sender2rcu(Sfinal,1); //sending also to rcu for synchronization
 
-			  sfreq_last = NavScreenParams.Standby.freq;
-			  freq_last = NavScreenParams.Active.freq;
+			  Nav_sfreq_last = NavScreenParams.Standby.freq;
+			  Nav_afreq_last = NavScreenParams.Active.freq;
 
 		  }
 
@@ -317,14 +343,41 @@ int main(void)
 		  break;
 
 	  case lcdDisp_adf:
-		  MkeyStatus = keyPad_Scan();
+//		  MkeyStatus = keyPad_Scan();
+		  key = AdfScreenStateMachine(&AdfScreenParams);
 
-		  if (keyPad.key == 0x101)	// to be checked later
+		  if (AdfScreenParams.Active.freq != Adf_afreq_last || AdfScreenParams.Standby.freq != Adf_sfreq_last)
+		  {
+
+			  freq2MhzKhz(AdfScreenParams.Active.freq, &AdfScreenParams.Active.MHz, &AdfScreenParams.Active.KHz);
+			  freq2MhzKhz(AdfScreenParams.Standby.freq, &AdfScreenParams.Standby.MHz, &AdfScreenParams.Standby.KHz);
+
+			  int MA = AdfScreenParams.Active.MHz - 48;
+			  int KA = (AdfScreenParams.Active.KHz/25) + 48;
+			  char m = (char)MA;
+			  char k = (char)KA;
+			  char Mfinal[3] = {m,k,0};
+			  Sender2rcu(Mfinal,0); //sending also to rcu for synchronization
+
+			  MA = AdfScreenParams.Standby.MHz - 48;
+			  KA = (AdfScreenParams.Standby.KHz/25) + 48;
+			  m = (char)MA;
+			  k = (char)KA;
+			  char Sfinal[3] = {m,k,0};
+
+			  Sender2rcu(Sfinal,1); //sending also to rcu for synchronization
+
+			  Adf_sfreq_last = AdfScreenParams.Standby.freq;
+			  Adf_afreq_last = AdfScreenParams.Active.freq;
+
+		  }
+
+		  if (key == 'h')	// HOME button
 		  {
 			  currentScreen = lcdDisp_home;
 			  DispHomeScreen();
 		  }
-		  else if(keyPad.key == 0)
+		  else if(key == 0)
 		  {
 			  // do nothing here
 		  }

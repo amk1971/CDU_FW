@@ -6,17 +6,26 @@
 		<item key="wholeword" value="false"/>
 		<item key="incremental" value="false"/>
 		<item key="isRegEx" value="false"/>
-		<item key="selection" value=""/>
+		<item key="selection" value="AdfScreenState"/>
 		<list key="findhistory">
-			<item value="UART_SendString"/>
-			<item value="atof"/>
-			<item value="pageResponse"/>
-			<item value="USART1"/>
-			<item value="LCD_queue"/>
-			<item value="QueueHandle_t"/>
-			<item value="hspi1"/>
+			<item value="NavScreenState"/>
+			<item value="flag"/>
+			<item value="ChangeNavParam"/>
+			<item value="keyPad.ColumnS"/>
+			<item value="TIMEOUT"/>
+			<item value="NAVScreenPage"/>
+			<item value="NavParamNumber"/>
+			<item value="A %"/>
+			<item value="S %"/>
+			<item value="S  %"/>
+			<item value="&quot;S %"/>
+			<item value="Center5"/>
+			<item value="Params-&gt;"/>
+			<item value="Label"/>
+			<item value="lblText"/>
 		</list>
 		<list key="replacehistory">
+			<item value="AdfScreenState"/>
 		</list>
 	</section>
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog_dialogBounds">

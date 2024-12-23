@@ -2097,10 +2097,6 @@ void task2_init(void const * argument) { // rx
 	for(;;)
 	{
 
-	  //continuously receive data through UART=====================================
-//	  response = HAL_UART_Receive(&huart4, rxbuff, 1, 1000);
-
-
 	  if(response==HAL_OK) //if transfer is successful
 	  {
 		  if (faultcounter0 > 2)

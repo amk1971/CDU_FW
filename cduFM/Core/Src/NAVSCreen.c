@@ -7,20 +7,7 @@
 
 #include "main.h"
 
-bool flag = false;
-
-
-typedef enum
-{
-	Idle = 0,
-	SwapKey,
-	page0,
-	page1,
-	RightSoftKey,
-	StandByEdit
-} NAVSCREENState;
-
-extern NavParams NavScreenParams;
+extern ScreenParams NavScreenParams;
 extern keyPad_t keyPad;
 
 typedef enum {
@@ -29,11 +16,11 @@ typedef enum {
 	P1, P2, P3, P4, P5, P6, P7, P8
 }NavParamNumber;
 
-NAVSCREENState NavScreenState = Idle;
+SCREENState NavScreenState = Idle;
 
-returnStatus ChangeNavParam(NavParamNumber PNum, void * PVal);
+returnStatus ChangedNavParam(NavParamNumber PNum, void * PVal);
 
-returnStatus DispNAVscreen(NavParams * Params)
+returnStatus DispNAVscreen(ScreenParams * Params)
 {
 //	static NavParams oldParams;
 	char Text[50];
@@ -75,7 +62,7 @@ returnStatus DispNAVscreen(NavParams * Params)
 	return success;
 }
 
-returnStatus ChangeNavParam(NavParamNumber PNum, void * PVal){
+returnStatus ChangedNavParam(NavParamNumber PNum, void * PVal){
 	char Text[50];
 
 	if(PNum == ActiveFreq){
@@ -88,85 +75,8 @@ returnStatus ChangeNavParam(NavParamNumber PNum, void * PVal){
 	}
 }
 
-void swapFreq(double *param1, double *param2)
-{
-	double temp = *param1;
-	*param1 = *param2;
-	*param2 = temp;
-}
 
-uint8_t checkDot(char* arr){
-
-	uint8_t i = 0;
-	while(arr[i] != '\0'){
-		if(arr[i] == '.')
-			return 1;
-		else
-			i++;
-	}
-	return 0;
-}
-
-uint8_t checkFreqLimit(double editedfreq, double upLimit, double lowLimit)
-{
-
-}
-
-char* editFreq(NavFreq_t freq, const char *lblText, lcdCmdParam_id pos)
-{
-
-	volatile uint16_t ret;
-	volatile uint8_t keyVal = 0;
-	static char str[20];
-	strncpy(str, lblText, sizeof(str));
-	bool decimal_added = checkDot(str);
-	static uint32_t curTickValue;// = HAL_GetTick();
-	while(keyVal != 'o') // OK Button
-	{
-		ret = get_ScanKode_from_buffer();
-		if ((ret & 0x00FF) == 0) {				//Do not process Release Codes
-			curTickValue = HAL_GetTick() - 200;
-		}
-		else
-		{
-			keyVal = decode_keycode(ret);
-
-			int len = strlen(str);
-			if(keyVal == 'b') // BACK button
-			{
-				if (len > freq.tileSize)
-				{
-					if(str[len-1] == '.') decimal_added = 0;
-					str[len-1]='\0';
-					len--;
-				}
-				UpdateParamLCD(pos, str);
-			}
-			else if ((keyVal == '.') && (!decimal_added) && (len < (freq.tileSize + 7)) &&
-					((HAL_GetTick() - curTickValue) > 200))
-			{
-				curTickValue = HAL_GetTick();
-				strncat(str, ".", 1);
-				decimal_added = 1;
-				UpdateParamLCD(pos, str);
-			}
-			else if ((keyVal >= '0') && (keyVal <= '9') &&
-					((HAL_GetTick() - curTickValue) > 200))
-			{
-				if((decimal_added && (freq.tileSize + 7) < 10) || (!decimal_added && len < 6))
-				{
-					char keyChar[2] = {(char) keyVal, 0};
-					curTickValue = HAL_GetTick();
-					strncat(str, keyChar, 1);
-					UpdateParamLCD(pos, str);
-				}
-			}
-		}
-	}
-	return str;
-}
-
-uint16_t NavScreenStateMachine(NavParams * Params){
+uint16_t NavScreenStateMachine(ScreenParams * Params){
 
 
 	static lcdCmdParam_id Position;
@@ -289,46 +199,6 @@ uint16_t NavScreenStateMachine(NavParams * Params){
 		strncpy(Format, "S %0.3f", 10);
 		sprintf(lblText, Format, * Label);
 
-//		char text[9];
-//
-////		sprintf(text, "S %f", Params->Standby);
-//		snprintf(text, sizeof(text), "S %.3f", Params->Standby.freq);
-//
-//		while (ret != 0x004) // OK Button
-//		{
-//			ret = get_ScanKode_from_buffer();
-//			keyVal = decode_keycode(ret);
-//			if (ret != 0)
-//			{
-//				int len = strlen(text) ;
-//
-//				if (ret == 0x110) // using B button instead of BACK
-//				{
-//					if (len > 2) {   // Ensure there's something to delete beyond the prefix "S "
-//						text[len - 1] = '\0';  // Remove last character
-//						if (text[len - 2] == '.')
-//						{
-//							decimal_added = 0;
-//						}
-//						len--;
-////						UpdateParamLCD( , text);
-//					}
-//				}
-//				else if (ret == 0x408 && !decimal_added && len < 9)
-//				{
-//					strncat(text, ".", 1);
-//					decimal_added = 1;
-//					UpdateParamLCD(Left1, text);
-//				}
-//				else if (keyVal >= '0' && keyVal <= '9' && len < 9)
-//				{
-//					char keyChar = (char) keyVal;
-//					strncat(text, &keyChar, 1);
-//					UpdateParamLCD(Left1, text);
-//				}
-//			}
-//		}
-
 		char* result = editFreq(Params->Standby, lblText, Left1);
 
 		Params->Standby.freq = atof(&result[2]); // remove s_ first
@@ -343,8 +213,8 @@ uint16_t NavScreenStateMachine(NavParams * Params){
 
 	case SwapKey:
 		swapFreq(&Params->Active.freq,&Params->Standby.freq);
-		ChangeNavParam(StandbyFreq, (void *) &Params->Standby.freq);
-		ChangeNavParam(ActiveFreq, (void *) &Params->Active.freq);
+		ChangedNavParam(StandbyFreq, (void *) &Params->Standby.freq);
+		ChangedNavParam(ActiveFreq, (void *) &Params->Active.freq);
 		NavScreenState = Idle;
 
 		break;
