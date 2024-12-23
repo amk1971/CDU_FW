@@ -291,8 +291,8 @@ int main(void)
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
-  //  osThreadDef(Task2, task2_init, osPriorityNormal, 0, 128);	//128 is stack size (in bytes) requirements for the thread function.
-  //  Task2handler = osThreadCreate(osThread(Task2), NULL);
+    osThreadDef(Task2, task2_init, osPriorityNormal, 0, 128);	//128 is stack size (in bytes) requirements for the thread function.
+    Task2handler = osThreadCreate(osThread(Task2), NULL);
 
     osThreadDef(Task3, task3_init, osPriorityNormal, 0, 128);	//128 is stack size (in bytes) requirements for the thread function.
     Task3handler = osThreadCreate(osThread(Task3), NULL);
@@ -806,6 +806,9 @@ void read_encoder2() { // KHz right inner knob					//Handles the right inner kno
       int changevalue = 50;
       if (SK < 950) {
         SK = SK + changevalue;              // Update counter
+      } else if (SM < 117){
+    	  SK = SK + changevalue - 1000;
+    	  SM = SM + 1;
       }
       encval = 0;
     }
@@ -813,6 +816,9 @@ void read_encoder2() { // KHz right inner knob					//Handles the right inner kno
       int changevalue = -50;
       if (SK > 0) {
         SK = SK + changevalue;              // Update counter
+      } else if (SM < 108){
+    	  SK = SK + changevalue + 1000;
+    	  SM = SM - 1;
       }
       encval = 0;
     }
@@ -2129,6 +2135,7 @@ void task2_init(void const * argument) { // rx
 			  glcd_puts("Error 0", 0, 7);
 		  }
 	  }
+	  HAL_Delay(1);
 	}
 }
 

@@ -179,5 +179,6 @@ void task3_init(void const * argument)
 				  }
 			  }
 		  }
+		  HAL_Delay(1);
 	}
 }
