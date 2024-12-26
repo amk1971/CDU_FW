@@ -1427,11 +1427,12 @@ void StartDefaultTask(void const * argument)
 //					faultcounter1 = 0;
 //				}
 //			}
-//			rxfree = false;
+//			rxfree = falsc
 //		}
 
-
+		KHz = (KHz/50)*50;
 		freq = MHz + (.001 * KHz);
+		SK = (SK/50)*50;
 		Standby = SM + (.001 * SK);
 		if (millis() - last > 2000 && temp) { // if time between action > 2 send freq in NOTE: will need to add a check later as some actions cant be exited.
 	//	  Serial2.print("f");

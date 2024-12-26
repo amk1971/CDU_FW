@@ -30,6 +30,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <math.h>
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -65,7 +66,7 @@ void Sender2cdu(const char * str, int mode);
 osThreadId defaultTaskHandle;
 /* USER CODE BEGIN PV */
 SPIF_HandleTypeDef spif;
-float freq = 0.000;
+float freq = 0.000;			//Active Frequncy
 volatile int KHz = 0;
 volatile int MHz = 108;
 float Standby = 108.000;
@@ -89,8 +90,8 @@ bool temp = false;
 uint8_t read[1];
 uint8_t write[1];
 
-unsigned char rxbuff[1];
-char rxmsg[25];
+unsigned char rxbuff[5];
+char rxmsg[50];
 int rxcount = 0;
 int faultcounter0 = 0;
 int faultcounter1 = 0;
@@ -98,8 +99,8 @@ bool rxfree = false;
 
 uint8_t response = 0;
 
-extern unsigned char rxbuffcdu[1];
-extern char rxmsgcdu[25];
+extern unsigned char rxbuffcdu[5];
+extern char rxmsgcdu[50];
 extern int rxcountcdu;
 extern bool rxfreecdu;
 
@@ -186,12 +187,18 @@ void storestate() { // called when turned off			stores the current state of the 
 void loadstate() { // called on startup					loads the system state from a specific sector in the SPI flash memory on startup.
   SPIF_ReadSector(&spif, 20, read, 1, 0);
   MHz = read[0];
+  if (MHz > 117) MHz = 117;
+  if (MHz < 108) MHz = 108;
   SPIF_ReadSector(&spif, 20, read, 1, 1);
   KHz = read[0] * 25;
+  if(KHz > 950) KHz = 950;
   SPIF_ReadSector(&spif, 20, read, 1, 2);
   SM = read[0];
+  if (SM > 117) SM = 117;
+  if (SM < 108) SM = 108;
   SPIF_ReadSector(&spif, 20, read, 1, 3);
   SK = read[0] * 25;
+  if(SK > 950) SK = 950;
   SPIF_ReadSector(&spif, 20, read, 1, 4);	//1 is not bytes to be read
   vol = read[0];
   SPIF_ReadSector(&spif, 20, read, 1, 5);	//5 is Offset: The starting point within the sector to begin reading from.
@@ -806,6 +813,7 @@ void read_encoder2() { // KHz right inner knob					//Handles the right inner kno
       int changevalue = 50;
       if (SK < 950) {
         SK = SK + changevalue;              // Update counter
+        SK = floor(SK/50)*50;
       } else if (SM < 117){
     	  SK = SK + changevalue - 1000;
     	  SM = SM + 1;
@@ -816,7 +824,8 @@ void read_encoder2() { // KHz right inner knob					//Handles the right inner kno
       int changevalue = -50;
       if (SK > 0) {
         SK = SK + changevalue;              // Update counter
-      } else if (SM < 108){
+        SK = floor(SK/50)*50;
+         } else if (SM > 108){
     	  SK = SK + changevalue + 1000;
     	  SM = SM - 1;
       }
@@ -1341,7 +1350,7 @@ void Sender(const char * str, int mode) { //TODO				construct and send a message
     }
 
     HAL_UART_Transmit_IT(&huart4, str2, strlen((char*)str2));
-//    HAL_Delay(100);
+    HAL_Delay(100);
 }
 /* USER CODE END 4 */
 
@@ -1363,10 +1372,21 @@ void StartDefaultTask(void const * argument)
 	//Message Handling for Transceiver Status:==================================================================================================================
 
 		  if (rxfree) {
-				if (rxmsg[6] == '2' && rxmsg[7] == '8')
+				if (rxmsg[6] == '2' && rxmsg[7] == '7')
+				{ // comm transceiver Error
+					glcd_clearline(7);
+
+				}
+				if (rxmsg[6] == '2' && rxmsg[7] == '1')
+				{ // comm transceiver Status
+					glcd_clearline(7);
+
+				}
+			  if (rxmsg[6] == '2' && rxmsg[7] == '8')
 				{ // comm transceiver status
-					float commfreq;
+					float commfreq, Standbyfreq;
 					commfreq = (rxmsg[8] + 48) + ((rxmsg[9] - 48) * .025);
+					Standbyfreq = (rxmsg[10] + 48) + ((rxmsg[11] - 48) * .025);
 					if (commfreq != freq)
 					{
 						faultcounter1 += 1;
@@ -1375,9 +1395,24 @@ void StartDefaultTask(void const * argument)
 					    char m = (char)MA;
 					    char k = (char)KA;
 					    char Mfinal[3] = {m,k,0};
-					    Sender(Mfinal, 0); //set active				which will be something like by default........idts
+					    //Sender(Mfinal, 0); //set active				which will be something like by default........idts
 						if (faultcounter1 > 2) {
-							glcd_puts("Error 1", 0, 7);
+			//				glcd_puts("Error 1", 0, 7);
+							//TO DO For the re-Transmit the Transceiver Frequency
+						}
+					}
+					if (Standby != Standbyfreq)
+					{
+						faultcounter1 += 1;
+					    int MA = SM - 48;
+					    int KA = (SK/25) + 48;
+					    char m = (char)MA;
+					    char k = (char)KA;
+					    char Mfinal[3] = {m,k,0};
+					    //Sender(Mfinal, 1); //set active				which will be something like by default........idts
+						if (faultcounter1 > 2) {
+			//				glcd_puts("Error 1", 0, 7);
+							//TO DO For the re-Transmit the Transceiver Frequency
 						}
 					}
 					else
