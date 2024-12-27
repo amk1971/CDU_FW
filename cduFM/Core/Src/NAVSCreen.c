@@ -198,12 +198,16 @@ uint16_t NavScreenStateMachine(ScreenParams * Params){
 		Label = &Params->Standby.freq;
 		strncpy(Format, "S %0.3f", 10);
 		sprintf(lblText, Format, * Label);
+		UpdateParamLCD(Center4, "PROG");
+
+		configBgcolorLCD(Left1, BLACKBG);
+		configfontcolorLCD(Left1, WHITEFONT);
 
 		char* result = editFreq(Params->Standby, lblText, Left1);
 
 		Params->Standby.freq = atof(&result[2]); // remove s_ first
 		NavScreenState = idle;
-		char txt[7];
+		char txt[15];
 		snprintf(txt, sizeof(txt), "S %0.3f", Params->Standby.freq);
 		UpdateParamLCD(Left1, txt);
 		configBgcolorLCD(Left1, TRANSPARENTBG);

@@ -39,7 +39,7 @@ char* editFreq(Freq_t freq, const char *lblText, lcdCmdParam_id pos)
 	{
 		ret = get_ScanKode_from_buffer();
 		if ((ret & 0x00FF) == 0) {				//Do not process Release Codes
-			curTickValue = HAL_GetTick() - 200;
+			curTickValue = HAL_GetTick() - 210;
 		}
 		else
 		{

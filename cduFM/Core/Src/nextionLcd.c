@@ -139,7 +139,7 @@ returnStatus DispHomeScreen(void)
 
 returnStatus UpdateParamLCD(lcdCmdParam_id Param_ID, char * Param_Value)
 {
-	uint8_t * txBuffer = malloc(30 * sizeof(char));  // Command buffer
+	uint8_t txBuffer[30];  // Command buffer
 	int len = 0;
 	char param_ID[10];
 
@@ -257,7 +257,7 @@ returnStatus UpdateParamLCD(lcdCmdParam_id Param_ID, char * Param_Value)
 
 returnStatus configfontcolorLCD(lcdCmdParam_id Param_ID, int Param_Value)
 {
-	uint8_t * txBuffer = malloc(30 * sizeof(char));  // Command buffer
+	uint8_t txBuffer[30];  // Command buffer
 	int len = 0;
 	char param_ID[10];
 
@@ -265,8 +265,9 @@ returnStatus configfontcolorLCD(lcdCmdParam_id Param_ID, int Param_Value)
 	{
 		case Left1:
 		{
+			strncpy(param_ID, "t0", 3);
 			len = sprintf((char *)txBuffer, "%s.pco=%d", param_ID, Param_Value);
-
+			break;
 		}
 
 		case Left2:
@@ -383,7 +384,7 @@ returnStatus configfontcolorLCD(lcdCmdParam_id Param_ID, int Param_Value)
 
 returnStatus configBgcolorLCD(lcdCmdParam_id Param_ID, int Param_Value)
 {
-	uint8_t * txBuffer = malloc(30 * sizeof(char));  // Command buffer
+	uint8_t txBuffer[30];  // Command buffer
 	int len = 0;
 	char param_ID[10];
 
@@ -391,6 +392,7 @@ returnStatus configBgcolorLCD(lcdCmdParam_id Param_ID, int Param_Value)
 	{
 		case Left1:
 		{
+			strncpy(param_ID, "t0", 3);
 			len = sprintf((char *)txBuffer, "%s.bco=%d", param_ID, Param_Value);
 
 			break;
