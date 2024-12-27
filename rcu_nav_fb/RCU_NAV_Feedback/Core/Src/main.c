@@ -1350,7 +1350,7 @@ void Sender(const char * str, int mode) { //TODO				construct and send a message
     }
 
     HAL_UART_Transmit_IT(&huart4, str2, strlen((char*)str2));
-    HAL_Delay(100);
+    HAL_Delay(150);
 }
 /* USER CODE END 4 */
 

@@ -12,10 +12,10 @@
 
 extern UART_HandleTypeDef huart5;
 
-#define ACTIVE_FREQ_MESSAGE  "$PATNV27%c%cN"
-#define STANDBY_FREQ_MESSAGE "$PATNV28%c%cN"
-#define VOLUME_MESSAGE      "$PATNV73%c"
-#define OBS_MESSAGE         "$PATNV34%03d"
+#define ACTIVE_FREQ_MESSAGE  "$PATCN27%c%cN"
+#define STANDBY_FREQ_MESSAGE "$PATCN28%c%cN"
+#define VOLUME_MESSAGE      "$PATCN73%c"
+#define OBS_MESSAGE         "$PATCN34%03d"
 
 #define ACTIVE_FREQ_IDENTIFIER  "27"
 #define STANDBY_FREQ_IDENTIFIER "28"
@@ -134,7 +134,7 @@ void task3_init(void const * argument)
 		  if(rxfreecdu)
 		  {
 			  rxfreecdu = false;
-			  if(rxmsgcdu[4] == RCU_DESIG)
+			  if(rxmsgcdu[5] == RCU_DESIG)
 			  {
 				  if(Test_Pattern(&rxmsgcdu[6], ACTIVE_FREQ_IDENTIFIER))
 				  {
