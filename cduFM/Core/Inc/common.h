@@ -61,6 +61,11 @@ typedef struct NAVPARAMS {
 	volatile bool page;
 } ScreenParams;
 
+#define reactDuration 30000			// 30s of reaction duration in editing frequencies
+#define blinkDuration 500			// 1/2 s blkink time
+
+#define MIN_FREQUENCY	108.00
+#define MAX_FREQUENCY	117.95
 
 #define MAXBUFLEN	1024			// UART receive buffer size. Must be a multiple of 2
 #define BUFLENMASK	MAXBUFLEN-1

@@ -31,23 +31,45 @@ char* editFreq(Freq_t freq, const char *lblText, lcdCmdParam_id pos)
 
 	volatile uint16_t ret;
 	volatile uint8_t keyVal = 0;
-	static char str[20];
+	static char str[20], strBlink[20];
 	strncpy(str, lblText, sizeof(str));
 	bool decimal_added = checkDot(str);
 	static uint32_t curTickValue;// = HAL_GetTick();
+	bool blink = false;
+	uint32_t reactTime = HAL_GetTick();
+	uint32_t blinkTimer = reactTime;
 	while(keyVal != 'o') // OK Button
 	{
+
+		if ((HAL_GetTick() - blinkTimer) >= blinkDuration) {
+			strncpy(strBlink, str, 1+strlen(str));
+			blinkTimer = HAL_GetTick();
+			if(!blink){
+				//char cursor[2] = {'|', 0};
+				strncat(strBlink, "|", 1);
+			} else {
+				strncat(strBlink, " ", 1);
+			}
+			UpdateParamLCD(pos, strBlink);
+			blink = !blink;
+		}
+
+		if ((HAL_GetTick() - reactTime) >= reactDuration) {
+			return lblText;
+		}
 		ret = get_ScanKode_from_buffer();
 		if ((ret & 0x00FF) == 0) {				//Do not process Release Codes
 			curTickValue = HAL_GetTick() - 210;
 		}
 		else
 		{
+			reactTime = HAL_GetTick();
 			keyVal = decode_keycode(ret);
 
 			int len = strlen(str);
 			if(keyVal == 'b') // BACK button
 			{
+				//reactTime = HAL_GetTick();
 				if (len > freq.tileSize)
 				{
 					if(str[len-1] == '.') decimal_added = 0;
@@ -59,16 +81,24 @@ char* editFreq(Freq_t freq, const char *lblText, lcdCmdParam_id pos)
 			else if ((keyVal == '.') && (!decimal_added) && (len < (freq.tileSize + 7)) &&
 					((HAL_GetTick() - curTickValue) > 200))
 			{
+				//reactTime = HAL_GetTick();
 				curTickValue = HAL_GetTick();
 				strncat(str, ".", 1);
 				decimal_added = 1;
 				UpdateParamLCD(pos, str);
+				if(atof(&str[freq.tileSize]) < MIN_FREQUENCY) {
+					UpdateParamLCD(Center4, "Value < MIN");
+				}
+				if(atof(&str[freq.tileSize]) > MAX_FREQUENCY) {
+					UpdateParamLCD(Center4, "Value > MAX");
+				}
 			}
 			else if ((keyVal >= '0') && (keyVal <= '9') &&
 					((HAL_GetTick() - curTickValue) > 200))
 			{
 				if((decimal_added && (freq.tileSize + 7) < 10) || (!decimal_added && len < 6))
 				{
+					//reactTime = HAL_GetTick();
 					char keyChar[2] = {(char) keyVal, 0};
 					curTickValue = HAL_GetTick();
 					strncat(str, keyChar, 1);
@@ -77,7 +107,12 @@ char* editFreq(Freq_t freq, const char *lblText, lcdCmdParam_id pos)
 			}
 		}
 	}
-	return str;
+	if(atof(&str[freq.tileSize]) < MIN_FREQUENCY) {
+		UpdateParamLCD(Center4, "Value < MIN");
+	}
+	if(atof(&str[freq.tileSize]) > MAX_FREQUENCY) {
+		UpdateParamLCD(Center4, "Value > MAX");
+	}	return str;
 }
 
 uint8_t checkFreqLimit(double editedfreq, double upLimit, double lowLimit)
