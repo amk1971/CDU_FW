@@ -206,6 +206,18 @@ int main(void)
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
   HAL_Init();
 
+  volatile double x = atof("190.01");
+
+  char str3[10];
+
+  strncpy(str3, "190.200", 10);
+
+  x = atof(str3);
+
+  if(x<MIN_FREQUENCY) {
+	  x = 1;
+  }
+  //strtod()
   /* USER CODE BEGIN Init */
 
   /* USER CODE END Init */

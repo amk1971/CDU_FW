@@ -10,6 +10,8 @@
 
 #include <stdbool.h>
 #include "stdint.h"
+#include "stdlib.h"
+#include "string.h"
 //#include ".h"
 //typedef uint8_t unsigned char
 
@@ -86,7 +88,7 @@ typedef struct
 
 void swapFreq(double *param1, double *param2);
 uint8_t checkDot(char* arr);
-char* editFreq(Freq_t freq, const char *lblText, lcdCmdParam_id pos);
+char* editFreq(Freq_t freq, char *lblText, lcdCmdParam_id pos);
 uint8_t checkFreqLimit(double editedfreq, double upLimit, double lowLimit);
 
 

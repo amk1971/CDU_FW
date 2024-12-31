@@ -6,6 +6,11 @@
  */
 
 #include "common.h"
+#include "nextionLcd.h"
+#include "switches.h"
+#include "stm32f0xx_hal.h"
+
+#define isdigit(c) (c >= '0' && c <= '9')
 
 void swapFreq(double *param1, double *param2)
 {
@@ -26,7 +31,52 @@ uint8_t checkDot(char* arr){
 	return 0;
 }
 
-char* editFreq(Freq_t freq, const char *lblText, lcdCmdParam_id pos)
+
+double myatof(const char *s)
+{
+  // This function stolen from either Rolf Neugebauer or Andrew Tolmach.
+  // Probably Rolf.
+  double a = 0.0;
+  int e = 0;
+  int c;
+  while ((c = *s++) != '\0' && isdigit(c)) {
+    a = a*10.0 + (c - '0');
+  }
+  if (c == '.') {
+    while ((c = *s++) != '\0' && isdigit(c)) {
+      a = a*10.0 + (c - '0');
+      e = e-1;
+    }
+  }
+  if (c == 'e' || c == 'E') {
+    int sign = 1;
+    int i = 0;
+    c = *s++;
+    if (c == '+')
+      c = *s++;
+    else if (c == '-') {
+      c = *s++;
+      sign = -1;
+    }
+    while (isdigit(c)) {
+      i = i*10 + (c - '0');
+      c = *s++;
+    }
+    e += i*sign;
+  }
+  while (e > 0) {
+    a *= 10.0;
+    e--;
+  }
+  while (e < 0) {
+    a *= 0.1;
+    e++;
+  }
+  return a;
+}
+
+
+char * editFreq(Freq_t freq, char *lblText, lcdCmdParam_id pos)
 {
 
 	volatile uint16_t ret;
@@ -36,19 +86,24 @@ char* editFreq(Freq_t freq, const char *lblText, lcdCmdParam_id pos)
 	bool decimal_added = checkDot(str);
 	static uint32_t curTickValue;// = HAL_GetTick();
 	bool blink = false;
+	bool message = false;
 	uint32_t reactTime = HAL_GetTick();
 	uint32_t blinkTimer = reactTime;
+	uint32_t Messagetimer = reactTime;
 	while(keyVal != 'o') // OK Button
 	{
-
+		if(message && (HAL_GetTick() > Messagetimer )) {
+			UpdateParamLCD(Center3, "");
+			message = false;
+		}
 		if ((HAL_GetTick() - blinkTimer) >= blinkDuration) {
 			strncpy(strBlink, str, 1+strlen(str));
 			blinkTimer = HAL_GetTick();
 			if(!blink){
 				//char cursor[2] = {'|', 0};
-				strncat(strBlink, "|", 1);
+				strncat(strBlink, "|", 2);
 			} else {
-				strncat(strBlink, " ", 1);
+				strncat(strBlink, " ", 2);
 			}
 			UpdateParamLCD(pos, strBlink);
 			blink = !blink;
@@ -83,15 +138,21 @@ char* editFreq(Freq_t freq, const char *lblText, lcdCmdParam_id pos)
 			{
 				//reactTime = HAL_GetTick();
 				curTickValue = HAL_GetTick();
-				strncat(str, ".", 1);
+
 				decimal_added = 1;
 				UpdateParamLCD(pos, str);
-				if(atof(&str[freq.tileSize]) < MIN_FREQUENCY) {
-					UpdateParamLCD(Center4, "Value < MIN");
+				//volatile int x = atoi(&str[freq.tileSize]);
+				if(atoi(&str[freq.tileSize]) < MIN_FREQUENCY) {
+					UpdateParamLCD(Center3, "< MIN");
+					message = true;
+					Messagetimer = HAL_GetTick()+1000;
 				}
-				if(atof(&str[freq.tileSize]) > MAX_FREQUENCY) {
-					UpdateParamLCD(Center4, "Value > MAX");
+				if(atoi(&str[freq.tileSize]) > MAX_FREQUENCY) {
+					UpdateParamLCD(Center3, "> MAX");
+					message = true;
+					Messagetimer = HAL_GetTick()+1000;
 				}
+				strncat(str, ".", 2);
 			}
 			else if ((keyVal >= '0') && (keyVal <= '9') &&
 					((HAL_GetTick() - curTickValue) > 200))
@@ -107,15 +168,23 @@ char* editFreq(Freq_t freq, const char *lblText, lcdCmdParam_id pos)
 			}
 		}
 	}
-	if(atof(&str[freq.tileSize]) < MIN_FREQUENCY) {
-		UpdateParamLCD(Center4, "Value < MIN");
+
+	//strncpy(, &str[freq.tileSize], 10);
+
+	//volatile double x = myatof(&str[freq.tileSize]);
+	//x = strtod(lblText, 0);
+	if(myatof(&str[freq.tileSize]) < MIN_FREQUENCY) {
+		UpdateParamLCD(Center3, "< MIN");
+		message = true;
+		Messagetimer = HAL_GetTick()+1000;
 	}
-	if(atof(&str[freq.tileSize]) > MAX_FREQUENCY) {
-		UpdateParamLCD(Center4, "Value > MAX");
-	}	return str;
+	if(myatof(&str[freq.tileSize]) > MAX_FREQUENCY) {
+		UpdateParamLCD(Center3, "> MAX");
+		message = true;
+		Messagetimer = HAL_GetTick()+1000;
+	}
+	while (HAL_GetTick() < Messagetimer);
+	return str;
 }
 
-uint8_t checkFreqLimit(double editedfreq, double upLimit, double lowLimit)
-{
 
-}
