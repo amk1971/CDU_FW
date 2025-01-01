@@ -4,4 +4,4 @@
 ../Core/Src/nextionLcd.c:82:14:DispHomeScreen	1
 ../Core/Src/nextionLcd.c:140:14:UpdateParamLCD	14
 ../Core/Src/nextionLcd.c:258:14:configfontcolorLCD	14
-../Core/Src/nextionLcd.c:384:14:configBgcolorLCD	14
+../Core/Src/nextionLcd.c:385:14:configBgcolorLCD	14

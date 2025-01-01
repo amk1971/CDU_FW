@@ -113,12 +113,12 @@ void freq2MhzKhz(double num, volatile int *MHz, volatile int *KHz) {
 	*KHz = (int)((num - *MHz) * 1000 + 0.5); // Fractional part as kHz
 }
 
-void checksum(const char* str, char* result) {				//calculates a checksum from a given string and stores the result in a character array
+void checksum(const char* str, char* result) {	//calculates a checksum from a given string and stores the result in a character array
     unsigned int sum = 0;
     const char* ptr = str;
 
     if (*ptr != '\0') {
-        ptr += 6;			//starting after the first 6 characters (possibly skipping a header like e.g: "$PMRRV")
+        ptr += 6;			//starting after the first 6 characters (possibly skipping a header like e.g: "$PATCN")
     }
 
     while (*ptr != '\0') {//// Loop through the rest of the string
@@ -316,7 +316,7 @@ int main(void)
 	  case lcdDisp_nav:
 		  //MkeyStatus = keyPad_Scan();
 
-		  key = NavScreenStateMachine(&NavScreenParams);
+		  key = NavScreenStateMachine(&NavScreenParams, softKey);
 
 		  if (NavScreenParams.Active.freq != Nav_afreq_last || NavScreenParams.Standby.freq != Nav_sfreq_last)
 		  {

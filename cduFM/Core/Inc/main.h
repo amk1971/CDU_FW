@@ -117,7 +117,7 @@ softKey_t check_soft_keys(void);
 #define Left_SW3_GPIO_Port GPIOE
 
 /* USER CODE BEGIN Private defines */
-
+uint16_t NavScreenStateMachine(ScreenParams * Params, softKey_t softkey);
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus

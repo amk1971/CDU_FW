@@ -73,26 +73,29 @@ returnStatus ChangedNavParam(NavParamNumber PNum, void * PVal){
 		sprintf(Text, "S %0.3f", *(double *)PVal);
 		UpdateParamLCD(Left1, Text);
 	}
+	return success;
 }
 
 
-uint16_t NavScreenStateMachine(ScreenParams * Params){
+uint16_t NavScreenStateMachine(ScreenParams * Params, softKey_t softkey){
 
 
 	static lcdCmdParam_id Position;
 	static double * Label;
+	static Freq_t * ptrFreq;
 	static char Format[20];
-	softKey_t softkey;
+	//softKey_t softkey;
 
 	volatile uint16_t ret;
 	static char lblText[20];
 //	bool decimal_added;
 	volatile char keyVal;
+	uint32_t PresetTimer = HAL_GetTick();
 
 	ret = get_ScanKode_from_buffer();
 	keyVal = decode_keycode(ret);
 	if((ret & 0x00FF) == 0)  keyVal = 0; // Do not process release code
-	softkey = check_soft_keys();
+	//softkey = check_soft_keys();
 	switch (NavScreenState){
 	case Idle:
 
@@ -121,16 +124,18 @@ uint16_t NavScreenStateMachine(ScreenParams * Params){
 			NavScreenState = RightSoftKey;
 
 			if(!(Params->page)){
-				Label = &Params->P1.freq;
+				//Label = &Params->P1.freq;
+				ptrFreq = &Params->P1;
 				strncpy(Format, "P1 %0.3f", 10);
 			}else {
-				Label = &Params->P5.freq;
+				ptrFreq = &Params->P5;
 				strncpy(Format, "P5 %0.3f", 10);
 
 			}
+			PresetTimer = HAL_GetTick();
 			configBgcolorLCD(Position, BLACKBG);
 			configfontcolorLCD(Position, WHITEFONT);
-			sprintf(lblText, Format, * Label);
+			sprintf(lblText, Format, ptrFreq->freq);
 			UpdateParamLCD(Center5, lblText);
 		}
 
@@ -140,16 +145,16 @@ uint16_t NavScreenStateMachine(ScreenParams * Params){
 			NavScreenState = RightSoftKey;
 
 			if(!(Params->page)){
-				Label = &Params->P2.freq;
+				ptrFreq = &Params->P2;
 				strncpy(Format, "P2 %0.3f", 10);
 			}else {
-				Label = &Params->P6.freq;
+				ptrFreq = &Params->P6;
 				strncpy(Format, "P6 %0.3f", 10);
 
 			}
 			configBgcolorLCD(Position, BLACKBG);
 			configfontcolorLCD(Position, WHITEFONT);
-			sprintf(lblText, Format, * Label);
+			sprintf(lblText, Format, ptrFreq->freq);
 			UpdateParamLCD(Center5, lblText);
 		}
 
@@ -159,16 +164,16 @@ uint16_t NavScreenStateMachine(ScreenParams * Params){
 			NavScreenState = RightSoftKey;
 
 			if(!(Params->page)){
-				Label = &Params->P3.freq;
+				ptrFreq = &Params->P3;
 				strncpy(Format, "P3 %0.3f", 10);
 			}else {
-				Label = &Params->P7.freq;
+				ptrFreq = &Params->P7;
 				strncpy(Format, "P7 %0.3f", 10);
 
 			}
 			configBgcolorLCD(Position, BLACKBG);
 			configfontcolorLCD(Position, WHITEFONT);
-			sprintf(lblText, Format, * Label);
+			sprintf(lblText, Format, ptrFreq->freq);
 			UpdateParamLCD(Center5, lblText);
 		}
 
@@ -178,16 +183,16 @@ uint16_t NavScreenStateMachine(ScreenParams * Params){
 			NavScreenState = RightSoftKey;
 
 			if(!(Params->page)){
-				Label = &Params->P4.freq;
+				ptrFreq = &Params->P4;
 				strncpy(Format, "P4 %0.3f", 10);
 			}else {
-				Label = &Params->P8.freq;
+				ptrFreq = &Params->P8;
 				strncpy(Format, "P8 %0.3f", 10);
 
 			}
 			configBgcolorLCD(Position, BLACKBG);
 			configfontcolorLCD(Position, WHITEFONT);
-			sprintf(lblText, Format, * Label);
+			sprintf(lblText, Format, ptrFreq->freq);
 			UpdateParamLCD(Center5, lblText);
 		}
 
@@ -195,9 +200,9 @@ uint16_t NavScreenStateMachine(ScreenParams * Params){
 
 	case StandByEdit:
 
-		Label = &Params->Standby.freq;
+		ptrFreq = &Params->Standby;
 		strncpy(Format, "S %0.3f", 10);
-		sprintf(lblText, Format, * Label);
+		sprintf(lblText, Format, ptrFreq->freq);
 		UpdateParamLCD(Center4, "PROG");
 
 		configBgcolorLCD(Left1, BLACKBG);
@@ -241,6 +246,13 @@ uint16_t NavScreenStateMachine(ScreenParams * Params){
 
 	case RightSoftKey:
 
+		if((HAL_GetTick() - PresetTimer) > 15000) {
+			NavScreenState = idle;
+			configBgcolorLCD(Position, TRANSPARENTBG);
+			configfontcolorLCD(Position, BLACKFONT);
+			UpdateParamLCD(Center5, "");
+		}
+
 		if(softkey == L4)
 		{
 			UpdateParamLCD(Center4, "PROG");
@@ -248,10 +260,11 @@ uint16_t NavScreenStateMachine(ScreenParams * Params){
 			configBgcolorLCD(Center5, BLACKBG);
 			configfontcolorLCD(Center5, WHITEFONT);
 
-			char* result = editFreq(Params->P1, lblText, Center5);
+			char* result = editFreq(* ptrFreq, lblText, Center5);
 
-			* Label = atof(&result[3]);
-			Params->P1.freq = * Label;
+			//* Label = atof(&result[3]);
+			//Params->P1.freq = * Label;
+			ptrFreq->freq = atof(&result[ptrFreq->tileSize]);
 			configBgcolorLCD(Position, TRANSPARENTBG);
 			configfontcolorLCD(Position, BLACKFONT);
 

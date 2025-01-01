@@ -184,6 +184,7 @@ char * editFreq(Freq_t freq, char *lblText, lcdCmdParam_id pos)
 		Messagetimer = HAL_GetTick()+1000;
 	}
 	while (HAL_GetTick() < Messagetimer);
+	UpdateParamLCD(Center3, "");
 	return str;
 }
 
