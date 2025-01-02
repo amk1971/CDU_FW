@@ -275,6 +275,92 @@ void Sender2rcu(const char * str, int mode) { //TODO				construct and send a mes
     UART_SendString(&huart3, &BuffUART3, str2, strlen((char*)str2));
 }
 
+bool Test_Pattern (char * msg, char * pattern) {
+	if(*msg != *pattern) return false;
+	if(*(msg+1) != *(pattern+1)) return false;
+	return true;
+}
+
+void decodeCduMessage()
+{
+	uint16_t rxBuffLen;
+	char rxBuffer[20];
+	bool rxfreercu = false;
+	rxBuffLen = UART_ReceivString(&BuffUART3, rxBuffer, sizeof(rxBuffer));
+
+	if(rxBuffer[0] == '$' && rxBuffer[1] == 'P' && rxBuffer[2] == 'A' && rxBuffer[3] == 'T' && rxBuffer[4] == 'C')
+	{
+	  rxfreercu = true;
+	}
+
+	if(rxfreercu)
+	{
+		rxfreercu = false;
+	  if(rxBuffer[5] == 'N')
+	  {
+		  if(Test_Pattern(&rxBuffer[6], "27"))
+		  {
+			  float rxfreq;
+			  rxfreq = (rxBuffer[8] + 48) + ((rxBuffer[9] - 48) * .025); // active frequency
+			  if (rxfreq != NavScreenParams.Active.freq)
+			  {
+				  NavScreenParams.Active.freq = rxfreq;
+//				  MHz = rxBuffer[8] + 48;
+//				  KHz = (rxBuffer[9] - 48) * .025;
+			  }
+			  else
+			  {
+
+			  }
+		  }
+		  else if(Test_Pattern(&rxBuffer[6], "28"))// standby frequency
+		  {
+			  float rxfreq;
+			  rxfreq = (rxBuffer[8] + 48) + ((rxBuffer[9] - 48) * .025);
+			  if (rxfreq != NavScreenParams.Standby.freq)
+			  {
+				  NavScreenParams.Standby.freq = rxfreq;
+//				  SM = rxBuffer[8] + 48;
+//				  SK = (rxBuffer[9] - 48) * .025;
+			  }
+			  else
+			  {
+
+			  }
+		  }
+//		  else if(Test_Pattern(&rxBuffer[6], "34"))// obs value
+//		  {
+//			  int i, val = 0;
+//			  for (i = 8; i <= 10; i++) {
+//					  val = val * 10 + (rxBuffer[i] - '0');
+//				  }
+//			  if (val != obs)
+//			  {
+//				  obs = val;
+//			  }
+//			  else
+//			  {
+//				  //do nothing
+//			  }
+//		  }
+//		  else if(Test_Pattern(&rxBuffer[6], "73"))// volume level
+//		  {
+//			  int val;
+//			  val = rxBuffer[8] - '0'; // subtracting 48
+//			  if (val != vol)
+//			  {
+//				  vol = val;
+//			  }
+//			  else
+//			  {
+//				  //do nothing
+//			  }
+//		  }
+	  }
+	}
+	HAL_Delay(1);
+}
+
 /* USER CODE END 0 */
 
 /**
