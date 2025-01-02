@@ -6,19 +6,13 @@
  */
 
 #include "nextionLcd.h"
-#include "stdbool.h"
-#include <stdlib.h>
-#include "stm32f0xx_hal.h"
-#include <stdio.h>
-#include "string.h"
+
 
 #define LCDUart huart2
 extern SerialStruct BuffUART2;
 
 extern UART_HandleTypeDef LCDUart;
 
-returnStatus DispTACANscreen(void);
-returnStatus DispADFscreen(void);
 
 lcdCmdDisp_id currentScreen, NextScreen;
 
@@ -51,26 +45,6 @@ returnStatus DispTACANscreen(void)
 	UpdateParamLCD(Center3, "");
 	UpdateParamLCD(Center4, "PROG");
 	UpdateParamLCD(Center5, "P1 19X");
-	UpdateParamLCD(Right1, "P 1");
-	UpdateParamLCD(Right2, "P 2");
-	UpdateParamLCD(Right3, "P 3");
-	UpdateParamLCD(Right4, "P 4");
-
-	return success;
-}
-
-
-returnStatus DispADFscreen(void)
-{
-	UpdateParamLCD(Left1, "S 195.00");
-	UpdateParamLCD(Left2, "");
-	UpdateParamLCD(Left3, "");
-	UpdateParamLCD(Left4, "PROG");
-	UpdateParamLCD(Center1, "ADF");
-	UpdateParamLCD(Center2, "A 210.00");
-	UpdateParamLCD(Center3, "");
-	UpdateParamLCD(Center4, "");
-	UpdateParamLCD(Center5, "");
 	UpdateParamLCD(Right1, "P 1");
 	UpdateParamLCD(Right2, "P 2");
 	UpdateParamLCD(Right3, "P 3");

@@ -12,6 +12,9 @@
 
 #define isdigit(c) (c >= '0' && c <= '9')
 
+extern lcdCmdDisp_id currentScreen, NextScreen;
+extern globalvar_t gVar;
+
 void swapFreq(double *param1, double *param2)
 {
 	double temp = *param1;
@@ -76,13 +79,14 @@ double myatof(const char *s)
 }
 
 
-char * editFreq(Freq_t freq, char *lblText, lcdCmdParam_id pos)
+returnStatus editFreq(Freq_t freq, char *lblText, lcdCmdParam_id pos, char * str, size_t strSize)
 {
 
 	volatile uint16_t ret;
 	volatile uint8_t keyVal = 0;
-	static char str[20], strBlink[20];
-	strncpy(str, lblText, sizeof(str));
+	static char strBlink[20];
+//	static char str[20];
+	strncpy(str, lblText, strSize - 1);
 	bool decimal_added = checkDot(str);
 	static uint32_t curTickValue;// = HAL_GetTick();
 	bool blink = false;
@@ -92,12 +96,17 @@ char * editFreq(Freq_t freq, char *lblText, lcdCmdParam_id pos)
 	uint32_t Messagetimer = reactTime;
 	while(keyVal != 'o') // OK Button
 	{
+		if (keyVal == 'h')	// HOME button
+     	{
+			return homeButtonPress;
+		}
 		if(message && (HAL_GetTick() > Messagetimer )) {
 			UpdateParamLCD(Center3, "");
 			message = false;
 		}
 		if ((HAL_GetTick() - blinkTimer) >= blinkDuration) {
-			strncpy(strBlink, str, 1+strlen(str));
+//			strncpy(strBlink, str, 1+strlen(str));
+			strncpy(strBlink, str, strSize-1);
 			blinkTimer = HAL_GetTick();
 			if(!blink){
 				//char cursor[2] = {'|', 0};
@@ -110,7 +119,12 @@ char * editFreq(Freq_t freq, char *lblText, lcdCmdParam_id pos)
 		}
 
 		if ((HAL_GetTick() - reactTime) >= reactDuration) {
-			return lblText;
+
+			gVar.flashDirty = true;
+			gVar.updateFlashTimer = HAL_GetTick();
+
+//			return lblText;
+			return oldFrequency;
 		}
 		ret = get_ScanKode_from_buffer();
 		if ((ret & 0x00FF) == 0) {				//Do not process Release Codes
@@ -185,7 +199,12 @@ char * editFreq(Freq_t freq, char *lblText, lcdCmdParam_id pos)
 	}
 	while (HAL_GetTick() < Messagetimer);
 	UpdateParamLCD(Center3, "");
-	return str;
+
+	gVar.flashDirty = true;
+	gVar.updateFlashTimer = HAL_GetTick();
+
+//	return str;
+	return updatedFrequency;
 }
 
 

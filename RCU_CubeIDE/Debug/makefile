@@ -61,8 +61,8 @@ all: main-build
 main-build: RCU_CubeIDE.elf secondary-outputs
 
 # Tool invocations
-RCU_CubeIDE.elf RCU_CubeIDE.map: $(OBJS) $(USER_OBJS) D:\Projects\CDU_FW\RCU_CubeIDE\STM32F103VCTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "RCU_CubeIDE.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m3 -T"D:\Projects\CDU_FW\RCU_CubeIDE\STM32F103VCTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="RCU_CubeIDE.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -u _printf_float -Wl,--start-group -lc -lm -Wl,--end-group
+RCU_CubeIDE.elf RCU_CubeIDE.map: $(OBJS) $(USER_OBJS) D:\Projects\CDU\CDU_FW\RCU_CubeIDE\STM32F103VCTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "RCU_CubeIDE.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m3 -T"D:\Projects\CDU\CDU_FW\RCU_CubeIDE\STM32F103VCTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="RCU_CubeIDE.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -u _printf_float -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 

@@ -8,9 +8,7 @@
 #ifndef INC_SWITCHES_H_
 #define INC_SWITCHES_H_
 
-#include <stdint.h>
-
-
+#include "main.h"
 
 typedef struct
 {
@@ -41,10 +39,11 @@ typedef enum
 	R4,
 }softKey_t;
 
-
+void KeyS_init();
 MkeyStatus_t keyPad_Scan(void);
 uint16_t get_ScanKode_from_buffer(void );
 softKey_t soft_keysTest(void);
 char decode_keycode(uint16_t SCode);
+softKey_t check_soft_keys(void);
 
 #endif /* INC_SWITCHES_H_ */

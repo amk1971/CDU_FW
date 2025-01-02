@@ -60,8 +60,8 @@ all: main-build
 main-build: demoNextionComm.elf secondary-outputs
 
 # Tool invocations
-demoNextionComm.elf demoNextionComm.map: $(OBJS) $(USER_OBJS) F:\projects\CDU_FW\lcdDriverWork\demoNextionComm\STM32F407VGTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "demoNextionComm.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"F:\projects\CDU_FW\lcdDriverWork\demoNextionComm\STM32F407VGTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="demoNextionComm.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+demoNextionComm.elf demoNextionComm.map: $(OBJS) $(USER_OBJS) D:\Projects\CDU\CDU_FW\lcdDriverWork\demoNextionComm\STM32F407VGTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "demoNextionComm.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"D:\Projects\CDU\CDU_FW\lcdDriverWork\demoNextionComm\STM32F407VGTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="demoNextionComm.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 

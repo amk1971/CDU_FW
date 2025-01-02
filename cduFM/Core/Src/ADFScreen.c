@@ -5,22 +5,17 @@
  *      Author: Dell
  */
 
-#include "main.h"
+#include "ADFScreen.h"
 
 extern ScreenParams NavScreenParams;
 extern keyPad_t keyPad;
-
-typedef enum {
-	ActiveFreq = 0,
-	StandbyFreq,
-	P1, P2, P3, P4, P5, P6, P7, P8
-}AdfParamNumber;
+extern lcdCmdDisp_id currentScreen, NextScreen;
 
 SCREENState AdfScreenState = Idle;
 
 returnStatus ChangedAdfParam(AdfParamNumber PNum, void * PVal);
 
-returnStatus DispAdfscreen(ScreenParams * Params)
+returnStatus DispADFscreen(ScreenParams * Params)
 {
 //	static NavParams oldParams;
 	char Text[50];
@@ -65,33 +60,37 @@ returnStatus DispAdfscreen(ScreenParams * Params)
 returnStatus ChangedAdfParam(AdfParamNumber PNum, void * PVal){
 	char Text[50];
 
-	if(PNum == ActiveFreq){
+	if(PNum == aActiveFreq){
 		sprintf(Text, "A %0.3f", *(double *)PVal);
 		UpdateParamLCD(Center2, Text);
 	}
-	if(PNum == StandbyFreq){
+	if(PNum == aStandbyFreq){
 		sprintf(Text, "S %0.3f", *(double *)PVal);
 		UpdateParamLCD(Left1, Text);
 	}
+	return success;
 }
 
-uint16_t AdfScreenStateMachine(ScreenParams * Params){
+uint16_t AdfScreenStateMachine(ScreenParams * Params, softKey_t softkey){
 
 
 	static lcdCmdParam_id Position;
-	static double * Label;
+//	static double * Label;
+	static Freq_t * ptrFreq;
 	static char Format[20];
-	softKey_t softkey;
 
-	volatile uint16_t ret;
+	returnStatus retStatus;
+
+	volatile uint16_t retKey;
 	static char lblText[20];
 //	bool decimal_added;
 	volatile char keyVal;
+	uint32_t PresetTimer = HAL_GetTick();
 
-	ret = get_ScanKode_from_buffer();
-	keyVal = decode_keycode(ret);
-	if((ret & 0x00FF) == 0)  keyVal = 0; // Do not process release code
-	softkey = check_soft_keys();
+	retKey = get_ScanKode_from_buffer();
+	keyVal = decode_keycode(retKey);
+	if((retKey & 0x00FF) == 0)  keyVal = 0; // Do not process release code
+
 	switch (AdfScreenState){
 	case Idle:
 
@@ -112,24 +111,26 @@ uint16_t AdfScreenStateMachine(ScreenParams * Params){
 			AdfScreenState = page1;
 		}
 
-		if (keyVal == 'b') // BACK button
+		if (keyVal == 'p') // using PREV button instead of BACK button(which is asked)
 		{
 			AdfScreenState = page0;
+
 		} else if(softkey == R1) {
 			Position = Right1;
 			AdfScreenState = RightSoftKey;
 
 			if(!(Params->page)){
-				Label = &Params->P1.freq;
+				ptrFreq = &Params->P1;
 				strncpy(Format, "P1 %0.3f", 10);
 			}else {
-				Label = &Params->P5.freq;
+				ptrFreq = &Params->P5;
 				strncpy(Format, "P5 %0.3f", 10);
 
 			}
+			PresetTimer = HAL_GetTick();
 			configBgcolorLCD(Position, BLACKBG);
 			configfontcolorLCD(Position, WHITEFONT);
-			sprintf(lblText, Format, * Label);
+			sprintf(lblText, Format, ptrFreq->freq);
 			UpdateParamLCD(Center5, lblText);
 		}
 
@@ -139,16 +140,17 @@ uint16_t AdfScreenStateMachine(ScreenParams * Params){
 			AdfScreenState = RightSoftKey;
 
 			if(!(Params->page)){
-				Label = &Params->P2.freq;
+				ptrFreq = &Params->P2;
 				strncpy(Format, "P2 %0.3f", 10);
 			}else {
-				Label = &Params->P6.freq;
+				ptrFreq = &Params->P6;
 				strncpy(Format, "P6 %0.3f", 10);
 
 			}
+			PresetTimer = HAL_GetTick();
 			configBgcolorLCD(Position, BLACKBG);
 			configfontcolorLCD(Position, WHITEFONT);
-			sprintf(lblText, Format, * Label);
+			sprintf(lblText, Format, ptrFreq->freq);
 			UpdateParamLCD(Center5, lblText);
 		}
 
@@ -158,16 +160,17 @@ uint16_t AdfScreenStateMachine(ScreenParams * Params){
 			AdfScreenState = RightSoftKey;
 
 			if(!(Params->page)){
-				Label = &Params->P3.freq;
+				ptrFreq = &Params->P3;
 				strncpy(Format, "P3 %0.3f", 10);
 			}else {
-				Label = &Params->P7.freq;
+				ptrFreq = &Params->P7;
 				strncpy(Format, "P7 %0.3f", 10);
 
 			}
+			PresetTimer = HAL_GetTick();
 			configBgcolorLCD(Position, BLACKBG);
 			configfontcolorLCD(Position, WHITEFONT);
-			sprintf(lblText, Format, * Label);
+			sprintf(lblText, Format, ptrFreq->freq);
 			UpdateParamLCD(Center5, lblText);
 		}
 
@@ -177,16 +180,17 @@ uint16_t AdfScreenStateMachine(ScreenParams * Params){
 			AdfScreenState = RightSoftKey;
 
 			if(!(Params->page)){
-				Label = &Params->P4.freq;
+				ptrFreq = &Params->P4;
 				strncpy(Format, "P4 %0.3f", 10);
 			}else {
-				Label = &Params->P8.freq;
+				ptrFreq = &Params->P8;
 				strncpy(Format, "P8 %0.3f", 10);
 
 			}
+			PresetTimer = HAL_GetTick();
 			configBgcolorLCD(Position, BLACKBG);
 			configfontcolorLCD(Position, WHITEFONT);
-			sprintf(lblText, Format, * Label);
+			sprintf(lblText, Format, ptrFreq->freq);
 			UpdateParamLCD(Center5, lblText);
 		}
 
@@ -194,15 +198,28 @@ uint16_t AdfScreenStateMachine(ScreenParams * Params){
 
 	case StandByEdit:
 
-		Label = &Params->Standby.freq;
+		ptrFreq = &Params->Standby;
 		strncpy(Format, "S %0.3f", 10);
-		sprintf(lblText, Format, * Label);
+		sprintf(lblText, Format, ptrFreq->freq);
 
-		char* result = editFreq(Params->Standby, lblText, Left1);
+		char result[20];
+		retStatus = editFreq(* ptrFreq, lblText, Left1, result, sizeof(result));
+		if(retStatus == homeButtonPress)
+		{
+			return 'h'; // returning Home Button press
+		}
+		else if(retStatus == updatedFrequency)
+		{
+			ptrFreq->freq = atof(&result[ptrFreq->tileSize]); // remove s_ first
+		}
+		else if(retStatus == oldFrequency)
+		{
+			ptrFreq->freq = atof(&lblText[ptrFreq->tileSize]); // remove s_ first
+		}
 
-		Params->Standby.freq = atof(&result[2]); // remove s_ first
+//		Params->Standby.freq = atof(&result[2]); // remove s_ first
 		AdfScreenState = idle;
-		char txt[7];
+		char txt[15];
 		snprintf(txt, sizeof(txt), "S %0.3f", Params->Standby.freq);
 		UpdateParamLCD(Left1, txt);
 		configBgcolorLCD(Left1, TRANSPARENTBG);
@@ -212,8 +229,8 @@ uint16_t AdfScreenStateMachine(ScreenParams * Params){
 
 	case SwapKey:
 		swapFreq(&Params->Active.freq,&Params->Standby.freq);
-		ChangedAdfParam(StandbyFreq, (void *) &Params->Standby.freq);
-		ChangedAdfParam(ActiveFreq, (void *) &Params->Active.freq);
+		ChangedAdfParam(aStandbyFreq, (void *) &Params->Standby.freq);
+		ChangedAdfParam(aActiveFreq, (void *) &Params->Active.freq);
 		AdfScreenState = Idle;
 
 		break;
@@ -221,7 +238,7 @@ uint16_t AdfScreenStateMachine(ScreenParams * Params){
 	case page0:
 
 		Params->page = false;
-		DispNAVscreen(Params);
+		DispADFscreen(Params);
 		AdfScreenState = Idle;
 
 		break;
@@ -229,12 +246,19 @@ uint16_t AdfScreenStateMachine(ScreenParams * Params){
 	case page1:
 
 		Params->page = true;	// means page1
-		DispNAVscreen(Params);
+		DispADFscreen(Params);
 		AdfScreenState = Idle;
 
 		break;
 
 	case RightSoftKey:
+
+		if((HAL_GetTick() - PresetTimer) > 15000) {
+			AdfScreenState = idle;
+			configBgcolorLCD(Position, TRANSPARENTBG);
+			configfontcolorLCD(Position, BLACKFONT);
+			UpdateParamLCD(Center5, "");
+		}
 
 		if(softkey == L4)
 		{
@@ -243,10 +267,24 @@ uint16_t AdfScreenStateMachine(ScreenParams * Params){
 			configBgcolorLCD(Center5, BLACKBG);
 			configfontcolorLCD(Center5, WHITEFONT);
 
-			char* result = editFreq(Params->P1, lblText, Center5);
+			char result[20];
+			retStatus = editFreq(* ptrFreq, lblText, Center5, result, sizeof(result));
+//			char* result = editFreq(* ptrFreq, lblText, Center5, );
+			if(retStatus == homeButtonPress)
+			{
+				return 'h'; // returning Home Button press
+			}
+			else if(retStatus == updatedFrequency)
+			{
+				ptrFreq->freq = atof(&result[ptrFreq->tileSize]); // remove s_ first
+			}
+			else if(retStatus == oldFrequency)
+			{
+				ptrFreq->freq = atof(&lblText[ptrFreq->tileSize]); // remove s_ first
+			}
 
-			* Label = atof(&result[3]);
-			Params->P1.freq = * Label;
+//			* Label = atof(&result[3]);
+//			Params->P1.freq = * Label;
 			configBgcolorLCD(Position, TRANSPARENTBG);
 			configfontcolorLCD(Position, BLACKFONT);
 
@@ -262,7 +300,7 @@ uint16_t AdfScreenStateMachine(ScreenParams * Params){
 		{
 			AdfScreenState = idle;
 
-			Params->Standby.freq = * Label;
+			Params->Standby.freq = ptrFreq->freq;
 			sprintf(lblText, "S %0.3f", Params->Standby.freq);
 			UpdateParamLCD(Left1, lblText);
 

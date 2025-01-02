@@ -3,28 +3,29 @@
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
 		<item key="wrap" value="true"/>
 		<item key="casesensitive" value="false"/>
-		<item key="wholeword" value="false"/>
+		<item key="wholeword" value="true"/>
 		<item key="incremental" value="false"/>
 		<item key="isRegEx" value="false"/>
-		<item key="selection" value="AdfScreenState"/>
+		<item key="selection" value="toDelete"/>
 		<list key="findhistory">
-			<item value="NavScreenState"/>
-			<item value="flag"/>
-			<item value="ChangeNavParam"/>
-			<item value="keyPad.ColumnS"/>
-			<item value="TIMEOUT"/>
-			<item value="NAVScreenPage"/>
-			<item value="NavParamNumber"/>
-			<item value="A %"/>
-			<item value="S %"/>
-			<item value="S  %"/>
-			<item value="&quot;S %"/>
-			<item value="Center5"/>
-			<item value="Params-&gt;"/>
-			<item value="Label"/>
-			<item value="lblText"/>
+			<item value="toDelete"/>
+			<item value="char result["/>
+			<item value="editFreq"/>
+			<item value="PresetTimer"/>
+			<item value="return"/>
+			<item value="ptrFreq-&gt;freq = atof(&amp;result[ptrFreq-&gt;tileSize]);"/>
+			<item value="ptrFreq"/>
+			<item value="ptrFreq-&gt;freq"/>
+			<item value="retKey"/>
+			<item value="ret"/>
+			<item value="gVar.flashDirty = true;"/>
+			<item value="gVar.flashDirty ="/>
+			<item value="gVar.updateFlashTimer"/>
+			<item value="flashDirty"/>
+			<item value="hal"/>
 		</list>
 		<list key="replacehistory">
+			<item value="retKey"/>
 			<item value="AdfScreenState"/>
 		</list>
 	</section>

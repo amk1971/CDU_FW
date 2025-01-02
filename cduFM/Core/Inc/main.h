@@ -26,45 +26,30 @@
 extern "C" {
 #endif
 
+
 /* Includes ------------------------------------------------------------------*/
-#include "stm32f0xx_hal.h"
-#include "common.h"
-#include "nextionLcd.h"
-#include "switches.h"
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include "stdbool.h"
+#include <stdint.h>
+#include "stm32f0xx_hal.h"
+#include "switches.h"
+#include "common.h"
+#include "nextionLcd.h"
+
 
 #define CLIENTCODE
 
-/* Private includes ----------------------------------------------------------*/
-/* USER CODE BEGIN Includes */
+typedef struct GLOBALVAR{
+	bool flashDirty;
+	uint32_t updateFlashTimer;
+}globalvar_t;
 
-/* USER CODE END Includes */
-
-/* Exported types ------------------------------------------------------------*/
-/* USER CODE BEGIN ET */
-
-/* USER CODE END ET */
-
-/* Exported constants --------------------------------------------------------*/
-/* USER CODE BEGIN EC */
-
-/* USER CODE END EC */
-
-/* Exported macro ------------------------------------------------------------*/
-/* USER CODE BEGIN EM */
-
-/* USER CODE END EM */
-
-/* Exported functions prototypes ---------------------------------------------*/
 void Error_Handler(void);
 //void UART_SendString(SerialStruct * BuffUART, const char *str, int NumChar);
 void UART_SendString(UART_HandleTypeDef *huart, SerialStruct * BuffUART, const char *str, int NumChar);
-softKey_t check_soft_keys(void);
-/* USER CODE BEGIN EFP */
 
-/* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
 #define Left_SW2_Pin GPIO_PIN_2
@@ -111,13 +96,15 @@ softKey_t check_soft_keys(void);
 #define Right_SW2_GPIO_Port GPIOD
 #define Right_SW1_Pin GPIO_PIN_4
 #define Right_SW1_GPIO_Port GPIOD
+#define SPI1_CS_Pin GPIO_PIN_9
+#define SPI1_CS_GPIO_Port GPIOB
 #define Left_SW4_Pin GPIO_PIN_0
 #define Left_SW4_GPIO_Port GPIOE
 #define Left_SW3_Pin GPIO_PIN_1
 #define Left_SW3_GPIO_Port GPIOE
 
 /* USER CODE BEGIN Private defines */
-uint16_t NavScreenStateMachine(ScreenParams * Params, softKey_t softkey);
+
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus

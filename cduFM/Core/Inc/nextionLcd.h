@@ -8,8 +8,9 @@
 #ifndef INC_NEXTIONLCD_H_
 #define INC_NEXTIONLCD_H_
 
-#include <stdio.h>
-#include "common.h"
+//#include <stdio.h>
+#include "main.h"
+
 
 #define BLACKFONT     0
 #define WHITEFONT     65535
@@ -33,12 +34,9 @@ typedef enum
 
 returnStatus InitializeLCD(void);
 returnStatus DispTACANscreen(void);
-returnStatus DispNAVscreen(ScreenParams *);
 returnStatus DispHomeScreen(void);
-//returnStatus ChangePage(lcdCmdPage_id Page_ID);
-returnStatus UpdateParamLCD(lcdCmdParam_id Param_ID, char * Parm_Vlaue);
-returnStatus ReadParamLCD(lcdCmdParam_id Param_ID, void * Param_Value);
 
+returnStatus UpdateParamLCD(lcdCmdParam_id Param_ID, char * Parm_Vlaue);
 returnStatus configBgcolorLCD(lcdCmdParam_id Param_ID, int Param_Value);
 returnStatus configfontcolorLCD(lcdCmdParam_id Param_ID, int Param_Value);
 

@@ -5,16 +5,12 @@
  *      Author: LENOVO
  */
 
-#include "main.h"
+#include "NAVScreen.h"
 
 extern ScreenParams NavScreenParams;
 extern keyPad_t keyPad;
+extern lcdCmdDisp_id currentScreen, NextScreen;
 
-typedef enum {
-	ActiveFreq = 0,
-	StandbyFreq,
-	P1, P2, P3, P4, P5, P6, P7, P8
-}NavParamNumber;
 
 SCREENState NavScreenState = Idle;
 
@@ -65,11 +61,11 @@ returnStatus DispNAVscreen(ScreenParams * Params)
 returnStatus ChangedNavParam(NavParamNumber PNum, void * PVal){
 	char Text[50];
 
-	if(PNum == ActiveFreq){
+	if(PNum == nActiveFreq){
 		sprintf(Text, "A %0.3f", *(double *)PVal);
 		UpdateParamLCD(Center2, Text);
 	}
-	if(PNum == StandbyFreq){
+	if(PNum == nStandbyFreq){
 		sprintf(Text, "S %0.3f", *(double *)PVal);
 		UpdateParamLCD(Left1, Text);
 	}
@@ -81,21 +77,22 @@ uint16_t NavScreenStateMachine(ScreenParams * Params, softKey_t softkey){
 
 
 	static lcdCmdParam_id Position;
-	static double * Label;
+//	static double * Label;
 	static Freq_t * ptrFreq;
 	static char Format[20];
-	//softKey_t softkey;
 
-	volatile uint16_t ret;
+	returnStatus retStatus;
+
+	volatile uint16_t retKey;
 	static char lblText[20];
 //	bool decimal_added;
 	volatile char keyVal;
 	uint32_t PresetTimer = HAL_GetTick();
 
-	ret = get_ScanKode_from_buffer();
-	keyVal = decode_keycode(ret);
-	if((ret & 0x00FF) == 0)  keyVal = 0; // Do not process release code
-	//softkey = check_soft_keys();
+	retKey = get_ScanKode_from_buffer();
+	keyVal = decode_keycode(retKey);
+	if((retKey & 0x00FF) == 0)  keyVal = 0; // Do not process release code
+
 	switch (NavScreenState){
 	case Idle:
 
@@ -116,9 +113,10 @@ uint16_t NavScreenStateMachine(ScreenParams * Params, softKey_t softkey){
 			NavScreenState = page1;
 		}
 
-		if (keyVal == 'b') // BACK button
+		if (keyVal == 'p') // using PREV button instead of BACK button(which is asked)
 		{
 			NavScreenState = page0;
+
 		} else if(softkey == R1) {
 			Position = Right1;
 			NavScreenState = RightSoftKey;
@@ -130,7 +128,6 @@ uint16_t NavScreenStateMachine(ScreenParams * Params, softKey_t softkey){
 			}else {
 				ptrFreq = &Params->P5;
 				strncpy(Format, "P5 %0.3f", 10);
-
 			}
 			PresetTimer = HAL_GetTick();
 			configBgcolorLCD(Position, BLACKBG);
@@ -150,8 +147,8 @@ uint16_t NavScreenStateMachine(ScreenParams * Params, softKey_t softkey){
 			}else {
 				ptrFreq = &Params->P6;
 				strncpy(Format, "P6 %0.3f", 10);
-
 			}
+			PresetTimer = HAL_GetTick();
 			configBgcolorLCD(Position, BLACKBG);
 			configfontcolorLCD(Position, WHITEFONT);
 			sprintf(lblText, Format, ptrFreq->freq);
@@ -169,8 +166,8 @@ uint16_t NavScreenStateMachine(ScreenParams * Params, softKey_t softkey){
 			}else {
 				ptrFreq = &Params->P7;
 				strncpy(Format, "P7 %0.3f", 10);
-
 			}
+			PresetTimer = HAL_GetTick();
 			configBgcolorLCD(Position, BLACKBG);
 			configfontcolorLCD(Position, WHITEFONT);
 			sprintf(lblText, Format, ptrFreq->freq);
@@ -188,8 +185,8 @@ uint16_t NavScreenStateMachine(ScreenParams * Params, softKey_t softkey){
 			}else {
 				ptrFreq = &Params->P8;
 				strncpy(Format, "P8 %0.3f", 10);
-
 			}
+			PresetTimer = HAL_GetTick();
 			configBgcolorLCD(Position, BLACKBG);
 			configfontcolorLCD(Position, WHITEFONT);
 			sprintf(lblText, Format, ptrFreq->freq);
@@ -208,9 +205,22 @@ uint16_t NavScreenStateMachine(ScreenParams * Params, softKey_t softkey){
 		configBgcolorLCD(Left1, BLACKBG);
 		configfontcolorLCD(Left1, WHITEFONT);
 
-		char* result = editFreq(Params->Standby, lblText, Left1);
+		char result[20];
+		retStatus = editFreq(* ptrFreq, lblText, Left1, result, sizeof(result));
+		if(retStatus == homeButtonPress)
+		{
+			return 'h'; // returning Home Button press
+		}
+		else if(retStatus == updatedFrequency)
+		{
+			ptrFreq->freq = atof(&result[ptrFreq->tileSize]); // remove s_ first
+		}
+		else if(retStatus == oldFrequency)
+		{
+			ptrFreq->freq = atof(&lblText[ptrFreq->tileSize]); // remove s_ first
+		}
 
-		Params->Standby.freq = atof(&result[2]); // remove s_ first
+//		Params->Standby.freq = atof(&result[2]); // remove s_ first
 		NavScreenState = idle;
 		char txt[15];
 		snprintf(txt, sizeof(txt), "S %0.3f", Params->Standby.freq);
@@ -222,8 +232,8 @@ uint16_t NavScreenStateMachine(ScreenParams * Params, softKey_t softkey){
 
 	case SwapKey:
 		swapFreq(&Params->Active.freq,&Params->Standby.freq);
-		ChangedNavParam(StandbyFreq, (void *) &Params->Standby.freq);
-		ChangedNavParam(ActiveFreq, (void *) &Params->Active.freq);
+		ChangedNavParam(nStandbyFreq, (void *) &Params->Standby.freq);
+		ChangedNavParam(nActiveFreq, (void *) &Params->Active.freq);
 		NavScreenState = Idle;
 
 		break;
@@ -260,11 +270,25 @@ uint16_t NavScreenStateMachine(ScreenParams * Params, softKey_t softkey){
 			configBgcolorLCD(Center5, BLACKBG);
 			configfontcolorLCD(Center5, WHITEFONT);
 
-			char* result = editFreq(* ptrFreq, lblText, Center5);
+			char result[20];
+			retStatus = editFreq(* ptrFreq, lblText, Center5, result, sizeof(result));
+//			char* result = editFreq(* ptrFreq, lblText, Center5, );
+			if(retStatus == homeButtonPress)
+			{
+				return 'h'; // returning Home Button press
+			}
+			else if(retStatus == updatedFrequency)
+			{
+				ptrFreq->freq = atof(&result[ptrFreq->tileSize]); // remove s_ first
+			}
+			else if(retStatus == oldFrequency)
+			{
+				ptrFreq->freq = atof(&lblText[ptrFreq->tileSize]); // remove s_ first
+			}
 
 			//* Label = atof(&result[3]);
 			//Params->P1.freq = * Label;
-			ptrFreq->freq = atof(&result[ptrFreq->tileSize]);
+//			ptrFreq->freq = atof(&result[ptrFreq->tileSize]);
 			configBgcolorLCD(Position, TRANSPARENTBG);
 			configfontcolorLCD(Position, BLACKFONT);
 
@@ -280,7 +304,7 @@ uint16_t NavScreenStateMachine(ScreenParams * Params, softKey_t softkey){
 		{
 			NavScreenState = idle;
 
-			Params->Standby.freq = * Label;
+			Params->Standby.freq = ptrFreq->freq;
 			sprintf(lblText, "S %0.3f", Params->Standby.freq);
 			UpdateParamLCD(Left1, lblText);
 

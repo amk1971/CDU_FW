@@ -20,6 +20,10 @@ typedef enum
 {
 	failure = 0,
 	success,
+	reactTimeout,
+	homeButtonPress,
+	updatedFrequency,
+	oldFrequency
 }returnStatus;
 
 typedef enum
@@ -88,7 +92,7 @@ typedef struct
 
 void swapFreq(double *param1, double *param2);
 uint8_t checkDot(char* arr);
-char* editFreq(Freq_t freq, char *lblText, lcdCmdParam_id pos);
+returnStatus editFreq(Freq_t freq, char *lblText, lcdCmdParam_id pos, char * str, size_t strSize);
 uint8_t checkFreqLimit(double editedfreq, double upLimit, double lowLimit);
 
 

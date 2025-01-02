@@ -217,7 +217,7 @@ volatile uint32_t Source = huart2.Instance->ISR;
   */
 void USART3_8_IRQHandler(void)
 {
-	/* USER CODE BEGIN USART3_8_IRQn 0 */
+  /* USER CODE BEGIN USART3_8_IRQn 0 */
 	volatile uint32_t Source = huart3.Instance->ISR;
 
 	// RXNE (Receive Not Empty) interrupt handling
@@ -251,13 +251,12 @@ void USART3_8_IRQHandler(void)
 
 	return;		// by-pass default handler
 
-	/* USER CODE END USART3_8_IRQn 0 */
-	HAL_UART_IRQHandler(&huart3); // Call HAL handler for any remaining processing
-	/* USER CODE BEGIN USART3_8_IRQn 1 */
+  /* USER CODE END USART3_8_IRQn 0 */
+  HAL_UART_IRQHandler(&huart3);(&huart3);
+  /* USER CODE BEGIN USART3_8_IRQn 1 */
 
-	/* USER CODE END USART3_8_IRQn 1 */
+  /* USER CODE END USART3_8_IRQn 1 */
 }
-
 
 /* USER CODE BEGIN 1 */
 

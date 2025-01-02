@@ -18,11 +18,25 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "spi.h"
+#include "spif.h"
+#include "usart.h"
+#include "gpio.h"
+
+#include "NAVScreen.h"
+#include "ADFScreen.h"
+
+#define FLASHUPDATEDELAY 10000	//update flash after 10 whenever there is a change in any value.
+
+SPIF_HandleTypeDef spif;
+
+globalvar_t gVar;
+uint8_t read[1];
+uint8_t write[1];
 
 /* Private variables ---------------------------------------------------------*/
-UART_HandleTypeDef huart2;
-UART_HandleTypeDef huart3;
 
+/* USER CODE BEGIN PV */
 SerialStruct BuffUART2;
 SerialStruct BuffUART3;
 
@@ -30,16 +44,18 @@ ScreenParams NavScreenParams;
 ScreenParams AdfScreenParams;
 
 extern lcdCmdDisp_id currentScreen, NextScreen;
-extern softKey_t softkey;
+
+softKey_t softKey;
 
 extern MkeyStatus_t MkeyStatus;
 extern keyPad_t keyPad;
+/* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
-static void MX_GPIO_Init(void);
-static void MX_USART2_UART_Init(void);
-static void MX_USART3_UART_Init(void);
+/* USER CODE BEGIN PFP */
+
+/* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
@@ -99,6 +115,79 @@ void UART_SendString(UART_HandleTypeDef *huart, SerialStruct * BuffUART, const c
     //}
     //__HAL_UART_ENABLE_IT(&huart1, UART_IT_TXE); // Enable TXE interrupt
 }
+
+//void toDisplay() {						//reads sectors from the SPI flash memory and updates the eepDisplay
+//	for (int i = 0; i < 16; ++i) {
+//		eepDisplay[i] = -1;
+//	}
+//	count = 0;
+//	for (int i = 0; i < 16; i++) {
+//		SPIF_ReadSector(&spif, i, read, 1, 0);
+//		if (read[0] != 255) {
+//			eepDisplay[count] = i;
+//			count++;
+//		}
+//	}
+//}
+
+//void toAdd(const char* dN, int dM, int dK) {		//adds a new entry to the first available empty sector in the SPI flash memory
+//  for (int i = 0; i < 16; i ++) {
+//	SPIF_ReadSector(&spif, i, read, 1, 0);
+//    if (read[0] == 255) {
+//      for (int j = 0; j < 7; j++) {
+//    	write[0] = dN[j];
+//    	SPIF_WriteSector(&spif, i, write, 1, j);
+//      }
+//	  write[0] = dM;
+//	  SPIF_WriteSector(&spif, i, write, 1, 7);
+//	  write[0] = dK/25;
+//	  SPIF_WriteSector(&spif, i, write, 1, 8);
+//      break;
+//    }
+//  }
+//}
+
+//void toDelete(int index) {		//erases a specific sector in the SPI flash memory, effectively marking it as empty.
+//	SPIF_EraseSector(&spif, index);
+//}
+//
+//void storestate() { // called when turned off			stores the current state of the system in a specific sector of the SPI flash memory.
+//  SPIF_EraseSector(&spif, 20);
+//  write[0] = MHz;
+//  SPIF_WriteSector(&spif, 20, write, 1, 0);
+//  write[0] = KHz/25;
+//  SPIF_WriteSector(&spif, 20, write, 1, 1);
+//  write[0] = SM;
+//  SPIF_WriteSector(&spif, 20, write, 1, 2);
+//  write[0] = SK/25;
+//  SPIF_WriteSector(&spif, 20, write, 1, 3);
+//  write[0] = vol;
+//  SPIF_WriteSector(&spif, 20, write, 1, 4);
+//  write[0] = obs;
+//}
+
+//void loadstate() { // called on startup					loads the system state from a specific sector in the SPI flash memory on startup.
+//  SPIF_ReadSector(&spif, 20, read, 1, 0);
+//  MHz = read[0];
+//  if (MHz > 117) MHz = 117;
+//  if (MHz < 108) MHz = 108;
+//  SPIF_ReadSector(&spif, 20, read, 1, 1);
+//  KHz = read[0] * 25;
+//  if(KHz > 950) KHz = 950;
+//  SPIF_ReadSector(&spif, 20, read, 1, 2);
+//  SM = read[0];
+//  if (SM > 117) SM = 117;
+//  if (SM < 108) SM = 108;
+//  SPIF_ReadSector(&spif, 20, read, 1, 3);
+//  SK = read[0] * 25;
+//  if(SK > 950) SK = 950;
+//  SPIF_ReadSector(&spif, 20, read, 1, 4);	//1 is not bytes to be read
+//  vol = read[0];
+//  SPIF_ReadSector(&spif, 20, read, 1, 5);	//5 is Offset: The starting point within the sector to begin reading from.
+//  obs = read[0];
+//  freq = MHz + (.001 * KHz);
+//  Standby = SM + (.001 * SK);
+//}
 
 
 void MhzKhz2freq(int MHz, int KHz, double* freq){
@@ -195,10 +284,9 @@ void Sender2rcu(const char * str, int mode) { //TODO				construct and send a mes
 int main(void)
 {
 
-  softKey_t softKey;
-  uint8_t key;
   /* USER CODE BEGIN 1 */
 
+  uint8_t key;
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -206,18 +294,6 @@ int main(void)
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
   HAL_Init();
 
-  volatile double x = atof("190.01");
-
-  char str3[10];
-
-  strncpy(str3, "190.200", 10);
-
-  x = atof(str3);
-
-  if(x<MIN_FREQUENCY) {
-	  x = 1;
-  }
-  //strtod()
   /* USER CODE BEGIN Init */
 
   /* USER CODE END Init */
@@ -228,24 +304,30 @@ int main(void)
   /* USER CODE BEGIN SysInit */
 
   /* USER CODE END SysInit */
-  KeyS_init();
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_USART2_UART_Init();
   MX_USART3_UART_Init();
+  MX_SPI1_Init();
+  /* USER CODE BEGIN 2 */
 
+  SPIF_Init(&spif, &hspi1, SPI1_CS_GPIO_Port, SPI1_CS_Pin);
+
+  KeyS_init();
+
+//  loadstate();
   //----------------------------------------------------------------------------------------------------------
 
   NavScreenParams.Active.freq = 118.0;
   freq2MhzKhz(NavScreenParams.Active.freq, &NavScreenParams.Active.MHz, &NavScreenParams.Active.KHz);
-//  NavScreenParams.Active.MHz = 118;
-//  NavScreenParams.Active.KHz = 0;
+  //  NavScreenParams.Active.MHz = 118;
+  //  NavScreenParams.Active.KHz = 0;
   NavScreenParams.Standby.freq = 108.4;
   freq2MhzKhz(NavScreenParams.Standby.freq, &NavScreenParams.Standby.MHz, &NavScreenParams.Standby.KHz);
   NavScreenParams.Standby.tileSize = 2;
-//  NavScreenParams.Standby.MHz = 108;
-//  NavScreenParams.Standby.KHz = 4;
+  //  NavScreenParams.Standby.MHz = 108;
+  //  NavScreenParams.Standby.KHz = 4;
   NavScreenParams.page = false; // means page0
   NavScreenParams.P1.freq = 123.45;
   NavScreenParams.P1.tileSize = 3;
@@ -260,13 +342,13 @@ int main(void)
 
   AdfScreenParams.Active.freq = 108.0;
   freq2MhzKhz(AdfScreenParams.Active.freq, &AdfScreenParams.Active.MHz, &AdfScreenParams.Active.KHz);
-//  AdfScreenParams.Active.MHz = 118;
-//  AdfScreenParams.Active.KHz = 0;
+  //  AdfScreenParams.Active.MHz = 118;
+  //  AdfScreenParams.Active.KHz = 0;
   AdfScreenParams.Standby.freq = 118.4;
   freq2MhzKhz(AdfScreenParams.Standby.freq, &AdfScreenParams.Standby.MHz, &AdfScreenParams.Standby.KHz);
   AdfScreenParams.Standby.tileSize = 2;
-//  AdfScreenParams.Standby.MHz = 108;
-//  AdfScreenParams.Standby.KHz = 4;
+  //  AdfScreenParams.Standby.MHz = 108;
+  //  AdfScreenParams.Standby.KHz = 4;
   AdfScreenParams.page = false; // means page0
   AdfScreenParams.P1.freq = 125.45;
   AdfScreenParams.P1.tileSize = 3;
@@ -281,26 +363,33 @@ int main(void)
 
   InitializeLCD();
   //Matrix_keypad_Basic_test();
-//  KeyS_init();
+  //  KeyS_init();
+  /* USER CODE END 2 */
+
+  gVar.flashDirty = true;	// to store the data from RAM to Flash
+  gVar.updateFlashTimer = HAL_GetTick();
+
+  /* Infinite loop */
+  /* USER CODE BEGIN WHILE */
   while (1)
   {
 	  softKey = check_soft_keys();
 	  switch(currentScreen)
 	  {
 	  case lcdDisp_home:
-		  if(softkey == L1)
+		  if(softKey == L1)
 		  {
 			  currentScreen = lcdWaitForSW;
 			  NextScreen = lcdDisp_nav;
 			  DispNAVscreen(&NavScreenParams);
 		  }
-		  if(softkey == L2)
+		  if(softKey == L2)
 		  {
 			  currentScreen = lcdWaitForSW;
 			  NextScreen = lcdDisp_adf;
 			  DispADFscreen(&AdfScreenParams);
 		  }
-		  if(softkey == L3)
+		  if(softKey == L3)
 		  {
 			  currentScreen = lcdWaitForSW;
 			  NextScreen = lcdDisp_tacan;
@@ -309,7 +398,7 @@ int main(void)
 		  break;
 
 	  case lcdWaitForSW:
-		  if (softkey == idle) currentScreen = NextScreen;
+		  if (softKey == idle) currentScreen = NextScreen;
 
 		  break;
 
@@ -320,6 +409,8 @@ int main(void)
 
 		  if (NavScreenParams.Active.freq != Nav_afreq_last || NavScreenParams.Standby.freq != Nav_sfreq_last)
 		  {
+			  gVar.flashDirty = true;
+			  gVar.updateFlashTimer = HAL_GetTick();
 
 			  freq2MhzKhz(NavScreenParams.Active.freq, &NavScreenParams.Active.MHz, &NavScreenParams.Active.KHz);
 			  freq2MhzKhz(NavScreenParams.Standby.freq, &NavScreenParams.Standby.MHz, &NavScreenParams.Standby.KHz);
@@ -356,11 +447,14 @@ int main(void)
 		  break;
 
 	  case lcdDisp_adf:
-//		  MkeyStatus = keyPad_Scan();
-		  key = AdfScreenStateMachine(&AdfScreenParams);
+	//		  MkeyStatus = keyPad_Scan();
+		  key = AdfScreenStateMachine(&AdfScreenParams, softKey);
 
 		  if (AdfScreenParams.Active.freq != Adf_afreq_last || AdfScreenParams.Standby.freq != Adf_sfreq_last)
 		  {
+			  gVar.flashDirty = true;
+			  gVar.updateFlashTimer = HAL_GetTick();
+
 
 			  freq2MhzKhz(AdfScreenParams.Active.freq, &AdfScreenParams.Active.MHz, &AdfScreenParams.Active.KHz);
 			  freq2MhzKhz(AdfScreenParams.Standby.freq, &AdfScreenParams.Standby.MHz, &AdfScreenParams.Standby.KHz);
@@ -411,8 +505,16 @@ int main(void)
 	  default:
 		  break;
 	  }
+	  if(gVar.flashDirty)
+	  {
+		  if((HAL_GetTick() - gVar.updateFlashTimer) >= FLASHUPDATEDELAY)
+		  {
+//			  storestate();
+			  gVar.flashDirty = false;
+//			  gVar.updateFlashTimer = HAL_GetTick();
+		  }
 
-    /* USER CODE BEGIN 3 */
+	  }
   }
   /* USER CODE END 3 */
 }
@@ -458,169 +560,6 @@ void SystemClock_Config(void)
   {
     Error_Handler();
   }
-}
-
-/**
-  * @brief USART2 Initialization Function
-  * @param None
-  * @retval None
-  */
-static void MX_USART2_UART_Init(void)
-{
-
-  /* USER CODE BEGIN USART2_Init 0 */
-
-  /* USER CODE END USART2_Init 0 */
-
-  /* USER CODE BEGIN USART2_Init 1 */
-
-  /* USER CODE END USART2_Init 1 */
-  huart2.Instance = USART2;
-  huart2.Init.BaudRate = 9600;
-  huart2.Init.WordLength = UART_WORDLENGTH_8B;
-  huart2.Init.StopBits = UART_STOPBITS_1;
-  huart2.Init.Parity = UART_PARITY_NONE;
-  huart2.Init.Mode = UART_MODE_TX_RX;
-  huart2.Init.HwFlowCtl = UART_HWCONTROL_NONE;
-  huart2.Init.OverSampling = UART_OVERSAMPLING_16;
-  huart2.Init.OneBitSampling = UART_ONE_BIT_SAMPLE_DISABLE;
-  huart2.AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_NO_INIT;
-  if (HAL_UART_Init(&huart2) != HAL_OK)
-  {
-    Error_Handler();
-  }
-
-  //huart2.Instance->CR1 |= USART_CR1_FIFOEN;
-  /* USER CODE BEGIN USART2_Init 2 */
-  __HAL_UART_ENABLE_IT(&huart2, UART_IT_RXNE);
-  //__HAL_UART_ENABLE_IT(&huart2, UART_IT_TXE);
-
-  HAL_NVIC_SetPriority(USART2_IRQn, 0, 0);
-  HAL_NVIC_EnableIRQ(USART2_IRQn);
-  /* USER CODE END USART2_Init 2 */
-
-}
-
-/**
-  * @brief USART3 Initialization Function
-  * @param None
-  * @retval None
-  */
-static void MX_USART3_UART_Init(void)
-{
-
-  /* USER CODE BEGIN USART3_Init 0 */
-
-  /* USER CODE END USART3_Init 0 */
-
-  /* USER CODE BEGIN USART3_Init 1 */
-
-  /* USER CODE END USART3_Init 1 */
-  huart3.Instance = USART3;
-  huart3.Init.BaudRate = 9600;
-  huart3.Init.WordLength = UART_WORDLENGTH_8B;
-  huart3.Init.StopBits = UART_STOPBITS_1;
-  huart3.Init.Parity = UART_PARITY_NONE;
-  huart3.Init.Mode = UART_MODE_TX_RX;
-  huart3.Init.HwFlowCtl = UART_HWCONTROL_NONE;
-  huart3.Init.OverSampling = UART_OVERSAMPLING_16;
-  huart3.Init.OneBitSampling = UART_ONE_BIT_SAMPLE_DISABLE;
-  huart3.AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_NO_INIT;
-  if (HAL_UART_Init(&huart3) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  /* USER CODE BEGIN USART3_Init 2 */
-  __HAL_UART_ENABLE_IT(&huart3, UART_IT_RXNE);
-  __HAL_UART_ENABLE_IT(&huart3, UART_IT_TXE);
-
-  HAL_NVIC_SetPriority(USART3_8_IRQn, 0, 0);
-  HAL_NVIC_EnableIRQ(USART3_8_IRQn);
-  /* USER CODE END USART3_Init 2 */
-
-}
-
-/**
-  * @brief GPIO Initialization Function
-  * @param None
-  * @retval None
-  */
-static void MX_GPIO_Init(void)
-{
-  GPIO_InitTypeDef GPIO_InitStruct = {0};
-/* USER CODE BEGIN MX_GPIO_Init_1 */
-/* USER CODE END MX_GPIO_Init_1 */
-
-  /* GPIO Ports Clock Enable */
-  __HAL_RCC_GPIOE_CLK_ENABLE();
-  __HAL_RCC_GPIOC_CLK_ENABLE();
-  __HAL_RCC_GPIOF_CLK_ENABLE();
-  __HAL_RCC_GPIOA_CLK_ENABLE();
-  __HAL_RCC_GPIOB_CLK_ENABLE();
-  __HAL_RCC_GPIOD_CLK_ENABLE();
-
-  /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(ROW1_GPIO_Port, ROW1_Pin, GPIO_PIN_SET);
-
-  /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOC, ROW2_Pin|ROW3_Pin|ROW4_Pin, GPIO_PIN_SET);
-
-  /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOF, ROW5_Pin|ROW6_Pin|ROW7_Pin|ROW8_Pin, GPIO_PIN_SET);
-
-  /*Configure GPIO pins : Left_SW2_Pin Left_SW1_Pin Left_SW4_Pin Left_SW3_Pin */
-  GPIO_InitStruct.Pin = Left_SW2_Pin|Left_SW1_Pin|Left_SW4_Pin|Left_SW3_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
-
-  /*Configure GPIO pin : ROW1_Pin */
-  GPIO_InitStruct.Pin = ROW1_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(ROW1_GPIO_Port, &GPIO_InitStruct);
-
-  /*Configure GPIO pins : ROW2_Pin ROW3_Pin ROW4_Pin */
-  GPIO_InitStruct.Pin = ROW2_Pin|ROW3_Pin|ROW4_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
-
-  /*Configure GPIO pins : ROW5_Pin ROW6_Pin ROW7_Pin ROW8_Pin */
-  GPIO_InitStruct.Pin = ROW5_Pin|ROW6_Pin|ROW7_Pin|ROW8_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(GPIOF, &GPIO_InitStruct);
-
-  /*Configure GPIO pins : COL1_Pin COL2_Pin COL3_Pin COL4_Pin */
-  GPIO_InitStruct.Pin = COL1_Pin|COL2_Pin|COL3_Pin|COL4_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
-
-  /*Configure GPIO pins : COL5_Pin COL6_Pin */
-  GPIO_InitStruct.Pin = COL5_Pin|COL6_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  HAL_GPIO_Init(GPIOF, &GPIO_InitStruct);
-
-  /*Configure GPIO pins : COL7_Pin COL8_Pin */
-  GPIO_InitStruct.Pin = COL7_Pin|COL8_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
-
-  /*Configure GPIO pins : Right_SW4_Pin Right_SW3_Pin Right_SW2_Pin Right_SW1_Pin */
-  GPIO_InitStruct.Pin = Right_SW4_Pin|Right_SW3_Pin|Right_SW2_Pin|Right_SW1_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
-
-/* USER CODE BEGIN MX_GPIO_Init_2 */
-/* USER CODE END MX_GPIO_Init_2 */
 }
 
 /* USER CODE BEGIN 4 */

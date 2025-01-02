@@ -6,12 +6,10 @@
  */
 
 #include "switches.h"
-#include "main.h"
 
 #define DEBOUNCE_DELAY 20
 
 keyPad_t keyPad;
-softKey_t softkey;
 
 MkeyStatus_t MkeyStatus;
 
@@ -209,7 +207,7 @@ uint16_t get_ScanKode_from_buffer(void ){
 
 softKey_t check_soft_keys(void)
 {
-	softkey = idle;
+	softKey_t softkey = idle;
 	static char  pval = 0, val = 0;
 
 	if(!(HAL_GPIO_ReadPin(Right_SW1_GPIO_Port, Right_SW1_Pin)))

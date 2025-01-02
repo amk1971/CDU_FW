@@ -1,36 +1,22 @@
-19:43:55 **** Incremental Build of configuration Debug for project cduFM ****
+19:54:40 **** Incremental Build of configuration Debug for project cduFM ****
 make -j4 all 
 arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m0 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F091xC -c -I../Core/Inc -I../Drivers/STM32F0xx_HAL_Driver/Inc -I../Drivers/STM32F0xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F0xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Core/Src/main.o"
 ../Core/Src/main.c: In function 'Sender2rcu':
-../Core/Src/main.c:186:42: warning: pointer targets in passing argument 3 of 'UART_SendString' differ in signedness [-Wpointer-sign]
-  186 |     UART_SendString(&huart3, &BuffUART3, str2, strlen((char*)str2));
+../Core/Src/main.c:275:42: warning: pointer targets in passing argument 3 of 'UART_SendString' differ in signedness [-Wpointer-sign]
+  275 |     UART_SendString(&huart3, &BuffUART3, str2, strlen((char*)str2));
       |                                          ^~~~
       |                                          |
       |                                          uint8_t * {aka unsigned char *}
-../Core/Src/main.c:66:86: note: expected 'const char *' but argument is of type 'uint8_t *' {aka 'unsigned char *'}
-   66 | void UART_SendString(UART_HandleTypeDef *huart, SerialStruct * BuffUART, const char *str, int NumChar) {
+../Core/Src/main.c:82:86: note: expected 'const char *' but argument is of type 'uint8_t *' {aka 'unsigned char *'}
+   82 | void UART_SendString(UART_HandleTypeDef *huart, SerialStruct * BuffUART, const char *str, int NumChar) {
       |                                                                          ~~~~~~~~~~~~^~~
-../Core/Src/main.c: In function 'main':
-../Core/Src/main.c:288:27: warning: implicit declaration of function 'DispADFscreen'; did you mean 'DispNAVscreen'? [-Wimplicit-function-declaration]
-  288 |                           DispADFscreen(&AdfScreenParams);
-      |                           ^~~~~~~~~~~~~
-      |                           DispNAVscreen
-../Core/Src/main.c:306:25: warning: implicit declaration of function 'NavScreenStateMachine' [-Wimplicit-function-declaration]
-  306 |                   key = NavScreenStateMachine(&NavScreenParams);
-      |                         ^~~~~~~~~~~~~~~~~~~~~
-../Core/Src/main.c:347:25: warning: implicit declaration of function 'AdfScreenStateMachine' [-Wimplicit-function-declaration]
-  347 |                   key = AdfScreenStateMachine(&AdfScreenParams);
-      |                         ^~~~~~~~~~~~~~~~~~~~~
-../Core/Src/main.c:198:13: warning: variable 'softKey' set but not used [-Wunused-but-set-variable]
-  198 |   softKey_t softKey;
-      |             ^~~~~~~
 arm-none-eabi-gcc -o "cduFM.elf" @"objects.list"   -mcpu=cortex-m0 -T"D:\Projects\CDU\CDU_FW\cduFM\STM32F091VCTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="cduFM.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -u _printf_float -u _scanf_float -Wl,--start-group -lc -lm -Wl,--end-group
 Finished building target: cduFM.elf
  
 arm-none-eabi-size  cduFM.elf 
 arm-none-eabi-objdump -h -S cduFM.elf  > "cduFM.list"
    text	   data	    bss	    dec	    hex	filename
-  49788	    564	   7168	  57520	   e0b0	cduFM.elf
+  56120	    564	   7312	  63996	   f9fc	cduFM.elf
 Finished building: default.size.stdout
  
 Finished building: cduFM.list
