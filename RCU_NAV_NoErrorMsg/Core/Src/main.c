@@ -19,6 +19,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "cmsis_os.h"
+#include "math.h"
 
 #include "rcuCduCom.h"
 
@@ -189,22 +190,29 @@ void toDelete(int index) {
 	  write[0] = obs;
   }
 
-  void loadstate() { // called on startup
-	  SPIF_ReadSector(&spif, 20, read, 1, 0);
-	  MHz = read[0];
-	  SPIF_ReadSector(&spif, 20, read, 1, 1);
-	  KHz = read[0] * 25;
-	  SPIF_ReadSector(&spif, 20, read, 1, 2);
-	  SM = read[0];
-	  SPIF_ReadSector(&spif, 20, read, 1, 3);
-	  SK = read[0] * 25;
-	  SPIF_ReadSector(&spif, 20, read, 1, 4);
-	  vol = read[0];
-	  SPIF_ReadSector(&spif, 20, read, 1, 5);
-	  obs = read[0];
-      freq = MHz + (.001 * KHz);
-      Standby = SM + (.001 * SK);
+  void loadstate() { // called on startup					loads the system state from a specific sector in the SPI flash memory on startup.
+    SPIF_ReadSector(&spif, 20, read, 1, 0);
+    MHz = read[0];
+    if (MHz > 117) MHz = 117;
+    if (MHz < 108) MHz = 108;
+    SPIF_ReadSector(&spif, 20, read, 1, 1);
+    KHz = read[0] * 25;
+    if(KHz > 950) KHz = 950;
+    SPIF_ReadSector(&spif, 20, read, 1, 2);
+    SM = read[0];
+    if (SM > 117) SM = 117;
+    if (SM < 108) SM = 108;
+    SPIF_ReadSector(&spif, 20, read, 1, 3);
+    SK = read[0] * 25;
+    if(SK > 950) SK = 950;
+    SPIF_ReadSector(&spif, 20, read, 1, 4);	//1 is not bytes to be read
+    vol = read[0];
+    SPIF_ReadSector(&spif, 20, read, 1, 5);	//5 is Offset: The starting point within the sector to begin reading from.
+    obs = read[0];
+    freq = MHz + (.001 * KHz);
+    Standby = SM + (.001 * SK);
   }
+
   uint32_t millis() {
 	  return xTaskGetTickCount();
   };
@@ -807,6 +815,10 @@ void read_encoder2() { // KHz right inner knob
       int changevalue = 50;
       if (SK < 950) {
         SK = SK + changevalue;              // Update counter
+        SK = floor(SK/50)*50;
+      } else if (SM < 117){
+    	  SK = SK + changevalue - 1000;
+    	  SM = SM + 1;
       }
       encval = 0;
     }
@@ -814,6 +826,10 @@ void read_encoder2() { // KHz right inner knob
       int changevalue = -50;
       if (SK > 0) {
         SK = SK + changevalue;              // Update counter
+        SK = floor(SK/50)*50;
+         } else if (SM > 108){
+    	  SK = SK + changevalue + 1000;
+    	  SM = SM - 1;
       }
       encval = 0;
     }
