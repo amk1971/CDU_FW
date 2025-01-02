@@ -87,7 +87,7 @@ uint16_t NavScreenStateMachine(ScreenParams * Params, softKey_t softkey){
 	static char lblText[20];
 //	bool decimal_added;
 	volatile char keyVal;
-	uint32_t PresetTimer = HAL_GetTick();
+	static uint32_t PresetTimer;
 
 	retKey = get_ScanKode_from_buffer();
 	keyVal = decode_keycode(retKey);
@@ -225,6 +225,7 @@ uint16_t NavScreenStateMachine(ScreenParams * Params, softKey_t softkey){
 		char txt[15];
 		snprintf(txt, sizeof(txt), "S %0.3f", Params->Standby.freq);
 		UpdateParamLCD(Left1, txt);
+		UpdateParamLCD(Center4, "");
 		configBgcolorLCD(Left1, TRANSPARENTBG);
 		configfontcolorLCD(Left1, BLACKFONT);
 
