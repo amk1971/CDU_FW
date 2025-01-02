@@ -61,21 +61,38 @@ void SystemClock_Config(void);
 /* USER CODE BEGIN 0 */
 uint8_t UART_ReceivString(SerialStruct * BuffUART, char *str, int NumChar) {
 
-	uint8_t n = 0;
 
-	n = (BuffUART->RXindex - BuffUART->RXTail) & (BUFLENMASK);
-
-	if((n < NumChar) || (NumChar <= 0)){
-		return 0;
+	int Head = BuffUART->RXindex, istr = 0;;
+//	for (int i = 0; i< BUFLENMASK; i++){
+//		if (BuffUART->RXbuffer[(Head+i+1) & (BUFLENMASK)] == '$') break;
+//		Head ++;
+//	}
+	if (Head < BuffUART->RXTail) Head += (BUFLENMASK +1);
+	for (int i = BuffUART->RXTail; i < BuffUART->RXindex; i++){
+		str[istr++] = BuffUART->RXbuffer[i];
+		if ((BuffUART->RXbuffer[i & (BUFLENMASK)] == '\n') || (istr > NumChar)){
+			str[istr++] = '\r';
+			str[istr] = 0;
+			BuffUART->RXTail = i+1;
+			return istr;
+		}
 	}
-
-	n = 0;
-
-	while (NumChar--)
-	{
-		str[n++] = BuffUART->RXbuffer[BuffUART->RXTail++];
-	}
-	return NumChar;
+	return 0;
+//	uint8_t n = 0;
+//
+//	n = (BuffUART->RXindex - BuffUART->RXTail) & (BUFLENMASK);
+//
+//	if((n < NumChar) || (NumChar <= 0)){
+//		return 0;
+//	}
+//
+//	n = 0;
+//
+//	while (NumChar--)
+//	{
+//		str[n++] = BuffUART->RXbuffer[BuffUART->RXTail++];
+//	}
+//	return NumChar;
 }
 
 
@@ -281,14 +298,14 @@ bool Test_Pattern (char * msg, char * pattern) {
 	return true;
 }
 
-void decodeCduMessage()
+void decodeCduMessage(void )
 {
 	uint16_t rxBuffLen;
 	char rxBuffer[20];
 	bool rxfreercu = false;
 	rxBuffLen = UART_ReceivString(&BuffUART3, rxBuffer, sizeof(rxBuffer));
 
-	if(rxBuffer[0] == '$' && rxBuffer[1] == 'P' && rxBuffer[2] == 'A' && rxBuffer[3] == 'T' && rxBuffer[4] == 'C')
+	if(rxBuffLen > 0 && rxBuffer[0] == '$' && rxBuffer[1] == 'P' && rxBuffer[2] == 'A' && rxBuffer[3] == 'T' && rxBuffer[4] == 'C')
 	{
 	  rxfreercu = true;
 	}
@@ -395,6 +412,7 @@ int main(void)
   MX_GPIO_Init();
   MX_USART2_UART_Init();
   MX_USART3_UART_Init();
+  __HAL_UART_ENABLE_IT(&huart3, UART_IT_RXNE);
   MX_SPI1_Init();
   /* USER CODE BEGIN 2 */
 
@@ -493,13 +511,16 @@ int main(void)
 
 		  key = NavScreenStateMachine(&NavScreenParams, softKey);
 
-		  if (NavScreenParams.Active.freq != Nav_afreq_last || NavScreenParams.Standby.freq != Nav_sfreq_last)
-		  {
+		  if (NavScreenParams.Active.freq != Nav_afreq_last){
 			  gVar.flashDirty = true;
 			  gVar.updateFlashTimer = HAL_GetTick();
 
+				//ChangedNavParam(nStandbyFreq, (void *) &NavScreenParams.Standby.freq);
+				ChangedNavParam(nActiveFreq, (void *) &NavScreenParams.Active.freq);
+
+
 			  freq2MhzKhz(NavScreenParams.Active.freq, &NavScreenParams.Active.MHz, &NavScreenParams.Active.KHz);
-			  freq2MhzKhz(NavScreenParams.Standby.freq, &NavScreenParams.Standby.MHz, &NavScreenParams.Standby.KHz);
+			  //freq2MhzKhz(NavScreenParams.Standby.freq, &NavScreenParams.Standby.MHz, &NavScreenParams.Standby.KHz);
 
 			  int MA = NavScreenParams.Active.MHz - 48;
 			  int KA = (NavScreenParams.Active.KHz/25) + 48;
@@ -508,18 +529,49 @@ int main(void)
 			  char Mfinal[3] = {m,k,0};
 			  Sender2rcu(Mfinal,0); //sending also to rcu for synchronization
 
-			  MA = NavScreenParams.Standby.MHz - 48;
-			  KA = (NavScreenParams.Standby.KHz/25) + 48;
-			  m = (char)MA;
-			  k = (char)KA;
+//			  MA = NavScreenParams.Standby.MHz - 48;
+//			  KA = (NavScreenParams.Standby.KHz/25) + 48;
+//			  m = (char)MA;
+//			  k = (char)KA;
+//			  char Sfinal[3] = {m,k,0};
+//
+//			  Sender2rcu(Sfinal,1); //sending also to rcu for synchronization
+
+			  //Nav_sfreq_last = NavScreenParams.Standby.freq;
+			  Nav_afreq_last = NavScreenParams.Active.freq;
+
+		  }
+		  if (NavScreenParams.Standby.freq != Nav_sfreq_last){
+			  gVar.flashDirty = true;
+			  gVar.updateFlashTimer = HAL_GetTick();
+
+				ChangedNavParam(nStandbyFreq, (void *) &NavScreenParams.Standby.freq);
+				//ChangedNavParam(nActiveFreq, (void *) &NavScreenParams.Active.freq);
+
+
+			  //freq2MhzKhz(NavScreenParams.Active.freq, &NavScreenParams.Active.MHz, &NavScreenParams.Active.KHz);
+			  freq2MhzKhz(NavScreenParams.Standby.freq, &NavScreenParams.Standby.MHz, &NavScreenParams.Standby.KHz);
+
+//			  int MA = NavScreenParams.Active.MHz - 48;
+//			  int KA = (NavScreenParams.Active.KHz/25) + 48;
+//			  char m = (char)MA;
+//			  char k = (char)KA;
+//			  char Mfinal[3] = {m,k,0};
+//			  Sender2rcu(Mfinal,0); //sending also to rcu for synchronization
+
+			  int MA = NavScreenParams.Standby.MHz - 48;
+			  int KA = (NavScreenParams.Standby.KHz/25) + 48;
+			  char m = (char)MA;
+			  char k = (char)KA;
 			  char Sfinal[3] = {m,k,0};
 
 			  Sender2rcu(Sfinal,1); //sending also to rcu for synchronization
 
 			  Nav_sfreq_last = NavScreenParams.Standby.freq;
-			  Nav_afreq_last = NavScreenParams.Active.freq;
+			  //Nav_afreq_last = NavScreenParams.Active.freq;
 
 		  }
+
 
 		  if (key == 'h')	// HOME button
 		  {
@@ -601,6 +653,7 @@ int main(void)
 		  }
 
 	  }
+	  decodeCduMessage();
   }
   /* USER CODE END 3 */
 }
