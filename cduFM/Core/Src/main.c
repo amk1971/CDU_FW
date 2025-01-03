@@ -67,8 +67,9 @@ uint8_t UART_ReceivString(SerialStruct * BuffUART, char *str, int NumChar) {
 //		if (BuffUART->RXbuffer[(Head+i+1) & (BUFLENMASK)] == '$') break;
 //		Head ++;
 //	}
-	if (Head < BuffUART->RXTail) Head += (BUFLENMASK +1);
-	for (int i = BuffUART->RXTail; i < BuffUART->RXindex; i++){
+	if (Head < BuffUART->RXTail) Head += MAXBUFLEN;
+	for (int i = BuffUART->RXTail; i < Head; i++){
+		if(BuffUART->RXbuffer[i] == '$') istr = 0;
 		str[istr++] = BuffUART->RXbuffer[i];
 		if ((BuffUART->RXbuffer[i & (BUFLENMASK)] == '\n') || (istr > NumChar)){
 			str[istr++] = '\r';
