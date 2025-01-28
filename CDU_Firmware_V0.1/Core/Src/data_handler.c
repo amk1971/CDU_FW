@@ -656,7 +656,7 @@ Message_Id get_message_ID(const char* message, Class_Id class)
     Message_Id id = INVALID;
     if((class == NAV) || (class == VHF))
     {
-        for(int i = 0; i < 3; i++)
+        for(int i = 0; i < 4; i++)
         {
             if(strcmp(message, message_id_nav_vhf[i]) == 0)
             {

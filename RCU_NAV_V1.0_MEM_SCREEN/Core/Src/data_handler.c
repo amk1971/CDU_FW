@@ -194,7 +194,7 @@ void NAV_RCU_main_thread(void *pvParameters)
 			mem_screen_update = false;        // Reset the flag after the update
 		}
 
-		if(current_time > (last_Health_tx_time + 2000)){
+		if(current_time > (last_Health_tx_time + 200)){
 			last_Health_tx_time =  HAL_GetTick();
 			send_data_to_transmission_queue_CDU(Health);
 		}

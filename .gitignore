@@ -60,3 +60,4 @@ Module.symvers
 Mkfile.old
 dkms.conf
 .metadata
+CDU_Firmware_V0.1/Debug/CDU_Firmware_V0.1.bin
