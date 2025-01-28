@@ -30,6 +30,7 @@ typedef enum {
 	V_T_S,
 	RESET_STATUS,
 	COM_ERROR,
+	Health,
     INVALID
 }Message_Id;
 
@@ -117,6 +118,14 @@ typedef struct {
 	char	p6_channel[TACAN_S];			// TACAN Pre-Programmed Channel p6
 	char	p7_channel[TACAN_S];			// TACAN Pre-Programmed Channel p7
 	char	p8_channel[TACAN_S];			// TACAN Pre-Programmed Channel p8
+
+	int     NAV_message_counter;			// Counts the time after the last nav health message
+	int		TACAN_message_counter;			// Counts the time after the last tacan health message
+	int		HF_message_counter;			// Counts the time after the last hf health message
+	int		UHF_message_counter;			// Counts the time after the last uhf health message
+	int		VHF_message_counter;			// Counts the time after the last vhf health message
+	int		ADF_message_counter;			// Counts the time after the last adf health message
+
 }CDU_Parameters;
 
 typedef struct {

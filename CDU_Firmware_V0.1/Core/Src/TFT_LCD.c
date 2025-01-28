@@ -232,6 +232,17 @@ ScreenHandler screen_handlers[] = {
 		uhf_p1_prog_screen_handler,
 		uhf_p2_prog_screen_handler,
 };
+
+
+void update_Counters(void)
+{
+	if(cdu_parameters.NAV_message_counter < 50000) cdu_parameters.NAV_message_counter += 50;			// Counts the time after the last nav health message
+	if(cdu_parameters.TACAN_message_counter < 50000) cdu_parameters.TACAN_message_counter += 50;			// Counts the time after the last tacan health message
+	if(cdu_parameters.HF_message_counter < 50000) cdu_parameters.HF_message_counter += 50;			// Counts the time after the last hf health message
+	if(cdu_parameters.UHF_message_counter < 50000) cdu_parameters.UHF_message_counter += 50;			// Counts the time after the last uhf health message
+	if(cdu_parameters.VHF_message_counter < 50000) cdu_parameters.VHF_message_counter += 50;			// Counts the time after the last vhf health message
+	if(cdu_parameters.ADF_message_counter < 50000) cdu_parameters.ADF_message_counter += 50;
+}
 /* ------------------------------ Function Declarations END -------------------------------------*/
 /*
  * Function: tft_lcd_thread
@@ -281,6 +292,7 @@ void tft_lcd_thread(void * pvParameters)
 				xSemaphoreGive(xFlashMutex);
 			}
 		}
+		update_Counters();
 		vTaskDelay(pdMS_TO_TICKS(50));
 	}
 }
@@ -492,9 +504,13 @@ void tft_lcd_Home(void)
 	tft_lcd_change_screen(HOME_SCREEN);
 	vTaskDelay(pdMS_TO_TICKS(50)); // Delay for 50 milliseconds
 	//Check which units are enabled/ operational of all displayed on Home Screen
-	tft_lcd_send_command_int("t1", "pco",  BLACK);
+	if(cdu_parameters.NAV_message_counter > 5000)
+	tft_lcd_send_command_int("t1", "pco",  RED); else
+		tft_lcd_send_command_int("t1", "pco",  BLACK);
 	vTaskDelay(pdMS_TO_TICKS(10)); // Delay for 10 milliseconds
-	tft_lcd_send_command_int("t2", "pco",  BLACK);
+	if(cdu_parameters.ADF_message_counter > 5000)
+	tft_lcd_send_command_int("t2", "pco",  RED); else
+		tft_lcd_send_command_int("t2", "pco",  BLACK);
 	vTaskDelay(pdMS_TO_TICKS(10)); // Delay for 10 milliseconds
 	tft_lcd_send_command_int("t3", "pco",  BLACK);
 	vTaskDelay(pdMS_TO_TICKS(10)); // Delay for 10 milliseconds

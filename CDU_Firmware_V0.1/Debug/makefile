@@ -70,8 +70,8 @@ all: main-build
 main-build: CDU_Firmware_V0.1.elf secondary-outputs
 
 # Tool invocations
-CDU_Firmware_V0.1.elf CDU_Firmware_V0.1.map: $(OBJS) $(USER_OBJS) C:\Users\AeroTrain\Desktop\IMP\ DOC\CDU\CDU_WORKSPACE\CDU_Firmware_V0.1\STM32F091VCTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "CDU_Firmware_V0.1.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m0 -T"C:\Users\AeroTrain\Desktop\IMP DOC\CDU\CDU_WORKSPACE\CDU_Firmware_V0.1\STM32F091VCTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="CDU_Firmware_V0.1.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -u _printf_float -u _scanf_float -Wl,--start-group -lc -lm -Wl,--end-group
+CDU_Firmware_V0.1.elf CDU_Firmware_V0.1.map: $(OBJS) $(USER_OBJS) D:\Projects\CDU_FW\CDU_Firmware_V0.1\STM32F091VCTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "CDU_Firmware_V0.1.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m0 -T"D:\Projects\CDU_FW\CDU_Firmware_V0.1\STM32F091VCTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="CDU_Firmware_V0.1.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -u _printf_float -u _scanf_float -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 

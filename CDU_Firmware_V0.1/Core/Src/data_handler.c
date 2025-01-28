@@ -25,7 +25,7 @@
 #define CONVERSION_VAL_DEC		48
 
 #define NUM_CLASSES_ID		6
-#define NUM_MESSAGE_ID		5
+#define NUM_MESSAGE_ID		6
 
 
 const char class_id[NUM_CLASSES_ID] = {
@@ -41,6 +41,7 @@ const char* message_id_nav_vhf[NUM_MESSAGE_ID] = {
 		"28",
 		"27",
 		"73",
+		"100"	//Health Message
 };
 
 const char* message_id_adf_tacan[NUM_MESSAGE_ID] = {
@@ -48,7 +49,8 @@ const char* message_id_adf_tacan[NUM_MESSAGE_ID] = {
 		"42",	// Active Frequency Message ID
 		"71",	// Volume, Toggle ADF/ANT, Switch on BFO Message ID
 		"20",	// Reset Status  Message ID
-		"271"	// Communication Error Message ID
+		"271",	// Communication Error Message ID
+		"100"	// health message
 };
 
 CDU_Parameters cdu_parameters;
@@ -956,7 +958,11 @@ void handle_NAV_incoming_message(Identifier *ident, uint8_t f_mhz, uint16_t f_kh
 		case V_T_S:
 				// update Volume, Toggle, squelch
 			break;
+		case Health:
+			cdu_parameters.NAV_message_counter = 0;
+			break;
 		case RESET_STATUS:
+
 				// update status
 			break;
 		case COM_ERROR:
@@ -995,6 +1001,9 @@ void handle_ADF_incoming_message(Identifier *ident, uint8_t f_mhz, uint16_t f_kh
 			break;
 		case V_T_S:
 				// update Volume, Toggle, squelch
+			break;
+		case Health:
+			cdu_parameters.ADF_message_counter = 0;
 			break;
 		case RESET_STATUS:
 				// update status
@@ -1036,6 +1045,9 @@ void handle_VHF_incoming_message(Identifier *ident, uint8_t f_mhz, uint16_t f_kh
 		case V_T_S:
 				// update Volume, Toggle, squelch
 			break;
+		case Health:
+			cdu_parameters.VHF_message_counter = 0;
+			break;
 		case RESET_STATUS:
 				// update status
 			break;
@@ -1076,6 +1088,9 @@ void handle_HF_incoming_message(Identifier *ident, uint8_t f_mhz, uint16_t f_khz
 		case V_T_S:
 				// update Volume, Toggle, squelch
 			break;
+		case Health:
+			cdu_parameters.HF_message_counter = 0;
+			break;
 		case RESET_STATUS:
 				// update status
 			break;
@@ -1115,6 +1130,9 @@ void handle_UHF_incoming_message(Identifier *ident, uint8_t f_mhz, uint16_t f_kh
 			break;
 		case V_T_S:
 				// update Volume, Toggle, squelch
+			break;
+		case Health:
+			cdu_parameters.UHF_message_counter = 0;
 			break;
 		case RESET_STATUS:
 				// update status
@@ -1168,6 +1186,9 @@ void handle_TACAN_incoming_message(Identifier *ident, uint8_t f_mhz, uint16_t f_
 			break;
 		case V_T_S:
 				// update Volume, Toggle, squelch
+			break;
+		case Health:
+			cdu_parameters.TACAN_message_counter = 0;
 			break;
 		case RESET_STATUS:
 				// update status
