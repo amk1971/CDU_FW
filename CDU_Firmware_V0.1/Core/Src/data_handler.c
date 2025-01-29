@@ -41,7 +41,9 @@ const char* message_id_nav_vhf[NUM_MESSAGE_ID] = {
 		"28",
 		"27",
 		"73",
-		"100"	//Health Message
+		"",
+		"",
+		"99"	//Health Message
 };
 
 const char* message_id_adf_tacan[NUM_MESSAGE_ID] = {
@@ -50,7 +52,7 @@ const char* message_id_adf_tacan[NUM_MESSAGE_ID] = {
 		"71",	// Volume, Toggle ADF/ANT, Switch on BFO Message ID
 		"20",	// Reset Status  Message ID
 		"271",	// Communication Error Message ID
-		"100"	// health message
+		"99"	// health message
 };
 
 CDU_Parameters cdu_parameters;
@@ -656,7 +658,7 @@ Message_Id get_message_ID(const char* message, Class_Id class)
     Message_Id id = INVALID;
     if((class == NAV) || (class == VHF))
     {
-        for(int i = 0; i < 3; i++)
+        for(int i = 0; i < 4; i++)
         {
             if(strcmp(message, message_id_nav_vhf[i]) == 0)
             {
@@ -801,8 +803,8 @@ bool decode_message(uint8_t *rx_buffer, Identifier *ident, uint8_t *mhz, uint16_
 
     // Calculate the checksum of the received message (from 'P' to last data character before checksum)
     char cal_sum[10];
-    strncpy(cal_sum, &received_msg[6], 4+khz_length);  // Extract the checksum
-    cal_sum[4 + khz_length+1] =0;
+    strncpy(cal_sum, &received_msg[6], len-2-6);  // Extract the checksum
+    cal_sum[len-10] =0;
     calculate_checksum(cal_sum, &calculated_checksum_h, &calculated_checksum_l);  // Use the same checksum function as during encoding
     calculated_checksum = (calculated_checksum_h << 4) | calculated_checksum_l;
     // Compare the checksums
