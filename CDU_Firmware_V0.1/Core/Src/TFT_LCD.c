@@ -263,6 +263,13 @@ void tft_lcd_thread(void * pvParameters)
 {
 	char receivedKey = NDF;
 	Load_CDU_Parameters(&cdu_parameters);
+	cdu_parameters.NAV_message_counter = 5050;			// Counts the time after the last nav health message
+	cdu_parameters.TACAN_message_counter = 5050;			// Counts the time after the last tacan health message
+	cdu_parameters.HF_message_counter = 5050;			// Counts the time after the last hf health message
+	cdu_parameters.UHF_message_counter = 5050;			// Counts the time after the last uhf health message
+	cdu_parameters.VHF_message_counter = 5050;			// Counts the time after the last vhf health message
+	cdu_parameters.ADF_message_counter = 5050;
+
 //	changeBackgroundToBlack();
  	tft_lcd_Home();
 	/* Infinite loop */
@@ -512,13 +519,21 @@ void tft_lcd_Home(void)
 	tft_lcd_send_command_int("t2", "pco",  RED); else
 		tft_lcd_send_command_int("t2", "pco",  BLACK);
 	vTaskDelay(pdMS_TO_TICKS(10)); // Delay for 10 milliseconds
-	tft_lcd_send_command_int("t3", "pco",  BLACK);
+	if(cdu_parameters.TACAN_message_counter > 5000)
+	tft_lcd_send_command_int("t3", "pco",  RED); else
+		tft_lcd_send_command_int("t3", "pco",  BLACK);
 	vTaskDelay(pdMS_TO_TICKS(10)); // Delay for 10 milliseconds
-	tft_lcd_send_command_int("t5", "pco",  RED);
+	if(cdu_parameters.HF_message_counter > 5000)
+		tft_lcd_send_command_int("t5", "pco",  RED); else
+	tft_lcd_send_command_int("t5", "pco",  BLACK);
 	vTaskDelay(pdMS_TO_TICKS(10)); // Delay for 10 milliseconds
-	tft_lcd_send_command_int("t6", "pco",  RED);
+	if(cdu_parameters.VHF_message_counter > 5000)
+		tft_lcd_send_command_int("t6", "pco",  RED); else
+	tft_lcd_send_command_int("t6", "pco",  BLACK);
 	vTaskDelay(pdMS_TO_TICKS(10)); // Delay for 10 milliseconds
-	tft_lcd_send_command_int("t7", "pco",  RED);
+	if(cdu_parameters.UHF_message_counter > 5000)
+		tft_lcd_send_command_int("t7", "pco",  RED); else
+	tft_lcd_send_command_int("t7", "pco",  BLACK);
 }
 
 /* ------------------------ HOME SCREEN ---------------------------*/
