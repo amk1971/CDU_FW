@@ -503,12 +503,12 @@ void tft_lcd_change_screen(TFT_Screen screen)
  * 				This function is used to display the home page on the TFT display.
  *
  */
-void tft_lcd_Home(void)
+void tft_lcd_Home(int mode)
 {
 //	tft_lcd_change_screen(NAV_P1_SCREEN);	//Set the screen to Home Screeen At the Initialization
 
 
-	tft_lcd_change_screen(HOME_SCREEN);
+	if (mode == 1) tft_lcd_change_screen(HOME_SCREEN);
 	vTaskDelay(pdMS_TO_TICKS(50)); // Delay for 50 milliseconds
 	//Check which units are enabled/ operational of all displayed on Home Screen
 	if(cdu_parameters.NAV_message_counter > 5000)
@@ -734,7 +734,7 @@ void nav_p1_screen_handler(uint8_t key)
 				prefix_index = '4';
 				break;
 			case HOME:
-				tft_lcd_Home();
+				tft_lcd_Home(1);
 				break;
 			case NEXT:
 				tft_lcd_change_screen(NAV_P2_SCREEN);
@@ -909,7 +909,7 @@ void nav_p2_screen_handler(uint8_t key)
 				prefix_index = '8';
 				break;
 			case HOME:
-				tft_lcd_Home();
+				tft_lcd_Home(1);
 				break;
 			case BACK:
 				tft_lcd_change_screen(NAV_P1_SCREEN);
@@ -1111,7 +1111,7 @@ void nav_p1_prog_screen_handler(uint8_t key)
 				prefix_index = '4';
 				break;
 			case HOME:
-				tft_lcd_Home();
+				tft_lcd_Home(1);
 				prefix_index = 0;
 				break;
 			case DIM:
@@ -1318,7 +1318,7 @@ void nav_p2_prog_screen_handler(uint8_t key)
 				prefix_index = '8';
 				break;
 			case HOME:
-				tft_lcd_Home();
+				tft_lcd_Home(1);
 				break;
 			case DIM:
 				break;
@@ -1525,7 +1525,7 @@ void adf_p1_screen_handler(uint8_t key)
 				prefix_index = '4';
 				break;
 			case HOME:
-				tft_lcd_Home();
+				tft_lcd_Home(1);
 				break;
 			case NEXT:
 				tft_lcd_change_screen(ADF_P2_SCREEN);
@@ -1699,7 +1699,7 @@ void adf_p2_screen_handler(uint8_t key)
 				prefix_index = '8';
 				break;
 			case HOME:
-				tft_lcd_Home();
+				tft_lcd_Home(1);
 				break;
 			case BACK:
 				tft_lcd_change_screen(ADF_P1_SCREEN);
@@ -1896,7 +1896,7 @@ void adf_p1_prog_screen_handler(uint8_t key)
 				prefix_index = '4';
 				break;
 			case HOME:
-				tft_lcd_Home();
+				tft_lcd_Home(1);
 				prefix_index = 0;
 				break;
 			case DIM:
@@ -2097,7 +2097,7 @@ void adf_p2_prog_screen_handler(uint8_t key)
 				prefix_index = '8';
 				break;
 			case HOME:
-				tft_lcd_Home();
+				tft_lcd_Home(1);
 				break;
 			case DIM:
 				break;
@@ -2284,7 +2284,7 @@ void tacan_p1_ch_screen_handler(uint8_t key)
 				tft_lcd_send_command_("t3", TEXT, cdu_parameters.volume_tacan, NULL);
 				break;
 			case HOME:
-				tft_lcd_Home();
+				tft_lcd_Home(1);
 				break;
 			case DIM:
 				break;
@@ -2463,7 +2463,7 @@ void tacan_p2_ch_screen_handler(uint8_t key)
 				tft_lcd_send_command_("t3", TEXT, cdu_parameters.volume_tacan, NULL);
 				break;
 			case HOME:
-				tft_lcd_Home();
+				tft_lcd_Home(1);
 				break;
 			case DIM:
 				break;
@@ -2665,7 +2665,7 @@ void tacan_p1_ch_prog_screen_handler(uint8_t key)
 				prefix_index = '4';
 				break;
 			case HOME:
-				tft_lcd_Home();
+				tft_lcd_Home(1);
 				prefix_index = 0;
 				break;
 			case DIM:
@@ -2876,7 +2876,7 @@ void tacan_p2_ch_prog_screen_handler(uint8_t key)
 				prefix_index = '8';
 				break;
 			case HOME:
-				tft_lcd_Home();
+				tft_lcd_Home(1);
 				prefix_index = 0;
 				break;
 			case DIM:
@@ -3062,7 +3062,7 @@ void tacan_p1_fq_screen_handler(uint8_t key)
 				prefix_index = '4';
 				break;
 			case HOME:
-				tft_lcd_Home();
+				tft_lcd_Home(1);
 				break;
 			case NEXT:
 				tft_lcd_change_screen(TACAN_P2_FQ_SCREEN);
@@ -3245,7 +3245,7 @@ void tacan_p2_fq_screen_handler(uint8_t key)
 				prefix_index = '8';
 				break;
 			case HOME:
-				tft_lcd_Home();
+				tft_lcd_Home(1);
 				break;
 			case BACK:
 				tft_lcd_change_screen(TACAN_P1_FQ_SCREEN);
@@ -3454,7 +3454,7 @@ void tacan_p1_fq_prog_screen_handler(uint8_t key)
 				prefix_index = '4';
 				break;
 			case HOME:
-				tft_lcd_Home();
+				tft_lcd_Home(1);
 				prefix_index = 0;
 				break;
 			case DIM:
@@ -3665,7 +3665,7 @@ void tacan_p2_fq_prog_screen_handler(uint8_t key)
 				prefix_index = '8';
 				break;
 			case HOME:
-				tft_lcd_Home();
+				tft_lcd_Home(1);
 				break;
 			case DIM:
 				break;
@@ -3845,7 +3845,7 @@ void hf_p1_screen_handler(uint8_t key)
 				prefix_index = '4';
 				break;
 			case HOME:
-				tft_lcd_Home();
+				tft_lcd_Home(1);
 				break;
 			case NEXT:
 				tft_lcd_change_screen(HF_P2_SCREEN);
@@ -4002,7 +4002,7 @@ void hf_p2_screen_handler(uint8_t key)
 				prefix_index = '8';
 				break;
 			case HOME:
-				tft_lcd_Home();
+				tft_lcd_Home(1);
 				break;
 			case BACK:
 				tft_lcd_change_screen(HF_P1_SCREEN);
@@ -4171,7 +4171,7 @@ void hf_p1_prog_screen_handler(uint8_t key)
 				prefix_index = '4';
 				break;
 			case HOME:
-				tft_lcd_Home();
+				tft_lcd_Home(1);
 				prefix_index = 0;
 				break;
 			case DIM:
@@ -4361,7 +4361,7 @@ void hf_p2_prog_screen_handler(uint8_t key)
 				prefix_index = '8';
 				break;
 			case HOME:
-				tft_lcd_Home();
+				tft_lcd_Home(1);
 				break;
 			case DIM:
 				break;
@@ -4538,7 +4538,7 @@ void vhf_p1_screen_handler(uint8_t key)
 				prefix_index = '4';
 				break;
 			case HOME:
-				tft_lcd_Home();
+				tft_lcd_Home(1);
 				break;
 			case NEXT:
 				tft_lcd_change_screen(VHF_P2_SCREEN);
@@ -4695,7 +4695,7 @@ void vhf_p2_screen_handler(uint8_t key)
 				prefix_index = '8';
 				break;
 			case HOME:
-				tft_lcd_Home();
+				tft_lcd_Home(1);
 				break;
 			case BACK:
 				tft_lcd_change_screen(VHF_P1_SCREEN);
@@ -4864,7 +4864,7 @@ void vhf_p1_prog_screen_handler(uint8_t key)
 				prefix_index = '4';
 				break;
 			case HOME:
-				tft_lcd_Home();
+				tft_lcd_Home(1);
 				prefix_index = 0;
 				break;
 			case DIM:
@@ -5054,7 +5054,7 @@ void vhf_p2_prog_screen_handler(uint8_t key)
 				prefix_index = '8';
 				break;
 			case HOME:
-				tft_lcd_Home();
+				tft_lcd_Home(1);
 				break;
 			case DIM:
 				break;
@@ -5231,7 +5231,7 @@ void uhf_p1_screen_handler(uint8_t key)
 				prefix_index = '4';
 				break;
 			case HOME:
-				tft_lcd_Home();
+				tft_lcd_Home(1);
 				break;
 			case NEXT:
 				tft_lcd_change_screen(UHF_P2_SCREEN);
@@ -5388,7 +5388,7 @@ void uhf_p2_screen_handler(uint8_t key)
 				prefix_index = '8';
 				break;
 			case HOME:
-				tft_lcd_Home();
+				tft_lcd_Home(1);
 				break;
 			case BACK:
 				tft_lcd_change_screen(UHF_P1_SCREEN);
@@ -5557,7 +5557,7 @@ void uhf_p1_prog_screen_handler(uint8_t key)
 				prefix_index = '4';
 				break;
 			case HOME:
-				tft_lcd_Home();
+				tft_lcd_Home(1);
 				prefix_index = 0;
 				break;
 			case DIM:
@@ -5747,7 +5747,7 @@ void uhf_p2_prog_screen_handler(uint8_t key)
 				prefix_index = '8';
 				break;
 			case HOME:
-				tft_lcd_Home();
+				tft_lcd_Home(1);
 				break;
 			case DIM:
 				break;
@@ -5823,6 +5823,9 @@ void update_screen_(TFT_Screen screen)
 	switch(cls)
 	{
 		case NAV:
+			if (screen == HOME_SCREEN){
+				tft_lcd_Home(0);
+			}
 			if((screen == NAV_P1_SCREEN) || (screen == NAV_P2_SCREEN))
 			{
 				tft_lcd_send_command_float("t1", TEXT, cdu_parameters.standby_nav_freq, STANDBY);
