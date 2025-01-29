@@ -15,7 +15,7 @@ const char *message_id_nav[NUM_MESSAGE_ID] =
 { "28",  // Standby Frequency Message ID
 		"27",  // active
 		"73",  // vol
-		"100"	//Health
+		"99"	//Health
 
 		};
 
