@@ -271,7 +271,12 @@ void tft_lcd_thread(void * pvParameters)
 	cdu_parameters.ADF_message_counter = 5050;
 
 //	changeBackgroundToBlack();
- 	tft_lcd_Home();
+ 	tft_lcd_Home(1);
+ 	//tft_lcd_change_screen(ADF_P1_SCREEN);
+	//tft_lcd_send_command_text("t10", "txt", "TACAN Error");
+		//tft_lcd_send_command_float("t10", TEXT, cdu_parameters.p1_nav_freq, PRE_PRO_1);
+
+
 	/* Infinite loop */
 	for(;;)
 	{
@@ -551,19 +556,38 @@ void home_screen_handler(uint8_t key)
 	switch(key)
 	{
 		case LEFT_SW1:
-			tft_lcd_change_screen(NAV_P1_SCREEN);
+			if(cdu_parameters.NAV_message_counter > 5000) {
+				tft_lcd_change_screen(NAV_P1_PROG_SCREEN);
+				tft_lcd_send_command_text("t9", "txt", "NAV");
+				tft_lcd_send_command_text("t10", "txt", "Error");
+			} else {
+				tft_lcd_change_screen(NAV_P1_SCREEN);
+			}
 			tft_lcd_send_command_float("t1","txt", cdu_parameters.standby_nav_freq, STANDBY);
 			tft_lcd_send_command_float("t4", "txt", cdu_parameters.active_nav_freq, ACTIVE);
 			tft_lcd_send_command_("t3", "txt", cdu_parameters.volume_nav, NULL);
 			break;
 		case LEFT_SW2:
-			tft_lcd_change_screen(ADF_P1_SCREEN);
+			if(cdu_parameters.ADF_message_counter > 5000) {
+				tft_lcd_change_screen(ADF_P1_PROG_SCREEN);
+				tft_lcd_send_command_text("t9", "txt", "ADF");
+				tft_lcd_send_command_text("t10", "txt", "Error");
+			} else {
+				tft_lcd_change_screen(ADF_P1_SCREEN);
+			}
 			tft_lcd_send_command_("t1","txt", cdu_parameters.standby_adf_freq, STANDBY);
 			tft_lcd_send_command_("t4", "txt", cdu_parameters.active_adf_freq, ACTIVE);
 			tft_lcd_send_command_("t3", "txt", cdu_parameters.volume_adf, NULL);
+
 			break;
 		case LEFT_SW3:
-			tft_lcd_change_screen(TACAN_P1_CH_SCREEN);
+			if(cdu_parameters.TACAN_message_counter > 5000) {
+				tft_lcd_change_screen(TACAN_P1_CH_PROG_SCREEN);
+				tft_lcd_send_command_text("t9", "txt", "TACAN");
+				tft_lcd_send_command_text("t10", "txt", "Error");
+			} else {
+				tft_lcd_change_screen(TACAN_P1_CH_SCREEN);
+			}
 			tft_lcd_send_command_channel("t1", TEXT, cdu_parameters.standby_channel, STANDBY);
 			tft_lcd_send_command_channel("t4", TEXT, cdu_parameters.active_channel, ACTIVE);
 			tft_lcd_send_command_("t3", "txt", cdu_parameters.volume_tacan, NULL);
@@ -571,17 +595,35 @@ void home_screen_handler(uint8_t key)
 		case LEFT_SW4:
 			break;
 		case RIGHT_SW1:
-			tft_lcd_change_screen(HF_P1_SCREEN);
+			if(cdu_parameters.HF_message_counter > 5000) {
+				tft_lcd_change_screen(HF_P1_PROG_SCREEN);
+				tft_lcd_send_command_text("t9", "txt", "HF");
+				tft_lcd_send_command_text("t10", "txt", "Error");
+			} else {
+				tft_lcd_change_screen(HF_P1_SCREEN);
+			}
 			tft_lcd_send_command_float("t1","txt", cdu_parameters.standby_hf_freq, STANDBY);
 			tft_lcd_send_command_float("t4", "txt", cdu_parameters.active_hf_freq, ACTIVE);
 			break;
 		case RIGHT_SW2:
-			tft_lcd_change_screen(VHF_P1_SCREEN);
+			if(cdu_parameters.VHF_message_counter > 5000) {
+				tft_lcd_change_screen(VHF_P1_SCREEN);
+				tft_lcd_send_command_text("t9", "txt", "VHF");
+				tft_lcd_send_command_text("t10", "txt", "Error");
+			} else {
+				tft_lcd_change_screen(VHF_P1_SCREEN);
+			}
 			tft_lcd_send_command_float("t1","txt", cdu_parameters.standby_vhf_freq, STANDBY);
 			tft_lcd_send_command_float("t4", "txt", cdu_parameters.active_vhf_freq, ACTIVE);
 			break;
 		case RIGHT_SW3:
-			tft_lcd_change_screen(UHF_P1_SCREEN);
+			if(cdu_parameters.UHF_message_counter > 5000) {
+				tft_lcd_change_screen(UHF_P1_PROG_SCREEN);
+				tft_lcd_send_command_text("t9", "txt", "UHF");
+				tft_lcd_send_command_text("t10", "txt", "Error");
+			} else {
+				tft_lcd_change_screen(UHF_P1_SCREEN);
+			}
 			tft_lcd_send_command_float("t1","txt", cdu_parameters.standby_uhf_freq, STANDBY);
 			tft_lcd_send_command_float("t4", "txt", cdu_parameters.active_uhf_freq, ACTIVE);
 			break;
@@ -5831,12 +5873,18 @@ void update_screen_(TFT_Screen screen)
 				tft_lcd_send_command_float("t1", TEXT, cdu_parameters.standby_nav_freq, STANDBY);
 				tft_lcd_send_command_float("t4", TEXT, cdu_parameters.active_nav_freq, ACTIVE);
 				tft_lcd_send_command_("t3", TEXT, cdu_parameters.volume_nav, NULL);
+				if(cdu_parameters.NAV_message_counter > 5000) {
+					tft_lcd_send_command_("t10", TEXT, "NAV RCU Error", NULL);
+				}
 				update_flash();
 			}
 			if((screen == NAV_P1_PROG_SCREEN) || (screen == NAV_P2_PROG_SCREEN))
 			{
 				tft_lcd_send_command_float("t1", TEXT, cdu_parameters.standby_nav_freq, STANDBY);
 				tft_lcd_send_command_float("t4", TEXT, cdu_parameters.active_nav_freq, ACTIVE);
+				if(cdu_parameters.NAV_message_counter > 5000) {
+					tft_lcd_send_command_("t10", TEXT, "NAV RCU Error", NULL);
+				}
 				update_flash();
 			}
 			break;
@@ -5846,12 +5894,18 @@ void update_screen_(TFT_Screen screen)
 				tft_lcd_send_command_("t1", TEXT, cdu_parameters.standby_adf_freq, STANDBY);
 				tft_lcd_send_command_("t4", TEXT, cdu_parameters.active_adf_freq, ACTIVE);
 				tft_lcd_send_command_("t3", TEXT, cdu_parameters.volume_nav, NULL);
+				if(cdu_parameters.NAV_message_counter > 5000) {
+					tft_lcd_send_command_("t10", TEXT, "ADF RCU Error", NULL);
+				}
 				update_flash();
 			}
 			if  ((screen == ADF_P1_PROG_SCREEN) || (screen == ADF_P2_PROG_SCREEN))
 			{
 				tft_lcd_send_command_float("t1", TEXT, cdu_parameters.standby_nav_freq, STANDBY);
 				tft_lcd_send_command_float("t4", TEXT, cdu_parameters.active_nav_freq, ACTIVE);
+				if(cdu_parameters.NAV_message_counter > 5000) {
+					tft_lcd_send_command_("t10", TEXT, "ADF RCU Error", NULL);
+				}
 				update_flash();
 			}
 			break;
