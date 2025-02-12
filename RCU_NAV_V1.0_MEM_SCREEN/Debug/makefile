@@ -65,8 +65,8 @@ all: main-build
 main-build: RCU_NAV_V1.0_MEM_SCREEN.elf secondary-outputs
 
 # Tool invocations
-RCU_NAV_V1.0_MEM_SCREEN.elf RCU_NAV_V1.0_MEM_SCREEN.map: $(OBJS) $(USER_OBJS) D:\Projects\CDU_FW\RCU_NAV_V1.0_MEM_SCREEN\STM32F103VCTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "RCU_NAV_V1.0_MEM_SCREEN.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m3 -T"D:\Projects\CDU_FW\RCU_NAV_V1.0_MEM_SCREEN\STM32F103VCTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="RCU_NAV_V1.0_MEM_SCREEN.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -u _printf_float -u _scanf_float -Wl,--start-group -lc -lm -Wl,--end-group
+RCU_NAV_V1.0_MEM_SCREEN.elf RCU_NAV_V1.0_MEM_SCREEN.map: $(OBJS) $(USER_OBJS) C:\Users\Antelope\ LMS\Documents\GitHub\CDU_FW\RCU_NAV_V1.0_MEM_SCREEN\STM32F103VCTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "RCU_NAV_V1.0_MEM_SCREEN.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m3 -T"C:\Users\Antelope LMS\Documents\GitHub\CDU_FW\RCU_NAV_V1.0_MEM_SCREEN\STM32F103VCTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="RCU_NAV_V1.0_MEM_SCREEN.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -u _printf_float -u _scanf_float -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 

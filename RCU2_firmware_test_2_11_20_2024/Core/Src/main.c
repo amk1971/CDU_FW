@@ -1420,6 +1420,7 @@ void DISPLAY_Task(void *pvParameters) {
 	vTaskDelay(100);
 	glcd_clear_all();
 	vTaskDelay(100);
+//	glcd_puts2(2,2,"TEST");
 
 	for (;;) {
 		// OFF state: clear screen

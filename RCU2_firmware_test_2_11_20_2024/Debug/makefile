@@ -61,8 +61,8 @@ all: main-build
 main-build: RCU2.elf secondary-outputs
 
 # Tool invocations
-RCU2.elf RCU2.map: $(OBJS) $(USER_OBJS) C:\Users\GPD40\STM32CubeIDE\workspace_1.16.2\RCU2\STM32F103VCTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "RCU2.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m3 -T"C:\Users\GPD40\STM32CubeIDE\workspace_1.16.2\RCU2\STM32F103VCTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="RCU2.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+RCU2.elf RCU2.map: $(OBJS) $(USER_OBJS) C:\Users\Antelope\ LMS\Documents\GitHub\CDU_FW\RCU2_firmware_test_2_11_20_2024\STM32F103VCTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "RCU2.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m3 -T"C:\Users\Antelope LMS\Documents\GitHub\CDU_FW\RCU2_firmware_test_2_11_20_2024\STM32F103VCTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="RCU2.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 
