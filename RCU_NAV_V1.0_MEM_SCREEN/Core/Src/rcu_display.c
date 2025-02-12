@@ -257,3 +257,62 @@ void LCD_PRINT_MEM_SCREEN(uint8_t page)
 	glcd_puts("DELETE", 2, 4);
 	glcd_puts("SAVE", 2, 6);
 }
+
+char* convert_to_str(uint8_t value) {
+    static char str[4];
+    sprintf(str, "%u", value);
+    return str;
+}
+
+void update_following(uint8_t UPDATE_FLAGS, char* sValue)
+{
+	switch (UPDATE_FLAGS)
+	{
+		case TF:
+		glcd_clear_here(TF_X1,TF_X2,TF_Y1,TF_Y2);
+		glcd_puts(sValue,TF_X1,TF_Y2);
+		break;
+
+		case SQ:
+		glcd_clear_here(SQ_X1,SQ_X2,SQ_Y1,SQ_Y2);
+		glcd_puts(sValue,SQ_X1,SQ_Y2);
+		break;
+
+		case PROG:
+		glcd_clear_here(PROG_X1,PROG_X2,PROG_Y1,PROG_Y2);
+		glcd_puts(sValue,PROG_X1,PROG_Y2);
+		break;
+
+		case T_GD_MV:
+		glcd_clear_here(T_GD_MV_X1,T_GD_MV_X2,T_GD_MV_Y1,T_GD_MV_Y2);
+		glcd_puts(sValue,T_GD_MV_X1,T_GD_MV_Y2);
+		break;
+
+		case FREQ_CH:
+		glcd_clear_here(FREQ_CH_X1,FREQ_CH_X2,FREQ_CH_Y1,FREQ_CH_Y2);
+		glcd_puts(sValue,FREQ_CH_X1,FREQ_CH_Y2);
+		break;
+
+		case TST:
+		glcd_clear_here(TST_X1,TST_X2,TST_Y1,TST_Y2);
+		glcd_puts(sValue,TST_X1,TST_Y2);
+		break;
+
+		case VOL:
+		glcd_clear_here(VOL_X1,VOL_X2,VOL_Y1,VOL_Y2);
+		glcd_puts(sValue,VOL_X1,VOL_Y2);
+		break;
+
+		case MN_BOTH:
+		glcd_clear_here(MN_BOTH_X1,MN_BOTH_X2,MN_BOTH_Y1,MN_BOTH_Y2);
+		glcd_puts(sValue,MN_BOTH_X1,MN_BOTH_Y2);
+		break;
+	}
+
+}
+
+void LCD_Print_Dummy(uint8_t UPDATE_FLAGS,uint8_t sValue)
+{
+		char* strValue = convert_to_str(sValue);
+		update_following(UPDATE_FLAGS,strValue);
+}
