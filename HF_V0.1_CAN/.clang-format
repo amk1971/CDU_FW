@@ -1,0 +1,8 @@
+# Format Style Options - Created with Clang Power Tools
+---
+BasedOnStyle: Google
+MaxEmptyLinesToKeep: 1
+IndentWidth: 4
+ColumnLimit: 120
+BreakBeforeBraces: Allman
+...

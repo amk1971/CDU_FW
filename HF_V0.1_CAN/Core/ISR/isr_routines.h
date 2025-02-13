@@ -1,0 +1,11 @@
+#ifndef D__JIM_CDU_HF_RCU_RCU_WORKSPACE_RCU_FIRMWARE_V0_0_CORE_INC_ISR_ROUTINES_H_
+#define D__JIM_CDU_HF_RCU_RCU_WORKSPACE_RCU_FIRMWARE_V0_0_CORE_INC_ISR_ROUTINES_H_
+
+#include<stdint.h>
+
+
+void UART_StartReceive_HF_Receiver(void);
+void UART_StartReceive_CDU(void);
+void UART_StartTransmittion_CDU(uint8_t *cdu_tx_buff);
+
+#endif // D__JIM_CDU_HF_RCU_RCU_WORKSPACE_RCU_FIRMWARE_V0_0_CORE_INC_ISR_ROUTINES_H_
