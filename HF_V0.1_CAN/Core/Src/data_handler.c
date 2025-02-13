@@ -138,7 +138,7 @@ float get_channel(uint8_t index)
 }  // Default value if index is invalid }
 void set_channel(uint8_t index, float frequency)
 {
-    if (index < NUM_FREQUENCIES)
+    if (index < NUM_FREQUENCIES)			//Saved Chanel Array Bound Checking
     {
         saved_channels[index] = frequency;
     }

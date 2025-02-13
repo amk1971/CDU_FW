@@ -82,7 +82,7 @@ void HF_main_thread(void *pvParameters)
 			}
 
 			send_data_to_transmission_queue_CDU(S_FREQ);
-			vTaskDelay(pdMS_TO_TICKS(200));
+			vTaskDelay(pdMS_TO_TICKS(200));		//200ms delay in a critical section  ??????????
 
 			send_data_to_transmission_queue_HF_RECEIVER(S_FREQ);
 

@@ -419,6 +419,8 @@ void glcd_clear_here(char x1, char x2, char y1, char y2)
     }
 }
 
+//Display a reverse image of the Provided String
+
 void glcd_clear_text(char *str, char x, char y)
 {
     Delay(T);  // Optional delay for timing if needed

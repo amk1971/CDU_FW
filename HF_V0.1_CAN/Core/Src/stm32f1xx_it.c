@@ -22,6 +22,8 @@
 #include "stm32f1xx_it.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+
+extern CAN_HandleTypeDef hcan;
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
