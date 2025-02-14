@@ -4,8 +4,6 @@
 /Debug/
 /Drivers/
 /Middlewares/
-/*.ld
-*.ioc
 *.launch
 *.bin
 *.hex

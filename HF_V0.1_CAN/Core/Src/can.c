@@ -26,6 +26,8 @@
 
 CAN_HandleTypeDef hcan;
 
+uint8_t CAN_RX_Buffer[20];
+
 /* CAN init function */
 void MX_CAN_Init(void)
 {
@@ -116,5 +118,16 @@ void HAL_CAN_MspDeInit(CAN_HandleTypeDef* canHandle)
 }
 
 /* USER CODE BEGIN 1 */
+void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef* canHandle)
+{
+	CAN_RxHeaderTypeDef rx_header;
+	uint8_t data[20];
 
+	if (HAL_CAN_GetRxMessage(canHandle, CAN_RX_FIFO0, &rx_header, data) == HAL_OK) {
+
+		for (int i = 0; i < rx_header.DLC; i++){
+			CAN_RX_Buffer[i] = data[i];
+		}
+	}
+}
 /* USER CODE END 1 */
