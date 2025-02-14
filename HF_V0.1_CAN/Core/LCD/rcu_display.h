@@ -13,9 +13,9 @@
 #include "stm32f1xx.h"
 
 // Coordinate definitions (adjust as needed)
-#define TL_X1 5
+#define TL_X1 64
 #define TL_X2 50
-#define TL_Y1 5
+#define TL_Y1 8
 #define TL_Y2 15
 
 #define ML_X1 5

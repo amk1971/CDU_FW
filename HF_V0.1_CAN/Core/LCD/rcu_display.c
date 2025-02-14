@@ -308,7 +308,7 @@ void LCD_UpdateRegion(LCD_Region region, const char* value) {
     }
 
      glcd_clear_here(x1, x2, y1, y2);  // Clear previous text
-     glcd_puts(value, x1, y2);         // Print new value
+     glcd_puts(value, x1, y1);         // Print new value
 }
 
 // Generic function to convert any data type to a string
