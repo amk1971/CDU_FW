@@ -54,15 +54,15 @@ void HF_main_thread(void *pvParameters)
 	//    float frequency = 255.141f;
 	//    LCD_UpdateRegion(TL,convertToString(&frequency,TYPE_FLOAT));
 
-	    LCD_UpdateRegion(TL, "225.00");    // Update Top Left with frequency
-	    LCD_UpdateRegion(ML, "SQ");        // Update Middle Left with "SQ"
-	    LCD_UpdateRegion(BL, "PROG");      // Update Bottom Left with "PROG"
-	    LCD_UpdateRegion(MT, "T/GD/MN");   // Update Middle Top
-	    LCD_UpdateRegion(MM, "VOL 10");    // Update Middle Middle
-	    LCD_UpdateRegion(MB, "MN/BOTH");   // Update Middle Bottom
-	    LCD_UpdateRegion(RT, "FRQ/CH");    // Update Right Top
-	    LCD_UpdateRegion(RM, "TST");       // Update Right Middle
-	    LCD_UpdateRegion(RB, "BOTH");      // Update Right Bottom
+//	    LCD_UpdateRegion(TL, "225.00");    // Update Top Left with frequency
+//	    LCD_UpdateRegion(ML, "SQ");        // Update Middle Left with "SQ"
+//	    LCD_UpdateRegion(BL, "PROG");      // Update Bottom Left with "PROG"
+//	    LCD_UpdateRegion(MT, "T/GD/MN");   // Update Middle Top
+//	    LCD_UpdateRegion(MM, "VOL 10");    // Update Middle Middle
+//	    LCD_UpdateRegion(MB, "MN/BOTH");   // Update Middle Bottom
+//	    LCD_UpdateRegion(RT, "FRQ/CH");    // Update Right Top
+//	    LCD_UpdateRegion(RM, "TST");       // Update Right Middle
+//	    LCD_UpdateRegion(RB, "BOTH");      // Update Right Bottom
 
 	LCD_Print_Home();
 

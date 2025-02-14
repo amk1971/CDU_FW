@@ -71,6 +71,7 @@ typedef struct
 typedef struct
 {
     float standby_freq;
+    uint8_t Channel;
     uint8_t volume;
     uint8_t FRQ_CH : 2;
     char volume_ascii[2];

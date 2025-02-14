@@ -159,35 +159,47 @@ void LCD_Print_Home(void)
 	memset(strS, 0, sizeof(strS));
 	memset(strV, 0, sizeof(strV));
 
+
+	snprintf(strV, sizeof(strV), "%0.2f", HF_parameters.standby_freq);
+	LCD_UpdateRegion(TL, strV);    // Update Top Left with frequency
+
 	// Check if standby frequency has changed
 
 	if (HF_parameters.FRQ_CH == FRQ)
 	{
-		glcd_clear_text("FRQ", 75, 1);
-		glcd_puts("/", 98, 1);
-		glcd_puts("CH", 105, 1);
-
+		//glcd_clear_text("FRQ", 75, 1);
+		//glcd_puts("/", 98, 1);
+		//glcd_puts("CH", 105, 1);
+		snprintf(strV, sizeof(strV), "%0.2f", HF_parameters.standby_freq);
+		LCD_UpdateRegion(RT, strV);    // Update Top Left with frequency
 	}
 	if (HF_parameters.FRQ_CH == CH)
 	{
-		glcd_puts("FRQ", 75, 1);
-		glcd_puts("/", 98, 1);
-		glcd_clear_text("CH", 105, 1);
-
+//		glcd_puts("FRQ", 75, 1);
+//		glcd_puts("/", 98, 1);
+//		glcd_clear_text("CH", 105, 1);
+		snprintf(strV, sizeof(strV), "P%d", HF_parameters.Channel);
+		LCD_UpdateRegion(RT, strV);    // Update Top Left with Channel
 	}
 
-	glcd_puts("STO", 2, 3);
+	//glcd_puts("STO", 2, 3);
+	LCD_UpdateRegion(ML, "SQ");    // Update Mid Left with frequency
+	LCD_UpdateRegion(BL, "PROG");    // Update Mid Left with frequency
+	LCD_UpdateRegion(RM, "TST");    // Update Mid Left with frequency
 
 	if (HF_parameters.STO == ON && HF_parameters.FRQ_CH == CH)
 	{
-		glcd_puts("T", 70, 1);
+//		glcd_puts("T", 70, 1);
+		LCD_UpdateRegion(MT, "T");    // Update Mid Top with Flag
+
 	}
 	else
 	{
-		glcd_clear_here(70, 75, 1, 1);
+//		glcd_clear_here(70, 75, 1, 1);
+		LCD_UpdateRegion(MT, "  ");    // Update Mid Top with Flag
 	}
 
-	glcd_puts("PROG", 2, 6);
+//	glcd_puts("PROG", 2, 6);
 
 	if (HF_parameters.standby_freq != prev_standby_freq
 			|| HF_parameters.power_on == ON || HF_parameters.PROG == OFF)
@@ -195,15 +207,18 @@ void LCD_Print_Home(void)
 		if (HF_parameters.standby_freq == EMPTY_FREQ)
 
 		{
-			glcd_clear_here(2, 68, 1, 1); // Clear specific area for standby frequency
-			glcd_puts("NO MEM", 1, 1);
+			//glcd_clear_here(2, 68, 1, 1); // Clear specific area for standby frequency
+			//glcd_puts("NO MEM", 1, 1);
+			LCD_UpdateRegion(TL, "NO MEM");    // Update Mid Top with Flag
+
 		}
 		else
 		{
 			snprintf(strS, sizeof(strS), "%.1f", HF_parameters.standby_freq); // coulmn first
 
-			glcd_clear_here(2, 68, 1, 1); // Clear specific area for standby frequency
-			glcd_puts(strS, 1, 1);          // Update standby frequency
+//			glcd_clear_here(2, 68, 1, 1); // Clear specific area for standby frequency
+//			glcd_puts(strS, 1, 1);          // Update standby frequency
+			LCD_UpdateRegion(TL, strS);    // Update Mid Top with Flag
 			prev_standby_freq = HF_parameters.standby_freq;
 		}
 	}
@@ -211,9 +226,10 @@ void LCD_Print_Home(void)
 	if (HF_parameters.volume != prev_volume || HF_parameters.power_on == ON
 			|| HF_parameters.PROG == OFF)
 	{
-		glcd_clear_here(50, 70, 6, 6);  // Clear specific area for volume
+		//glcd_clear_here(50, 70, 6, 6);  // Clear specific area for volume
 		snprintf(strV, sizeof(strV), "Vol%02d", HF_parameters.volume);
-		glcd_puts(strV, 50, 6);  // Update volume
+		//glcd_puts(strV, 50, 6);  // Update volume
+		LCD_UpdateRegion(MB, strV);
 		prev_volume = HF_parameters.volume;
 	}
 }
@@ -293,18 +309,38 @@ void LCD_PRINT_CURSOR(uint8_t status, uint8_t cursor_location)
 // Generic function to update values in any region
 void LCD_UpdateRegion(LCD_Region region, const char* value) {
     int x1, x2, y1, y2;
+    int txtSize = strlen(value);
 
     switch (region) {
-        case TL:  x1 = TL_X1;  x2 = TL_X2;  y1 = TL_Y1;  y2 = TL_Y2;  break;
-        case ML:  x1 = ML_X1;  x2 = ML_X2;  y1 = ML_Y1;  y2 = ML_Y2;  break;
-        case BL:  x1 = BL_X1;  x2 = BL_X2;  y1 = BL_Y1;  y2 = BL_Y2;  break;
-        case MT:  x1 = MT_X1;  x2 = MT_X2;  y1 = MT_Y1;  y2 = MT_Y2;  break;
-        case MM:  x1 = MM_X1;  x2 = MM_X2;  y1 = MM_Y1;  y2 = MM_Y2;  break;
-        case MB:  x1 = MB_X1;  x2 = MB_X2;  y1 = MB_Y1;  y2 = MB_Y2;  break;
-        case RT:  x1 = RT_X1;  x2 = RT_X2;  y1 = RT_Y1;  y2 = RT_Y2;  break;
-        case RM:  x1 = RM_X1;  x2 = RM_X2;  y1 = RM_Y1;  y2 = RM_Y2;  break;
-        case RB:  x1 = RB_X1;  x2 = RB_X2;  y1 = RB_Y1;  y2 = RB_Y2;  break;
-        default: return;  // Invalid region
+        case TL:
+        	x1 = TL_X1;  x2 = TL_X2;  y1 = TL_Y1;  y2 = TL_Y2;
+        	break;
+        case ML:
+        	x1 = ML_X1;  x2 = ML_X2;  y1 = ML_Y1;  y2 = ML_Y2;
+        	break;
+        case BL:
+        	x1 = BL_X1;  x2 = BL_X2;  y1 = BL_Y1;  y2 = BL_Y2;
+        	break;
+        case MT:
+        	x1 = MT_X1 - txtSize * 4;  x2 = MT_X2;  y1 = MT_Y1;  y2 = MT_Y2;
+        	break;
+        case MM:
+        	x1 = MM_X1 - txtSize * 4;  x2 = MM_X2;  y1 = MM_Y1;  y2 = MM_Y2;
+        	break;
+        case MB:
+        	x1 = MB_X1 - txtSize * 4;  x2 = MB_X2;  y1 = MB_Y1;  y2 = MB_Y2;
+        	break;
+        case RT:
+        	x1 = 127 - txtSize * 8;  x2 = RT_X2;  y1 = RT_Y1;  y2 = RT_Y2;
+        	break;
+        case RM:
+        	x1 = 127 - txtSize * 8;  x2 = RM_X2;  y1 = RM_Y1;  y2 = RM_Y2;
+        	break;
+        case RB:
+        	x1 =  127 - txtSize * 8;  x2 = RB_X2;  y1 = RB_Y1;  y2 = RB_Y2;
+        	break;
+        default:
+        	return;  // Invalid region
     }
 
      glcd_clear_here(x1, x2, y1, y2);  // Clear previous text
