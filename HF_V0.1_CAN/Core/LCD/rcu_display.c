@@ -22,6 +22,9 @@
  **function code**
  ------------------------------------------------------------------------------------------------*/
 
+// Global buffer to hold the result
+char globalBuffer[100];
+
 void glcd_axis(void)
 {
 	// make x axis----------------------
@@ -285,4 +288,48 @@ void LCD_PRINT_CURSOR(uint8_t status, uint8_t cursor_location)
 
 //		glcd_clear_here(loc,loc+2, 2, 2);
 	}
+}
+
+// Generic function to update values in any region
+void LCD_UpdateRegion(LCD_Region region, const char* value) {
+    int x1, x2, y1, y2;
+
+    switch (region) {
+        case TL:  x1 = TL_X1;  x2 = TL_X2;  y1 = TL_Y1;  y2 = TL_Y2;  break;
+        case ML:  x1 = ML_X1;  x2 = ML_X2;  y1 = ML_Y1;  y2 = ML_Y2;  break;
+        case BL:  x1 = BL_X1;  x2 = BL_X2;  y1 = BL_Y1;  y2 = BL_Y2;  break;
+        case MT:  x1 = MT_X1;  x2 = MT_X2;  y1 = MT_Y1;  y2 = MT_Y2;  break;
+        case MM:  x1 = MM_X1;  x2 = MM_X2;  y1 = MM_Y1;  y2 = MM_Y2;  break;
+        case MB:  x1 = MB_X1;  x2 = MB_X2;  y1 = MB_Y1;  y2 = MB_Y2;  break;
+        case RT:  x1 = RT_X1;  x2 = RT_X2;  y1 = RT_Y1;  y2 = RT_Y2;  break;
+        case RM:  x1 = RM_X1;  x2 = RM_X2;  y1 = RM_Y1;  y2 = RM_Y2;  break;
+        case RB:  x1 = RB_X1;  x2 = RB_X2;  y1 = RB_Y1;  y2 = RB_Y2;  break;
+        default: return;  // Invalid region
+    }
+
+     glcd_clear_here(x1, x2, y1, y2);  // Clear previous text
+     glcd_puts(value, x1, y2);         // Print new value
+}
+
+// Generic function to convert any data type to a string
+char* convertToString(void* data, DataType type) {
+    switch (type) {
+        case TYPE_INT:
+            snprintf(globalBuffer, sizeof(globalBuffer), "%d", *(int*)data);
+            break;
+        case TYPE_FLOAT:
+            snprintf(globalBuffer, sizeof(globalBuffer), "%.3f", *(float*)data);
+            break;
+        case TYPE_DOUBLE:
+            snprintf(globalBuffer, sizeof(globalBuffer), "%.3lf", *(double*)data);
+            break;
+        case TYPE_CHAR:
+            snprintf(globalBuffer, sizeof(globalBuffer), "%c", *(char*)data);
+            break;
+        case TYPE_STRING:
+            snprintf(globalBuffer, sizeof(globalBuffer), "%s", (char*)data);
+            break;
+    }
+
+    return globalBuffer;
 }
