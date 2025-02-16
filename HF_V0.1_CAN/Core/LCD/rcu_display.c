@@ -171,7 +171,7 @@ void LCD_Print_Home(void)
 		//glcd_puts("/", 98, 1);
 		//glcd_puts("CH", 105, 1);
 		snprintf(strV, sizeof(strV), "%0.2f", HF_parameters.standby_freq);
-		LCD_UpdateRegion(RT, strV);    // Update Top Left with frequency
+		LCD_UpdateRegion(RT, strV);    // Update Top Right with frequency
 	}
 	if (HF_parameters.FRQ_CH == CH)
 	{
@@ -266,7 +266,8 @@ void LCD_PRINT_MEM_SCREEN(uint8_t page)
 		else
 		{
 			// Display the preset normally
-			glcd_puts(presetLabel, 90, 2 + (i * 2));  // Normal text
+			//glcd_puts(presetLabel, 90, 2 + (i * 2));  // Normal text
+			LCD_UpdateRegion(RT, presetLabel);    // Update Top Right with channel frequency
 		}
 	}
 
@@ -277,18 +278,23 @@ void LCD_PRINT_MEM_SCREEN(uint8_t page)
 
 		if (saved_channels[g_vars.g_selectedPreset] == EMPTY_FREQ)
 		{
-			glcd_puts("EMPTY", 2, 2);
+			//glcd_puts("EMPTY", 2, 2);
+			LCD_UpdateRegion(TL, "EMPTY");    // Update Top Left with channel frequency
 		}
 		else
 		{
 			snprintf(selectedFreq, sizeof(selectedFreq), "%0.2f",
 					saved_channels[g_vars.g_selectedPreset]);
-			glcd_puts(selectedFreq, 2, 2);
+			//glcd_puts(selectedFreq, 2, 2);
+			LCD_UpdateRegion(TL, selectedFreq);    // Update Top Left with channel frequency
 		}
 	}
 
-	glcd_puts("DELETE", 2, 4);
-	glcd_puts("EXIT", 2, 6);
+	//glcd_puts("DELETE", 2, 4);
+	//glcd_puts("EXIT", 2, 6);
+	LCD_UpdateRegion(ML, "DELETE");    // Update Top Left with channel frequency
+	LCD_UpdateRegion(BL, "EXIT");    // Update Top Left with channel frequency
+
 }
 
 void LCD_PRINT_CURSOR(uint8_t status, uint8_t cursor_location)
