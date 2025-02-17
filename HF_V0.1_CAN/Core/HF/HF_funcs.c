@@ -5,7 +5,7 @@
 
 /* ------------------------- Default Parameter Values --------------------------- */
 const s_HF_Parameters HF_RCU_Default_Values = {
-    .standby_freq = 2156.4,
+    .standby_freq = 176.4,
     .volume = 5,
     .PROG = OFF,
     .power_on = OFF,

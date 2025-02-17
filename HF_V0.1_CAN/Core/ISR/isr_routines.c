@@ -109,24 +109,24 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 	}
 	else if (GPIO_Pin == RIGHT_A2_Pin)
 	{  // DONE change of FRQ and select preset on CH and non functional in GD
-		if ((!HF_parameters.PROG) && (HF_parameters.FRQ_CH == FRQ)
-				&& (HF_parameters.Cursor == ON))
-		{
-			//            read_encoder_standby_mhz();
-			move_cursor();
+		if ((!HF_parameters.PROG) && (HF_parameters.FRQ_CH == FRQ)){
+			if (HF_parameters.Cursor == ON){
+			//read_encoder_standby_mhz();
+				move_cursor();
+			} else {
+				read_encoder_standby_mhz();
+			}
 		}
 	}
 	else if (GPIO_Pin == RIGHT_B2_Pin)
 	{  // DONE change of FRQ and select preset on CH and non functional in GD
-		if ((!HF_parameters.PROG) && (HF_parameters.FRQ_CH == FRQ)
-				&& (HF_parameters.Cursor == ON))
-		{
-//            read_encoder_standby_mhz();
-			move_cursor();
-		}
-		else
-		{
-//            move_cursor();
+		if ((!HF_parameters.PROG) && (HF_parameters.FRQ_CH == FRQ)){
+			if (HF_parameters.Cursor == ON){
+			//read_encoder_standby_mhz();
+				move_cursor();
+			} else {
+				read_encoder_standby_mhz();
+			}
 		}
 	}
 }
