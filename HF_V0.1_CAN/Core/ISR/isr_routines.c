@@ -93,7 +93,8 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
         }
         else
         {
-            change_saved_channel_khz();
+            //change_saved_channel_khz();
+            read_encoder_standby_khz();
         }
 	}
 	else if (GPIO_Pin == RIGHT_B1_Pin)
@@ -104,7 +105,8 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
         }
         else
         {
-            change_saved_channel_khz();
+            //change_saved_channel_khz();
+        	read_encoder_standby_khz();
         }
 	}
 	else if (GPIO_Pin == RIGHT_A2_Pin)

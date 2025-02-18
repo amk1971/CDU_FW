@@ -8,7 +8,7 @@ const s_HF_Parameters HF_RCU_Default_Values = {
     .standby_freq = 176.4,
     .volume = 5,
     .PROG = OFF,
-    .power_on = OFF,
+    .power_on = ON,
 };
 
 uint8_t inverse_volume_map[20][2] = {{0, 0},    {1, 15},   {2, 28},   {3, 42},   {4, 55},   {5, 69},   {6, 82},

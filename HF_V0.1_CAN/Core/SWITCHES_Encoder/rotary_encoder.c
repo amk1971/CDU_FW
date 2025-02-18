@@ -486,7 +486,7 @@ void change_saved_channel_khz()
 
 	if (g_vars.g_saved_channel_mhz == 0)
 	{
-		g_vars.g_saved_channel_mhz = 108;
+		g_vars.g_saved_channel_mhz = STANDBY_MHZ_MIN;
 	}
 	if (!read_saved_standby_khz_flag)
 	{
@@ -558,7 +558,7 @@ void change_saved_channel_mhz()
 	g_vars.g_saved_channel_mhz = saved_channels[g_vars.g_selectedPreset];
 	if (g_vars.g_saved_channel_mhz == 0)
 	{
-		g_vars.g_saved_channel_mhz = 108;
+		g_vars.g_saved_channel_mhz = STANDBY_MHZ_MIN;
 	}
 
 //	g_vars. g_saved_channel_khz = (uint8_t)(((number - (uint8_t) number) + 0.001) * 100);

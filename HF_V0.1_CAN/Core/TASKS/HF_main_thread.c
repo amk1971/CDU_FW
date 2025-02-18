@@ -78,8 +78,8 @@ void HF_main_thread(void *pvParameters)
 		// }
 
 		if ((read_encoder_standby_mhz_flag || read_encoder_standby_khz_flag)
-				&& (HF_parameters.FRQ_CH == 0)
-				&& (HF_parameters.power_on == ON))
+				&& (HF_parameters.FRQ_CH == 0))
+				//&& (HF_parameters.power_on == ON))
 		{
 			taskENTER_CRITICAL();
 			HF_parameters.standby_freq = g_vars.g_standby_mhz_knob
