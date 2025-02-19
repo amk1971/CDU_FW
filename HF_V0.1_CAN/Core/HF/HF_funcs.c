@@ -5,7 +5,7 @@
 
 /* ------------------------- Default Parameter Values --------------------------- */
 const s_HF_Parameters HF_RCU_Default_Values = {
-    .standby_freq = 176.4,
+    .tuned_freq = 176.4,
     .volume = 5,
     .PROG = OFF,
     .power_on = ON,
@@ -213,8 +213,8 @@ void update_frequency_in_flash(uint8_t index, float new_frequency)
 void swap_active_standby(void)
 {
     //    float tmp = HF_parameters.active_freq;
-    //    HF_parameters.active_freq = HF_parameters.standby_freq;
-    //    HF_parameters.standby_freq = tmp;
+    //    HF_parameters.active_freq = HF_parameters.tuned_freq;
+    //    HF_parameters.tuned_freq = tmp;
 }
 
 const char *map_volume_into_ascii(uint8_t volume)

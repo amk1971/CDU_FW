@@ -25,8 +25,8 @@ bool volatile digit_change = false;
 void adjust_digit(int direction)
 {
 	// Separate the frequency into integer and decimal parts
-	int freq_int = (int) (HF_parameters.standby_freq);  // Integer part
-	int freq_decimal = (int) (((HF_parameters.standby_freq - freq_int) + 0.01)
+	int freq_int = (int) (HF_parameters.tuned_freq);  // Integer part
+	int freq_decimal = (int) (((HF_parameters.tuned_freq - freq_int) + 0.01)
 			* 10); // Decimal part (tenths place)
 
 	int high_place = freq_int / 1000;
@@ -178,7 +178,7 @@ void adjust_digit(int direction)
 	float new_freq = (float) freq_int + (float) freq_decimal / 10.0; // Recombine the integer and decimal parts
 	if (new_freq >= 2000.0 && new_freq <= 29999.9)
 	{
-		HF_parameters.standby_freq = new_freq; // Apply new frequency if within range
+		HF_parameters.tuned_freq = new_freq; // Apply new frequency if within range
 	}
 	digit_change = true;
 }
@@ -265,6 +265,11 @@ void move_cursor()
 
 void read_encoder_standby_mhz() // Controls the 10 kHz steps for larger place values (tens, hundreds, thousands)
 {
+//	float number = saved_channels[g_vars.g_selectedPreset];
+//		g_vars.g_saved_channel_mhz = (uint16_t) number;
+//		g_vars.g_saved_channel_khz =
+//				(uint16_t) (((number - (uint16_t) number) + 0.0001) * 1000);
+
 	if (!read_encoder_standby_mhz_flag)
 	{
 		static uint8_t old_AB = 3;                         // Lookup table index
@@ -307,11 +312,17 @@ void read_encoder_standby_mhz() // Controls the 10 kHz steps for larger place va
 			read_encoder_standby_mhz_flag = true;
 			encval = 0;
 		}
+		//saved_channels[g_vars.g_selectedPreset] = g_vars.g_saved_channel_mhz + g_vars.g_saved_channel_khz / 1000.0;
 	}
 }
 
 void read_encoder_standby_khz()  // KHz right inner knob
 {
+	//g_vars.g_current_page
+//	float number = saved_channels[g_vars.g_selectedPreset];
+//		g_vars.g_saved_channel_mhz = (uint16_t) number;
+//		g_vars.g_saved_channel_khz =
+//				(uint16_t) (((number - (uint16_t) number) + 0.0001) * 1000);
 // Encoder interrupt routine for both pins. Updates counter
 // if they are valid and have rotated a full indent
 	if (!read_encoder_standby_khz_flag)
@@ -336,7 +347,7 @@ void read_encoder_standby_khz()  // KHz right inner knob
 			g_vars.g_standby_khz_knob += CHANGE_KHZ;  // Update kHz counter
 
 			// Check if kHz exceeds max and adjust MHz
-			if (g_vars.g_standby_mhz_knob > STANDBY_KHZ_MAX)
+			if (g_vars.g_standby_khz_knob > STANDBY_KHZ_MAX)
 			{
 				g_vars.g_standby_khz_knob = STANDBY_KHZ_MIN; // Reset kHz to minimum
 				if (g_vars.g_standby_mhz_knob < STANDBY_MHZ_MAX)
@@ -355,6 +366,7 @@ void read_encoder_standby_khz()  // KHz right inner knob
 		}
 		else if (encval < 0)  // Four steps backward
 		{
+
 			if (g_vars.g_standby_khz_knob == STANDBY_KHZ_MIN)
 			{
 				g_vars.g_standby_khz_knob = STANDBY_KHZ_MAX; // Reset kHz to maximum
@@ -376,6 +388,7 @@ void read_encoder_standby_khz()  // KHz right inner knob
 #endif
 			encval = 0;  // Reset encoder value
 		}
+		//saved_channels[g_vars.g_selectedPreset] = g_vars.g_saved_channel_mhz + g_vars.g_saved_channel_khz / 1000.0;
 	}
 }
 

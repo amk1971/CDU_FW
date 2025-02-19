@@ -82,15 +82,15 @@ void HF_main_thread(void *pvParameters)
 				//&& (HF_parameters.power_on == ON))
 		{
 			taskENTER_CRITICAL();
-			HF_parameters.standby_freq = g_vars.g_standby_mhz_knob
+			HF_parameters.tuned_freq = g_vars.g_standby_mhz_knob
 					+ (0.001 * g_vars.g_standby_khz_knob);
-			if (HF_parameters.standby_freq >= (STANDBY_MHZ_MAX+STANDBY_KHZ_MAX/1000.0))
+			if (HF_parameters.tuned_freq >= (STANDBY_MHZ_MAX+STANDBY_KHZ_MAX/1000.0))
 			{
-				HF_parameters.standby_freq = (STANDBY_MHZ_MAX+STANDBY_KHZ_MAX/1000.0);
+				HF_parameters.tuned_freq = (STANDBY_MHZ_MAX+STANDBY_KHZ_MAX/1000.0);
 				g_vars.g_standby_mhz_knob =
-						(uint8_t) HF_parameters.standby_freq;
+						(uint8_t) HF_parameters.tuned_freq;
 				g_vars.g_standby_khz_knob =
-						(uint8_t) ((HF_parameters.standby_freq
+						(uint8_t) ((HF_parameters.tuned_freq
 								- g_vars.g_standby_mhz_knob) * 100);
 			}
 
@@ -147,15 +147,15 @@ void HF_main_thread(void *pvParameters)
 					+ (0.01 * g_vars.g_saved_channel_khz);
 			mem_screen_update = true;
 
-			HF_parameters.standby_freq =
+			HF_parameters.tuned_freq =
 					saved_channels[g_vars.g_selectedPreset];
-			if (HF_parameters.standby_freq < (STANDBY_MHZ_MIN+STANDBY_KHZ_MIN/1000.0))
+			if (HF_parameters.tuned_freq < (STANDBY_MHZ_MIN+STANDBY_KHZ_MIN/1000.0))
 			{
-				HF_parameters.standby_freq = (STANDBY_MHZ_MIN+STANDBY_MHZ_MIN/1000.0);
+				HF_parameters.tuned_freq = (STANDBY_MHZ_MIN+STANDBY_MHZ_MIN/1000.0);
 			}
-			if (HF_parameters.standby_freq > (STANDBY_MHZ_MAX+STANDBY_KHZ_MAX/1000.0))
+			if (HF_parameters.tuned_freq > (STANDBY_MHZ_MAX+STANDBY_KHZ_MAX/1000.0))
 			{
-				HF_parameters.standby_freq = (STANDBY_MHZ_MAX+STANDBY_KHZ_MAX/1000.0);
+				HF_parameters.tuned_freq = (STANDBY_MHZ_MAX+STANDBY_KHZ_MAX/1000.0);
 			}
 			read_saved_standby_khz_flag = false;
 			read_saved_standby_mhz_flag = false;

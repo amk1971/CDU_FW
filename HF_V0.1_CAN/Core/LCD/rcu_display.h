@@ -13,17 +13,17 @@
 #include "stm32f1xx.h"
 
 // Coordinate definitions (adjust as needed)
-#define TL_X1 1
+#define TL_X1 0
 #define TL_X2 48
 #define TL_Y1 1
 #define TL_Y2 1
 
-#define ML_X1 1
+#define ML_X1 0
 #define ML_X2 48
 #define ML_Y1 4
 #define ML_Y2 4
 
-#define BL_X1 1
+#define BL_X1 0
 #define BL_X2 48
 #define BL_Y1 7
 #define BL_Y2 7
@@ -43,17 +43,17 @@
 #define MB_Y1 7
 #define MB_Y2 7
 
-#define RT_X1 127
+#define RT_X1 128
 #define RT_X2 125
 #define RT_Y1 1
 #define RT_Y2 1
 
-#define RM_X1 127
+#define RM_X1 128
 #define RM_X2 125
 #define RM_Y1 4
 #define RM_Y2 4
 
-#define RB_X1 127
+#define RB_X1 128
 #define RB_X2 125
 #define RB_Y1 7
 #define RB_Y2 7

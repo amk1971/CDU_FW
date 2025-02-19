@@ -42,7 +42,7 @@ void send_data_to_transmission_queue_HF_RECEIVER(Message_ID id)
             HF_parameters.ON_OFF = OFF;
             HF_parameters.CH_PAGE = OFF;
             HF_parameters.STO = OFF;
-            HF_parameters.standby_freq = 0;
+            HF_parameters.tuned_freq = 0;
             HF_parameters.volume = 0;
             break;
         case STO_ON:
@@ -114,10 +114,10 @@ void get_update_data_CDU(Identifier *ident)
     switch (id)
     {
         case S_FREQ:
-            HF_parameters.standby_freq = ident->mhz + (ident->khz / 1000.0);
-            g_vars.g_standby_mhz_knob = (uint8_t)HF_parameters.standby_freq;
+            HF_parameters.tuned_freq = ident->mhz + (ident->khz / 1000.0);
+            g_vars.g_standby_mhz_knob = (uint8_t)HF_parameters.tuned_freq;
             g_vars.g_standby_khz_knob =
-                (uint8_t)(((HF_parameters.standby_freq - g_vars.g_standby_mhz_knob) + 0.001) * 100);
+                (uint8_t)(((HF_parameters.tuned_freq - g_vars.g_standby_mhz_knob) + 0.001) * 100);
             break;
         case VOLUME:
             HF_parameters.volume = ident->volume;

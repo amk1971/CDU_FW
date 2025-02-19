@@ -70,7 +70,7 @@ typedef struct
 
 typedef struct
 {
-    float standby_freq;
+    float tuned_freq;
     uint8_t Channel;
     uint8_t volume;
     uint8_t FRQ_CH : 2;

@@ -179,6 +179,34 @@ void glcd_puts(char *str, char x, char y)
     }
 }
 
+//Put Text on LCD in an Inverted Way
+
+void glcd_putsInv(char *str, char x, char y)
+{
+    Delay(T);
+    int i, j;
+    while (*str != 0)
+    {
+        i = (8 * (*str));
+        j = i + 7;
+        for (; i <= j; i++)
+        {
+            glcd_gotoxy(x, y);
+            glcd_putchar(~Font[i], x);
+            ++x;
+            if (x > 121)
+            {
+                if (i % 8 == 0)
+                {
+                    ++y;
+                    x = 0;
+                }
+            }
+        }
+        str++;
+    }
+}
+
 void glcd_putImage(unsigned char data, unsigned char j)
 {
     Delay(T);

@@ -105,17 +105,17 @@ void handle_prog_exit(void)
 	}
 	else
 	{
-		HF_parameters.standby_freq = saved_channels[g_vars.g_selectedPreset];
+		HF_parameters.tuned_freq = saved_channels[g_vars.g_selectedPreset];
 
-		if (HF_parameters.standby_freq == EMPTY_FREQ)
+		if (HF_parameters.tuned_freq == EMPTY_FREQ)
 		{
 			g_vars.g_standby_mhz_knob = 108;
 			g_vars.g_standby_khz_knob = 0;
 		}
 		else
 		{
-			g_vars.g_standby_mhz_knob = (uint8_t) HF_parameters.standby_freq;
-			g_vars.g_standby_khz_knob = (uint8_t) ((HF_parameters.standby_freq
+			g_vars.g_standby_mhz_knob = (uint8_t) HF_parameters.tuned_freq;
+			g_vars.g_standby_khz_knob = (uint8_t) ((HF_parameters.tuned_freq
 					- g_vars.g_standby_mhz_knob) * 100);
 		}
 
@@ -213,7 +213,7 @@ void handle_delete_STO(void)
 
 void handle_right_sw_press(void)
 {
-	if (HF_parameters.standby_freq == EMPTY_FREQ)
+	if (HF_parameters.tuned_freq == EMPTY_FREQ)
 	{
 		return;
 	}

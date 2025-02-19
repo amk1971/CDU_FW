@@ -153,14 +153,14 @@ void LCD_Print_Home(void)
 	char strV[8];
 
 	//    static float prev_active_freq = 0;
-	static float prev_standby_freq = 0;
+	static float prev_tuned_freq = 0;
 	static uint8_t prev_volume = 0;
 
 	memset(strS, 0, sizeof(strS));
 	memset(strV, 0, sizeof(strV));
 
 
-	snprintf(strV, sizeof(strV), "%0.2f", HF_parameters.standby_freq);
+	snprintf(strV, sizeof(strV), "%0.3f", HF_parameters.tuned_freq);
 	LCD_UpdateRegion(TL, strV);    // Update Top Left with frequency
 
 	// Check if standby frequency has changed
@@ -170,16 +170,19 @@ void LCD_Print_Home(void)
 		//glcd_clear_text("FRQ", 75, 1);
 		//glcd_puts("/", 98, 1);
 		//glcd_puts("CH", 105, 1);
-		snprintf(strV, sizeof(strV), "%0.2f", HF_parameters.standby_freq);
-		LCD_UpdateRegion(RT, strV);    // Update Top Right with frequency
+		//snprintf(strV, sizeof(strV), "0.3f", saved_channels[g_vars.g_selectedPreset]);
+		//snprintf(strV, sizeof(strV), "FRQ");
+
+		LCD_UpdateRegionInv(RT, "FRQ" , "/CH" , 0);    // Update Top Right with frequency
 	}
 	if (HF_parameters.FRQ_CH == CH)
 	{
 //		glcd_puts("FRQ", 75, 1);
 //		glcd_puts("/", 98, 1);
 //		glcd_clear_text("CH", 105, 1);
-		snprintf(strV, sizeof(strV), "P%d", HF_parameters.Channel);
-		LCD_UpdateRegion(RT, strV);    // Update Top Left with Channel
+		//snprintf(strV, sizeof(strV), "P%d", HF_parameters.Channel);
+		//snprintf(strV, sizeof(strV), "CH");
+		LCD_UpdateRegionInv(RT, "FRQ/" , "CH" , 1);    // Update Top Left with Channel
 	}
 
 	//glcd_puts("STO", 2, 3);
@@ -201,10 +204,10 @@ void LCD_Print_Home(void)
 
 //	glcd_puts("PROG", 2, 6);
 
-	if (HF_parameters.standby_freq != prev_standby_freq
+	if (HF_parameters.tuned_freq != prev_tuned_freq
 			|| HF_parameters.power_on == ON || HF_parameters.PROG == OFF)
 	{
-		if (HF_parameters.standby_freq == EMPTY_FREQ)
+		if (HF_parameters.tuned_freq == EMPTY_FREQ)
 
 		{
 			//glcd_clear_here(2, 68, 1, 1); // Clear specific area for standby frequency
@@ -214,12 +217,12 @@ void LCD_Print_Home(void)
 		}
 		else
 		{
-			snprintf(strS, sizeof(strS), "%.1f", HF_parameters.standby_freq); // coulmn first
+			snprintf(strS, sizeof(strS), "%0.3f", HF_parameters.tuned_freq); // coulmn first
 
 //			glcd_clear_here(2, 68, 1, 1); // Clear specific area for standby frequency
 //			glcd_puts(strS, 1, 1);          // Update standby frequency
 			LCD_UpdateRegion(TL, strS);    // Update Mid Top with Flag
-			prev_standby_freq = HF_parameters.standby_freq;
+			prev_tuned_freq = HF_parameters.tuned_freq;
 		}
 	}
 	// Check if volume has changed
@@ -227,7 +230,7 @@ void LCD_Print_Home(void)
 			|| HF_parameters.PROG == OFF)
 	{
 		//glcd_clear_here(50, 70, 6, 6);  // Clear specific area for volume
-		snprintf(strV, sizeof(strV), "Vol%02d", HF_parameters.volume);
+		snprintf(strV, sizeof(strV), "Vol %02d", HF_parameters.volume);
 		//glcd_puts(strV, 50, 6);  // Update volume
 		LCD_UpdateRegion(MB, strV);
 		prev_volume = HF_parameters.volume;
@@ -352,6 +355,53 @@ void LCD_UpdateRegion(LCD_Region region, const char* value) {
      glcd_clear_here(x1, x2, y1, y2);  // Clear previous text
      glcd_puts(value, x1, y1);         // Print new value
 }
+
+void LCD_UpdateRegionInv(LCD_Region region, const char* s1, const char* s2, uint8_t high) {
+    int x1, x2, y1, y2;
+    int txtSize = strlen(s1)+strlen(s2);
+
+    switch (region) {
+        case TL:
+        	x1 = TL_X1;  x2 = TL_X2;  y1 = TL_Y1;  y2 = TL_Y2;
+        	break;
+        case ML:
+        	x1 = ML_X1;  x2 = ML_X2;  y1 = ML_Y1;  y2 = ML_Y2;
+        	break;
+        case BL:
+        	x1 = BL_X1;  x2 = BL_X2;  y1 = BL_Y1;  y2 = BL_Y2;
+        	break;
+        case MT:
+        	x1 = MT_X1 - txtSize * 4;  x2 = MT_X2;  y1 = MT_Y1;  y2 = MT_Y2;
+        	break;
+        case MM:
+        	x1 = MM_X1 - txtSize * 4;  x2 = MM_X2;  y1 = MM_Y1;  y2 = MM_Y2;
+        	break;
+        case MB:
+        	x1 = MB_X1 - txtSize * 4;  x2 = MB_X2;  y1 = MB_Y1;  y2 = MB_Y2;
+        	break;
+        case RT:
+        	x1 = 127 - txtSize * 8;  x2 = RT_X2;  y1 = RT_Y1;  y2 = RT_Y2;
+        	break;
+        case RM:
+        	x1 = 127 - txtSize * 8;  x2 = RM_X2;  y1 = RM_Y1;  y2 = RM_Y2;
+        	break;
+        case RB:
+        	x1 =  127 - txtSize * 8;  x2 = RB_X2;  y1 = RB_Y1;  y2 = RB_Y2;
+        	break;
+        default:
+        	return;  // Invalid region
+    }
+
+     glcd_clear_here(x1, x2, y1, y2);  // Clear previous text
+     if(high == 0) {
+    	 glcd_putsInv(s1, x1, y1);         // Print new value
+    	 glcd_puts(s2, x1+strlen(s1)*8, y1);
+     } else {
+    	 glcd_puts(s1, x1, y1);         // Print new value
+    	 glcd_putsInv(s2, x1+strlen(s1)*8, y1);
+     }
+}
+
 
 // Generic function to convert any data type to a string
 char* convertToString(void* data, DataType type) {

@@ -13,8 +13,8 @@ void update_globals(s_HF_Parameters *obj)
 {
 	g_vars.g_volume_knob = obj->volume;
 	g_vars.g_current_page = 0;
-	g_vars.g_standby_mhz_knob = (uint16_t) obj->standby_freq;
-	g_vars.g_standby_khz_knob = (uint16_t) ((obj->standby_freq
+	g_vars.g_standby_mhz_knob = (uint16_t) obj->tuned_freq;
+	g_vars.g_standby_khz_knob = (uint16_t) ((obj->tuned_freq
 			- g_vars.g_standby_mhz_knob) * 1000);
 	g_vars.cursor_blink = OFF;
 	g_vars.current_cursor_location = START_CURSOR_LOCATION;
