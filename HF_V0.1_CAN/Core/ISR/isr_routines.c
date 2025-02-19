@@ -59,7 +59,17 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 }
 
 // Indices for buffer management
+void GPIO_EXTI_Callback_Left(uint16_t GPIO_Pin){
+ if (GPIO_Pin == LEFT_A1_Pin)
+	{
+		if (!HF_parameters.PROG)
+		{
+			read_encoder_volume();
+		}
+	}
 
+
+}
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
 	if (GPIO_Pin == LEFT_A2_Pin)
@@ -69,13 +79,6 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 	else if (GPIO_Pin == LEFT_B2_Pin)
 	{  // LEFT 2
 
-	}
-	else if (GPIO_Pin == LEFT_A1_Pin)
-	{
-		if (!HF_parameters.PROG)
-		{
-			read_encoder_volume();
-		}
 	}
 	else if (GPIO_Pin == LEFT_B1_Pin)
 	{  // LEFT 1

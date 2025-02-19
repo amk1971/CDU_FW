@@ -389,6 +389,7 @@ void read_encoder_standby_khz()  // KHz right inner knob
 			encval = 0;  // Reset encoder value
 		}
 		//saved_channels[g_vars.g_selectedPreset] = g_vars.g_saved_channel_mhz + g_vars.g_saved_channel_khz / 1000.0;
+		g_vars.g_standby_khz_knob = ((g_vars.g_standby_khz_knob+CHANGE_KHZ/2)/CHANGE_KHZ)*CHANGE_KHZ;
 	}
 }
 

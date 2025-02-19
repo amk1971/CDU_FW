@@ -24,7 +24,7 @@
 #define ML_Y2 4
 
 #define BL_X1 0
-#define BL_X2 48
+#define BL_X2 32
 #define BL_Y1 7
 #define BL_Y2 7
 
