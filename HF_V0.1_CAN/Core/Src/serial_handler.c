@@ -37,6 +37,7 @@ void serial_HF_Receiver_com_thread(void *pvParameters)
     //	HAL_UART_Transmit(&HF_RECEIVER_COM, comstart, strlen(comstart), 1000);
     for (;;)
     {
+
         if (xQueueReceive(xHFRecRxQueue, receive_buff_HF, (TickType_t)10) == pdTRUE)
         {
 #if DEBUG_CONSOLE
@@ -65,7 +66,7 @@ void serial_HF_Receiver_com_thread(void *pvParameters)
             debug_print("receive to transmit\n");
 #endif
             encode_message_for_interface(&HF_rcu_param, tx_buffer);
-            HAL_UART_Transmit_IT(&HF_RECEIVER_COM, (uint8_t*)&tx_buffer, sizeof(tx_buffer));
+            HAL_UART_Transmit_IT(&HF_RECEIVER_COM, (uint8_t*)&tx_buffer, strlen(tx_buffer));
         }
         vTaskDelay(pdMS_TO_TICKS(100));
     }

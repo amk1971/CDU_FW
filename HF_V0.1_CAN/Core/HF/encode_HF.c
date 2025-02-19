@@ -47,11 +47,13 @@ void encode_message(uint8_t *tx_buffer, Message_ID m_index, uint8_t mhz, uint16_
 // DONE encode message for interface
 void encode_message_for_interface(s_HF_Parameters *obj, char *tx_buffer)
 {
+	char test_tone=1;
     uint16_t mhz = (uint16_t)obj->tuned_freq;
     uint16_t khz = (uint16_t)((obj->tuned_freq - mhz) * 1000);
     B_Status on_off = obj->ON_OFF;
     B_Status STOuelch = obj->STO;
 
+    khz = ((khz+12)/25)*25;
 
     char volume_as[2];
     strcpy(volume_as, obj->volume_ascii);
@@ -69,8 +71,9 @@ void encode_message_for_interface(s_HF_Parameters *obj, char *tx_buffer)
     khz_str[2] = (khz % 10) + '0';
     khz_str[3] = '\0';  // Null-terminate the string for safety
 
-//    snprintf(tx_buffer, 15, "$%s%s%s%c%c%c%c", mhz_str, khz_str, volume_as, on_off + '0', STOuelch + '0',
-//             test_tone + '0', +'0');
+    snprintf(tx_buffer, 15, "$%s%s%s%c%c%c%c", mhz_str, khz_str, volume_as, on_off + '0', STOuelch + '0',
+             test_tone + '0', '0');
+
 
     char checksum[3];
     // Compute checksum and append it

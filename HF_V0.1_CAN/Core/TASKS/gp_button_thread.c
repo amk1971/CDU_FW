@@ -21,7 +21,7 @@ void general_purpose_switches_thread(void *pvParameters)
     for (;;)
     {
         // Handle Button 1, 2, 3 (Normal Buttons)
-        if (!readButton(GP_SW1_GPIO_Port, GP_SW1_Pin))
+        if (!readButton(GP_SW1D10_GPIO_Port, GP_SW1D10_Pin))
         {  // FRQ / CH
             xEventGroupSetBits(buttonEventGroup, EVENT_GP_SW1_PRESS);
 //            vTaskDelay(pdMS_TO_TICKS(200));

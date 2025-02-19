@@ -49,7 +49,7 @@ static const float EMPTY_FREQ = 0.0;  // Define an "empty" frequency value
 // Buffer sizes and other macros
 #define RX_BUFFER_SIZE 25
 #define TX_BUFFER_SIZE 25
-#define TX_BUFFER_SIZE_INTERFACE 2
+#define TX_BUFFER_SIZE_INTERFACE 20
 #define HF_TX_BUFFER_SIZE 3
 #define NUM_MESSAGE_ID 3
 #define saved_channel_SIZE 20
