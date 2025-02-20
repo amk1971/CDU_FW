@@ -47,7 +47,8 @@ void encode_message(uint8_t *tx_buffer, Message_ID m_index, uint8_t mhz, uint16_
 // DONE encode message for interface
 void encode_message_for_interface(s_HF_Parameters *obj, char *tx_buffer)
 {
-	char test_tone=1;
+	char CrLf[3]  = "\n\r";
+	char test_tone=0;
     uint16_t mhz = (uint16_t)obj->tuned_freq;
     uint16_t khz = (uint16_t)((obj->tuned_freq - mhz) * 1000);
     B_Status on_off = obj->ON_OFF;
@@ -55,8 +56,8 @@ void encode_message_for_interface(s_HF_Parameters *obj, char *tx_buffer)
 
     khz = ((khz+12)/25)*25;
 
-    char volume_as[2];
-    strcpy(volume_as, obj->volume_ascii);
+    char volume_as[3];
+    snprintf(volume_as, 3, "%02d", obj->volume);
 
     char mhz_str[4];
 
@@ -79,4 +80,5 @@ void encode_message_for_interface(s_HF_Parameters *obj, char *tx_buffer)
     // Compute checksum and append it
     compute_checksum(tx_buffer, checksum);
     strcat(tx_buffer, checksum);
+    strcat(tx_buffer, CrLf);
 }

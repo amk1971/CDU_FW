@@ -123,7 +123,7 @@ void handle_prog_exit(void)
 		g_vars.g_current_page = 0;
 		g_vars.g_selectedPreset = 0;
 		write_channels_to_flash(saved_channels, NUM_FREQUENCIES);
-		glcd_clear_all();
+		//glcd_clear_all();
 		LCD_Print_Home();
 	}
 }

@@ -77,7 +77,7 @@ bool decode_message(uint8_t *rx_buffer, Identifier *ident, uint8_t *mhz, uint16_
     size_t len = strlen((char *)rx_buffer);
 
     // Validate message length
-    if (len < 10 || len > 24)
+    if (len < 8 || len > 24)
     {
         return false;  // Invalid length
     }
@@ -85,8 +85,8 @@ bool decode_message(uint8_t *rx_buffer, Identifier *ident, uint8_t *mhz, uint16_
     // Copy the message into a local buffer
     memcpy(received_msg, rx_buffer, len);
 
-    // Ensure the message starts with "$PATC" and ends with "\r\n"
-    if (strncmp(received_msg, "$PATN", 5) != 0 || received_msg[len - 2] != '\r' || received_msg[len - 1] != '\n')
+    // Ensure the message starts with "$" and ends with "\r\n"
+    if (strncmp(received_msg, "$", 1) != 0 || received_msg[len - 2] != '\r' || received_msg[len - 1] != '\n')
     {
         return false;  // Invalid format
     }

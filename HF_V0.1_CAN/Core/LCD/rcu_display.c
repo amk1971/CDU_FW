@@ -239,10 +239,10 @@ void LCD_Print_Home(void)
 
 void LCD_PRINT_MEM_SCREEN(uint8_t page)
 {
-	glcd_clear_here(85, 120, 2, 2);
-	glcd_clear_here(85, 120, 4, 4);
-	glcd_clear_here(85, 120, 6, 6);
-	glcd_clear_here(2, 60, 2, 2);
+	//glcd_clear_here(85, 120, 2, 2);
+//	glcd_clear_here(85, 120, 4, 4);
+//	glcd_clear_here(85, 120, 6, 6);
+//	glcd_clear_here(2, 60, 2, 2);
 
 	uint8_t start_preset = page * PRESETS_PER_PAGE;
 	for (int i = 0; i < PRESETS_PER_PAGE; i++)
@@ -264,20 +264,25 @@ void LCD_PRINT_MEM_SCREEN(uint8_t page)
 
 		if (presetIndex == g_vars.g_selectedPreset)
 		{
-			glcd_clear_text(presetLabel, 90, 2 + (i * 2)); // Highlighting rectangle for selected preset
+	//		glcd_clear_text(presetLabel, 90, 2 + (i * 2)); // Highlighting rectangle for selected preset
+				if(i == 0) LCD_UpdateRegionInv(RT, presetLabel, "", 0);    // Update Top Right with channel frequency
+				if(i == 1) LCD_UpdateRegionInv(RM, presetLabel, "", 0);    // Update Mid Right with channel frequency
+				if(i == 2) LCD_UpdateRegionInv(RB, presetLabel, "", 0);    // Update Bot Right with channel frequency
 		}
 		else
 		{
 			// Display the preset normally
 			//glcd_puts(presetLabel, 90, 2 + (i * 2));  // Normal text
-			LCD_UpdateRegion(RT, presetLabel);    // Update Top Right with channel frequency
+			if(i == 0) LCD_UpdateRegion(RT, presetLabel);    // Update Top Right with channel frequency
+			if(i == 1) LCD_UpdateRegion(RM, presetLabel);    // Update Mid Right with channel frequency
+			if(i == 2) LCD_UpdateRegion(RB, presetLabel);    // Update Bot Right with channel frequency
 		}
 	}
 
 	if (g_vars.g_selectedPreset < NUM_FREQUENCIES)
 	{
 		char selectedFreq[9];
-		glcd_clear_here(2, 60, 2, 2);
+		//glcd_clear_here(2, 60, 2, 2);
 
 		if (saved_channels[g_vars.g_selectedPreset] == EMPTY_FREQ)
 		{
@@ -286,7 +291,7 @@ void LCD_PRINT_MEM_SCREEN(uint8_t page)
 		}
 		else
 		{
-			snprintf(selectedFreq, sizeof(selectedFreq), "%0.2f",
+			snprintf(selectedFreq, sizeof(selectedFreq), "%0.3f",
 					saved_channels[g_vars.g_selectedPreset]);
 			//glcd_puts(selectedFreq, 2, 2);
 			LCD_UpdateRegion(TL, selectedFreq);    // Update Top Left with channel frequency
