@@ -47,7 +47,7 @@ void encode_message(uint8_t *tx_buffer, Message_ID m_index, uint8_t mhz, uint16_
 // DONE encode message for interface
 void encode_message_for_interface(s_HF_Parameters *obj, char *tx_buffer)
 {
-	char CrLf[3]  = "\n\r";
+	char CrLf[3]  = "\r\n";
 	char test_tone=0;
     uint16_t mhz = (uint16_t)obj->tuned_freq;
     uint16_t khz = (uint16_t)((obj->tuned_freq - mhz) * 1000);

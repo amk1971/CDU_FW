@@ -319,12 +319,13 @@ void read_encoder_standby_mhz() // Controls the 10 kHz steps for larger place va
 
 void read_encoder_channel_mhz() // Controls the 10 kHz steps for larger place values (tens, hundreds, thousands)
 {
-	float number = saved_channels[g_vars.g_selectedPreset];
+	uint16_t index, MHz, KHz;
+	index = g_vars.g_selectedPreset
+	float number = saved_channels[index];
 	if (number <  STANDBY_MHZ_MIN) number = STANDBY_MHZ_MIN;
 	if (number >  STANDBY_MHZ_MAX) number = STANDBY_MHZ_MAX;
-		g_vars.g_saved_channel_mhz = (uint16_t) number;
-		g_vars.g_saved_channel_khz =
-				(uint16_t) (((number - (uint16_t) number) + 0.0001) * 1000);
+		MHz = (uint16_t) number;
+		KHz = (uint16_t) (((number - MHz) + 0.0001) * 1000);
 
 	if (!read_encoder_channel_flag)
 	{
@@ -344,31 +345,31 @@ void read_encoder_channel_mhz() // Controls the 10 kHz steps for larger place va
 
 		if (encval > 0)  // Rotate forward (increment)
 		{
-			if (g_vars.g_saved_channel_mhz < STANDBY_MHZ_MAX)
+			if (MHz < STANDBY_MHZ_MAX)
 			{
-				g_vars.g_saved_channel_mhz++;  // Increment by 1
+				MHz++;  // Increment by 1
 			}
 			else
 			{
-				g_vars.g_saved_channel_mhz = STANDBY_MHZ_MIN; // Wrap to 019 (after 179)
+				MHz = STANDBY_MHZ_MIN; // Wrap to 019 (after 179)
 			}
 			read_encoder_channel_flag = true;
 			encval = 0;
 		}
 		else if (encval < 0)  // Rotate backward (decrement)
 		{
-			if (g_vars.g_saved_channel_mhz > STANDBY_MHZ_MIN)
+			if (MHz > STANDBY_MHZ_MIN)
 			{
-				g_vars.g_saved_channel_mhz--;  // Decrement by 1
+				MHz--;  // Decrement by 1
 			}
 			else
 			{
-				g_vars.g_saved_channel_mhz = STANDBY_MHZ_MAX; // Wrap to 179 (after going below 019)
+				MHz = STANDBY_MHZ_MAX; // Wrap to 179 (after going below 019)
 			}
 			read_encoder_channel_flag = true;
 			encval = 0;
 		}
-		saved_channels[g_vars.g_selectedPreset] = g_vars.g_saved_channel_mhz + g_vars.g_saved_channel_khz / 1000.0;
+		saved_channels[index] = MHz + KHz / 1000.0;
 	}
 }
 
@@ -453,12 +454,13 @@ void read_encoder_standby_khz()  // KHz right inner knob
 void read_encoder_channel_khz()  // KHz right inner knob
 {
 	//g_vars.g_current_page
-	float number = saved_channels[g_vars.g_selectedPreset];
+	uint16_t index, MHz, KHz;
+	index = g_vars.g_selectedPreset
+	float number = saved_channels[index];
 	if (number <  STANDBY_MHZ_MIN) number = STANDBY_MHZ_MIN;
 	if (number >  STANDBY_MHZ_MAX) number = STANDBY_MHZ_MAX;
-		g_vars.g_saved_channel_mhz = (uint16_t) number;
-		g_vars.g_saved_channel_khz =
-				(uint16_t) (((number - (uint16_t) number) + 0.0001) * 1000);
+		MHz = (uint16_t) number;
+		KHz = (uint16_t) (((number - MHz) + 0.0001) * 1000);
 // Encoder interrupt routine for both pins. Updates counter
 // if they are valid and have rotated a full indent
 	if (!read_encoder_channel_flag)
@@ -480,15 +482,15 @@ void read_encoder_channel_khz()  // KHz right inner knob
 		// Update counter if encoder has rotated a full indent, that is at least 4 steps
 		if (encval > 0)  // Four steps forward
 		{
-			g_vars.g_saved_channel_khz += CHANGE_KHZ;  // Update kHz counter
+			KHz += CHANGE_KHZ;  // Update kHz counter
 
 			// Check if kHz exceeds max and adjust MHz
-			if (g_vars.g_saved_channel_khz > STANDBY_KHZ_MAX)
+			if (KHz > STANDBY_KHZ_MAX)
 			{
-				g_vars.g_saved_channel_khz = STANDBY_KHZ_MIN; // Reset kHz to minimum
-				if (g_vars.g_saved_channel_mhz < STANDBY_MHZ_MAX)
+				KHz = STANDBY_KHZ_MIN; // Reset kHz to minimum
+				if (MHz < STANDBY_MHZ_MAX)
 				{
-					g_vars.g_saved_channel_mhz++;  // Increment MHz
+					MHz++;  // Increment MHz
 				}
 #if DEBUG_CONSOLE
                 debug_print("E_MHz Incremented: %d\n", g_vars.g_standby_mhz_knob);
@@ -503,12 +505,12 @@ void read_encoder_channel_khz()  // KHz right inner knob
 		else if (encval < 0)  // Four steps backward
 		{
 
-			if (g_vars.g_saved_channel_khz == STANDBY_KHZ_MIN)
+			if (KHz == STANDBY_KHZ_MIN)
 			{
-				g_vars.g_saved_channel_khz = STANDBY_KHZ_MAX; // Reset kHz to maximum
-				if (g_vars.g_saved_channel_mhz > STANDBY_MHZ_MIN)
+				KHz = STANDBY_KHZ_MAX; // Reset kHz to maximum
+				if (MHz > STANDBY_MHZ_MIN)
 				{
-					g_vars.g_saved_channel_mhz--;  // Decrement MHz
+					MHz--;  // Decrement MHz
 				}
 #if DEBUG_CONSOLE
                 debug_print("E_MHz Decremented: %d\n", g_vars.g_standby_mhz_knob);
@@ -516,7 +518,7 @@ void read_encoder_channel_khz()  // KHz right inner knob
 			}
 			else
 			{
-				g_vars.g_saved_channel_khz -= CHANGE_KHZ;  // Update kHz counter
+				KHz -= CHANGE_KHZ;  // Update kHz counter
 			}
 			read_encoder_channel_flag = true;
 #if DEBUG_CONSOLE
@@ -524,8 +526,8 @@ void read_encoder_channel_khz()  // KHz right inner knob
 #endif
 			encval = 0;  // Reset encoder value
 		}
-		g_vars.g_saved_channel_khz = ((g_vars.g_saved_channel_khz+CHANGE_KHZ/2)/CHANGE_KHZ)*CHANGE_KHZ;
-		saved_channels[g_vars.g_selectedPreset] = g_vars.g_saved_channel_mhz + g_vars.g_saved_channel_khz / 1000.0;
+		KHz = ((KHz+CHANGE_KHZ/2)/CHANGE_KHZ)*CHANGE_KHZ;
+		saved_channels[index] = MHz + KHz / 1000.0;
 	}
 }
 
