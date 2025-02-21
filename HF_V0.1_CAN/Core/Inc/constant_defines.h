@@ -14,6 +14,9 @@ static const uint8_t STANDBY_KHZ_MIN = 0;
 static const uint8_t VOLUME_MAX = 20;
 static const uint8_t VOLUME_MIN = 0;
 
+static const uint8_t VolumeMap[][3] = {"00", "01", "04", "07", "12", "17", "22", "27", "32", "37", "42", "47", "52", "57", "62", "67", "72", "77", "82", "87", "99"};
+
+
 // Default values
 static const uint8_t DEFAULT_VOLUME = 5;
 static const uint8_t DEFAULT_KHZ = 90;

@@ -151,6 +151,7 @@ void LCD_Print_Home(void)
 
 	char strS[12];
 	char strV[8];
+	char CenDisp[10];
 
 	//    static float prev_active_freq = 0;
 	static float prev_tuned_freq = 0;
@@ -188,20 +189,42 @@ void LCD_Print_Home(void)
 	//glcd_puts("STO", 2, 3);
 	LCD_UpdateRegion(ML, "SQ");    // Update Mid Left with frequency
 	LCD_UpdateRegion(BL, "PROG");    // Update Mid Left with frequency
-	LCD_UpdateRegion(RM, "TST");    // Update Mid Left with frequency
+	if(HF_parameters.Test == ON){
+		LCD_UpdateRegionInv(RM, "TST", "", 0);    // Update Mid Left with frequency
+	} else {
+		LCD_UpdateRegion(RM, "TST");    // Update Mid Left with frequency
+	}
 
-	if (HF_parameters.STO == ON && HF_parameters.FRQ_CH == CH)
+	LCD_UpdateRegion(MT, "    ");
+	if (HF_parameters.Tr == '1')
 	{
 //		glcd_puts("T", 70, 1);
-		LCD_UpdateRegion(MT, "T");    // Update Mid Top with Flag
-
+		//LCD_UpdateRegion(MT, "T");    // Update Mid Top with Flag
+		CenDisp[0] = 'T';
+		CenDisp[1] = 0;
 	}
 	else
 	{
 //		glcd_clear_here(70, 75, 1, 1);
-		LCD_UpdateRegion(MT, "  ");    // Update Mid Top with Flag
+		//LCD_UpdateRegion(MT, "  ");    // Update Mid Top with Flag
+		CenDisp[0] = 0;
 	}
-
+	if(HF_parameters.Mode == OFF){
+		if(HF_parameters.Sig == '1'){
+			if (HF_parameters.Tr == '1') strncat(CenDisp, "/", 1);
+			strncat(CenDisp, "MN", 2);
+		}
+	} else {
+		if(HF_parameters.Sig =='1'){
+			if (HF_parameters.Tr == '1') strncat(CenDisp, "/", 1);
+			if(HF_parameters.Guard == '1'){
+				strncat(CenDisp, "GD", 2);
+			} else {
+				strncat(CenDisp, "MN", 2);
+			}
+		}
+	}
+	LCD_UpdateRegion(MT, CenDisp);
 //	glcd_puts("PROG", 2, 6);
 
 	if (HF_parameters.tuned_freq != prev_tuned_freq
@@ -230,10 +253,15 @@ void LCD_Print_Home(void)
 			|| HF_parameters.PROG == OFF)
 	{
 		//glcd_clear_here(50, 70, 6, 6);  // Clear specific area for volume
-		snprintf(strV, sizeof(strV), "Vol %02d", HF_parameters.volume);
+		snprintf(strV, sizeof(strV), "Vol%02d", HF_parameters.volume);
 		//glcd_puts(strV, 50, 6);  // Update volume
 		LCD_UpdateRegion(MB, strV);
 		prev_volume = HF_parameters.volume;
+	}
+	if(HF_parameters.Mode == OFF){
+		LCD_UpdateRegionInv(RB, "MAIN", "", 1);
+	} else {
+		LCD_UpdateRegionInv(RB, "", "BOTH", 0);
 	}
 }
 

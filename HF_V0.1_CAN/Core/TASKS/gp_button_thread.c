@@ -26,15 +26,15 @@ void general_purpose_switches_thread(void *pvParameters)
             xEventGroupSetBits(buttonEventGroup, EVENT_GP_SW1_PRESS);
 //            vTaskDelay(pdMS_TO_TICKS(200));
         }
-//         if (!readButton(GP_SW2_GPIO_Port, GP_SW2_Pin))
-//         {  // Active-low
-//             xEventGroupSetBits(buttonEventGroup, EVENT_GP_SW2_PRESS);
-//         }
+         if (!readButton(GP_SW2D11_GPIO_Port, GP_SW2D11_Pin))
+         {  // Active-low
+             xEventGroupSetBits(buttonEventGroup, EVENT_GP_SW2_PRESS);
+         }
 
-        // if (!readButton(GP_SW3_GPIO_Port, GP_SW3_Pin))
-        // {  // Active-low
-        //     xEventGroupSetBits(buttonEventGroup, EVENT_GP_SW3_PRESS);
-        // }
+         if (!readButton(GP_SW3D12_GPIO_Port, GP_SW3D12_Pin))
+         {  // Active-low
+             xEventGroupSetBits(buttonEventGroup, EVENT_GP_SW3_PRESS);
+         }
         if (!readButton(RIGHT_SW_GPIO_Port, RIGHT_SW_Pin))
         {  // CURSOR BLINK START
             xEventGroupSetBits(buttonEventGroup, EVENT_RIGHT_SW_PRESS);

@@ -20,6 +20,8 @@
 #include "tim.h"
 
 // extern s_HF_Parameters HF_parameters;
+extern bool volatile read_mode_flag;
+extern bool volatile read_Test_Start_Flag;
 
 float pre_Set_Channels[NUM_CHANNELS_PER_PAGE] =
 { 108.00, 108.75, 0.0, 110.20, 110.95, 111.65, 112.40, 113.15, 113.85, 114.60,
@@ -55,19 +57,19 @@ void check_general_switches(void)
 		handle_gp_sw1_press();
 	}
 
-	// if (eventBits & EVENT_GP_SW2_PRESS)
-	// {
-	//     handle_gp_sw2_press();
-	// }
+	 if (eventBits & EVENT_GP_SW2_PRESS)
+	 {
+	     handle_gp_sw2_press();
+	 }
 
-	// if (eventBits & EVENT_GP_SW3_PRESS)
-	// {
-	//     handle_gp_sw3_press();
-	// }
+	 if (eventBits & EVENT_GP_SW3_PRESS)
+	 {
+	     handle_gp_sw3_press();
+	 }
 
 	if (eventBits & EVENT_GP_SW_DELETE_STO)
 	{
-		handle_delete_STO();
+		handle_delete_STO();	//Left Center Switch
 	}
 
 	if (eventBits & EVENT_RIGHT_SW_PRESS)
@@ -167,6 +169,10 @@ void handle_gp_sw2_press(void)
 		g_vars.g_selectedPreset = g_vars.g_current_page * PRESETS_PER_PAGE + 1;
 		set_saved_channel_index(g_vars.g_selectedPreset);
 		LCD_PRINT_MEM_SCREEN(g_vars.g_current_page);
+	} else {
+		HF_parameters.Test = ON;//(HF_parameters.Test == ON)? OFF : ON;
+		HF_parameters.TestTick = HAL_GetTick();
+		read_Test_Start_Flag = true;
 	}
 
 }
@@ -181,7 +187,8 @@ void handle_gp_sw3_press(void)
 	}
 	else
 	{  // DONE highlight selection and set 1 for on and 0 for off in data byte 2
-
+		HF_parameters.Mode = (HF_parameters.Mode == ON)?OFF:ON;
+		read_mode_flag = true;
 		LCD_Print_Home();
 	}
 }

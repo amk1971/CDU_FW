@@ -11,7 +11,7 @@ static Identifier CDU_ident;
 void compute_checksum(const char *message, char *checksum)
 {
     uint8_t sum = 0;
-    for (int i = 1; i < 12; i++)  // Skip '$' while computing
+    for (int i = 1; i <= 12; i++)  // Skip '$' while computing
     {
         sum += message[i];
     }
@@ -57,7 +57,7 @@ void encode_message_for_interface(s_HF_Parameters *obj, char *tx_buffer)
     khz = ((khz+12)/25)*25;
 
     char volume_as[3];
-    snprintf(volume_as, 3, "%02d", obj->volume);
+    snprintf(volume_as, 3, "%s", VolumeMap[obj->volume]);
 
     char mhz_str[4];
 
@@ -73,7 +73,7 @@ void encode_message_for_interface(s_HF_Parameters *obj, char *tx_buffer)
     khz_str[3] = '\0';  // Null-terminate the string for safety
 
     snprintf(tx_buffer, 15, "$%s%s%s%c%c%c%c", mhz_str, khz_str, volume_as, on_off + '0', STOuelch + '0',
-             test_tone + '0', '0');
+             obj->Test + '0', obj->Mode + '0');
 
 
     char checksum[3];

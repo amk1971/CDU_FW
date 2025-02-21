@@ -12,6 +12,7 @@
 uint8_t comstart[10] = "START\r\n";
 
 extern s_HF_Parameters HF_parameters;
+extern bool volatile read_Radio_mode_flag;
 
 uint8_t split_frequency_khz(uint16_t f_khz, uint8_t *khz_buf);
 void calculate_checksum(const char *msg, uint8_t *checksum_high, uint8_t *checksum_low);
@@ -100,7 +101,7 @@ bool decode_message(uint8_t *rx_buffer)
 
 	// Calculate the checksum from the message
 	char checksum_data[15] = {0};
-	strncpy(checksum_data, &received_msg[1], len - 3);
+	strncpy(checksum_data, &received_msg[1], len - 5);
 	calculate_checksum(checksum_data, &calculated_checksum_h, &calculated_checksum_l);
 	calculated_checksum = (calculated_checksum_h << 4) | calculated_checksum_l;
 
@@ -177,7 +178,7 @@ bool decode_message(uint8_t *rx_buffer)
 //    {
 //        return false;  // Checksum mismatch
 //    }
-
+    read_Radio_mode_flag = true;
     return true;  // Successfully decoded
 }
 

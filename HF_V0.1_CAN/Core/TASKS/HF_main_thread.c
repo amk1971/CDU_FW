@@ -28,6 +28,10 @@ extern bool volatile read_saved_standby_khz_flag;
 extern bool volatile read_saved_standby_mhz_flag;
 extern bool volatile move_cursor_flag;
 extern bool volatile digit_change;
+extern bool volatile read_mode_flag;
+extern bool volatile read_Radio_mode_flag;
+extern bool volatile read_Test_Start_Flag;
+bool volatile Test_end_flag = false;
 s_HF_Parameters HF_parameters;
 
 void HF_main_thread(void *pvParameters)
@@ -111,6 +115,19 @@ void HF_main_thread(void *pvParameters)
 			read_encoder_channel_flag = false;
 			mem_screen_update = true;
 		}
+		if (read_Test_Start_Flag)
+		{
+			send_data_to_transmission_queue_HF_RECEIVER(TEST_ON);
+			read_Test_Start_Flag = false;
+			Test_end_flag = true;
+		}
+		if(Test_end_flag){
+			if((HAL_GetTick() - HF_parameters.TestTick) > 5000){
+				HF_parameters.Test = false;
+				send_data_to_transmission_queue_HF_RECEIVER(TEST_OFF);
+				Test_end_flag = false;
+			}
+		}
 		if (read_encoder_volume_flag)
 		{  // DONE map volume to ascii for  interface
 			taskENTER_CRITICAL();
@@ -128,6 +145,15 @@ void HF_main_thread(void *pvParameters)
 			read_encoder_volume_flag = false;
 			taskEXIT_CRITICAL();
 			vTaskDelay(pdMS_TO_TICKS(100));
+		}
+		if(read_mode_flag){
+			read_mode_flag = false;
+			lcd_update_needed = true;
+			send_data_to_transmission_queue_HF_RECEIVER(DEFAULT);
+		}
+		if(read_Radio_mode_flag){
+			read_Radio_mode_flag = false;
+			lcd_update_needed = true;
 		}
 		if (scroll_flag && HF_parameters.PROG == ON)
 		{

@@ -36,11 +36,14 @@ typedef enum
 {
     S_FREQ,
     VOLUME,
+	TEST_ON,
+	TEST_OFF,
     STO_ON,
     STO_OFF,
     POWER_ON,
     POWER_OFF,
-    INVALID
+    INVALID,
+	DEFAULT
 } Message_ID;
 
 typedef enum
@@ -79,10 +82,13 @@ typedef struct
     //char volume_ascii[2];
     B_Status power_on;	//Power On or OFF
     B_Status STO;		//Squelch
+    B_Status Mode;		//Mode Main or Both
     B_Status PROG;
     B_Status CH_PAGE;
     B_Status ON_OFF;	//LCD ON or Off
     B_Status Cursor;	//Cursor ON or Off
+    B_Status Test;		//Test ON of OFF
+    uint32_t TestTick;	//The Tick Value on which test is started
     Message_ID ID;
     uint8_t	Tr;			//Transmit Status
     uint8_t	Sig;		//Signal Present Byte

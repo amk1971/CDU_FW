@@ -16,7 +16,10 @@ bool volatile read_encoder_standby_mhz_flag = false;
 bool volatile read_encoder_standby_khz_flag = false;
 bool volatile read_encoder_channel_flag = false;
 bool volatile read_encoder_volume_flag = false;
+bool volatile read_mode_flag = false;
+bool volatile read_Radio_mode_flag = false;
 bool volatile move_cursor_flag = false;
+bool volatile read_Test_Start_Flag = false;
 
 bool volatile read_saved_standby_khz_flag = false;
 bool volatile read_saved_standby_mhz_flag = false;
