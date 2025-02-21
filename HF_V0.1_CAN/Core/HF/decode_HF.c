@@ -43,7 +43,7 @@ void decode_receive_data(uint8_t *buffer)
     uint8_t freq_flag = '\0';
 
     // Call the decode function with the message
-    bool decode_success = decode_message(buffer, &ident, &mhz, &khz, &freq_flag, &vol);
+    bool decode_success = decode_message(buffer);// &ident, &mhz, &khz, &freq_flag, &vol);
     if ((decode_success) && (xMainNotifyQueue != NULL))
     {
         // added to the queue
@@ -67,7 +67,8 @@ void decode_receive_data(uint8_t *buffer)
     }
 }
 
-bool decode_message(uint8_t *rx_buffer, sHF_parameters *HF_parameters, uint8_t *mhz, uint16_t *khz, uint8_t *f_flag, uint8_t *vol)
+//bool decode_message(uint8_t *rx_buffer, s_HF_Parameters *HF_parameters, uint8_t *mhz, uint16_t *khz, uint8_t *f_flag, uint8_t *vol)
+bool decode_message(uint8_t *rx_buffer)
 {
     char received_msg[25] = {0};  // Buffer to extract the message data
     char message[3] = {0};
@@ -90,8 +91,27 @@ bool decode_message(uint8_t *rx_buffer, sHF_parameters *HF_parameters, uint8_t *
     {
         return false;  // Invalid format
     }
+	// Extract the received checksum
+	uint8_t received_checksum_h = received_msg[len - 4];
+	uint8_t received_checksum_l = received_msg[len - 3];
+	received_checksum = ((received_checksum_h >= 'A') ? (received_checksum_h - 'A' + 10) : (received_checksum_h - '0'))
+							<< 4 |
+						((received_checksum_l >= 'A') ? (received_checksum_l - 'A' + 10) : (received_checksum_l - '0'));
 
-    HF_Parameters.Tr = received_msg[1];		//Transmitting
+	// Calculate the checksum from the message
+	char checksum_data[15] = {0};
+	strncpy(checksum_data, &received_msg[1], len - 3);
+	calculate_checksum(checksum_data, &calculated_checksum_h, &calculated_checksum_l);
+	calculated_checksum = (calculated_checksum_h << 4) | calculated_checksum_l;
+
+	// Compare checksums
+	if (calculated_checksum != received_checksum)
+	{
+		return false;  // Checksum mismatch
+	}
+    HF_parameters.Tr = received_msg[1];		//Transmitting
+    HF_parameters.Sig = received_msg[2];		//Transmitting
+    HF_parameters.Guard = received_msg[3];		//Transmitting
 
 //    // Extract and validate the message identifier
 //    char cID = received_msg[5];

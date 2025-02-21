@@ -115,8 +115,8 @@ void HF_main_thread(void *pvParameters)
 		{  // DONE map volume to ascii for  interface
 			taskENTER_CRITICAL();
 			HF_parameters.volume = g_vars.g_volume_knob;
-			strcpy((char*) HF_parameters.volume_ascii,
-					(char*) map_volume_into_ascii(HF_parameters.volume));
+			//strcpy((char*) HF_parameters.volume_ascii,
+			//		(char*) map_volume_into_ascii(HF_parameters.volume));
 
 			send_data_to_transmission_queue_HF_RECEIVER(VOLUME);
 

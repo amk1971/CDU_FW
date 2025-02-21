@@ -320,7 +320,7 @@ void read_encoder_standby_mhz() // Controls the 10 kHz steps for larger place va
 void read_encoder_channel_mhz() // Controls the 10 kHz steps for larger place values (tens, hundreds, thousands)
 {
 	uint16_t index, MHz, KHz;
-	index = g_vars.g_selectedPreset
+	index = g_vars.g_selectedPreset;
 	float number = saved_channels[index];
 	if (number <  STANDBY_MHZ_MIN) number = STANDBY_MHZ_MIN;
 	if (number >  STANDBY_MHZ_MAX) number = STANDBY_MHZ_MAX;
@@ -455,7 +455,7 @@ void read_encoder_channel_khz()  // KHz right inner knob
 {
 	//g_vars.g_current_page
 	uint16_t index, MHz, KHz;
-	index = g_vars.g_selectedPreset
+	index = g_vars.g_selectedPreset;
 	float number = saved_channels[index];
 	if (number <  STANDBY_MHZ_MIN) number = STANDBY_MHZ_MIN;
 	if (number >  STANDBY_MHZ_MAX) number = STANDBY_MHZ_MAX;
