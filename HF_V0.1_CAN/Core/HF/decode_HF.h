@@ -30,7 +30,7 @@ uint32_t get_23_value_to_transmit(uint16_t freq, B_Status HF_ant, B_Status bfo, 
 
 void decode_receive_data(uint8_t *buffer);
 
-bool decode_message(uint8_t *rx_buffer, Identifier *ident, uint8_t *mhz, uint16_t *khz, uint8_t *f_flag, uint8_t *vol);
+bool decode_message(uint8_t *rx_buffer);//, Identifier *ident, uint8_t *mhz, uint16_t *khz, uint8_t *f_flag, uint8_t *vol);
 Message_ID get_message_ID(const char *message);
 
 #endif /* INC_DECODE_AFD_H_ */

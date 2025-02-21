@@ -70,20 +70,23 @@ typedef struct
 
 typedef struct
 {
-    float tuned_freq;
-    uint8_t Channel;
-    uint8_t volume;
-    uint8_t FRQ_CH : 2;
+    float tuned_freq;	//Current Frequency
+    uint8_t Channel;	//Current Channel
+    uint8_t volume;		//Current Volume
+    uint8_t FRQ_CH : 2;	//Frequency or Channel
     //uint8_t Channel;
     //float Freq[21];
-    char volume_ascii[2];
-    B_Status power_on;
-    B_Status STO;
+    //char volume_ascii[2];
+    B_Status power_on;	//Power On or OFF
+    B_Status STO;		//Squelch
     B_Status PROG;
     B_Status CH_PAGE;
-    B_Status ON_OFF;
-    B_Status Cursor;
+    B_Status ON_OFF;	//LCD ON or Off
+    B_Status Cursor;	//Cursor ON or Off
     Message_ID ID;
+    uint8_t	Tr;			//Transmit Status
+    uint8_t	Sig;		//Signal Present Byte
+    uint8_t	Guard;		//Guard Present Byte
 } s_HF_Parameters;
 
 extern xQueueHandle xMainNotifyQueue;
