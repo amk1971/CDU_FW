@@ -11,7 +11,7 @@
 
 uint8_t comstart[10] = "START\r\n";
 
-
+extern s_HF_Parameters HF_parameters;
 
 uint8_t split_frequency_khz(uint16_t f_khz, uint8_t *khz_buf);
 void calculate_checksum(const char *msg, uint8_t *checksum_high, uint8_t *checksum_low);
@@ -67,7 +67,7 @@ void decode_receive_data(uint8_t *buffer)
     }
 }
 
-bool decode_message(uint8_t *rx_buffer, Identifier *ident, uint8_t *mhz, uint16_t *khz, uint8_t *f_flag, uint8_t *vol)
+bool decode_message(uint8_t *rx_buffer, sHF_parameters *HF_parameters, uint8_t *mhz, uint16_t *khz, uint8_t *f_flag, uint8_t *vol)
 {
     char received_msg[25] = {0};  // Buffer to extract the message data
     char message[3] = {0};
@@ -91,70 +91,72 @@ bool decode_message(uint8_t *rx_buffer, Identifier *ident, uint8_t *mhz, uint16_
         return false;  // Invalid format
     }
 
-    // Extract and validate the message identifier
-    char cID = received_msg[5];
-    if (cID != HF_ID)
-    {
-        return false;  // Invalid identifier
-    }
+    HF_Parameters.Tr = received_msg[1];		//Transmitting
 
-    // Extract and validate the message type
-    strncpy(message, &received_msg[6], 2);
-    ident->ID = get_message_ID(message);
-
-    if (ident->ID == INVALID)
-    {
-        return false;  // Invalid message ID
-    }
-
-    // Extract frequency if applicable
-    if (ident->ID == S_FREQ )
-    {
-        *f_flag = true;
-        char mhz_c, khz_c;
-        sscanf(&received_msg[8], "%c%c", &mhz_c, &khz_c);
-        *mhz = mhz_c + CONVERSION_VAL_DEC;  // Reverse the conversion done during encoding
-        int k = (khz_c - CONVERSION_VAL_DEC);
-        k *= 25;
-        *khz = k;  // Reverse the conversion done during encoding
-    }
-    if (ident->ID == VOLUME)
-    {
-        char volume;
-        if (sscanf(&received_msg[8], "%c", &volume) == 1)  // Check for successful parsing
-        {
-            *vol = volume - CONVERSION_VAL_DEC;  // Adjust the volume as needed
-        }
-        else
-        {
-            // Handle parsing error
-            *vol = 0;  // Or set to a default value
-        }
-    }
-
-    else
-    {
-        *f_flag = false;
-    }
-
-    // Extract the received checksum
-    uint8_t received_checksum_h = received_msg[len - 4];
-    uint8_t received_checksum_l = received_msg[len - 3];
-    received_checksum = ((received_checksum_h >= 'A') ? (received_checksum_h - 'A' + 10) : (received_checksum_h - '0'))
-                            << 4 |
-                        ((received_checksum_l >= 'A') ? (received_checksum_l - 'A' + 10) : (received_checksum_l - '0'));
-
-    // Calculate the checksum from the message
-    char checksum_data[15] = {0};
-    strncpy(checksum_data, &received_msg[6], len - 10);
-    calculate_checksum(checksum_data, &calculated_checksum_h, &calculated_checksum_l);
-    calculated_checksum = (calculated_checksum_h << 4) | calculated_checksum_l;
-
-    // Compare checksums
-    if (calculated_checksum != received_checksum)
-    {
-        return false;  // Checksum mismatch
-    }
+//    // Extract and validate the message identifier
+//    char cID = received_msg[5];
+//    if (cID != HF_ID)
+//    {
+//        return false;  // Invalid identifier
+//    }
+//
+//    // Extract and validate the message type
+//    strncpy(message, &received_msg[6], 2);
+//    ident->ID = get_message_ID(message);
+//
+//    if (ident->ID == INVALID)
+//    {
+//        return false;  // Invalid message ID
+//    }
+//
+//    // Extract frequency if applicable
+//    if (ident->ID == S_FREQ )
+//    {
+//        *f_flag = true;
+//        char mhz_c, khz_c;
+//        sscanf(&received_msg[8], "%c%c", &mhz_c, &khz_c);
+//        *mhz = mhz_c + CONVERSION_VAL_DEC;  // Reverse the conversion done during encoding
+//        int k = (khz_c - CONVERSION_VAL_DEC);
+//        k *= 25;
+//        *khz = k;  // Reverse the conversion done during encoding
+//    }
+//    if (ident->ID == VOLUME)
+//    {
+//        char volume;
+//        if (sscanf(&received_msg[8], "%c", &volume) == 1)  // Check for successful parsing
+//        {
+//            *vol = volume - CONVERSION_VAL_DEC;  // Adjust the volume as needed
+//        }
+//        else
+//        {
+//            // Handle parsing error
+//            *vol = 0;  // Or set to a default value
+//        }
+//    }
+//
+//    else
+//    {
+//        *f_flag = false;
+//    }
+//
+//    // Extract the received checksum
+//    uint8_t received_checksum_h = received_msg[len - 4];
+//    uint8_t received_checksum_l = received_msg[len - 3];
+//    received_checksum = ((received_checksum_h >= 'A') ? (received_checksum_h - 'A' + 10) : (received_checksum_h - '0'))
+//                            << 4 |
+//                        ((received_checksum_l >= 'A') ? (received_checksum_l - 'A' + 10) : (received_checksum_l - '0'));
+//
+//    // Calculate the checksum from the message
+//    char checksum_data[15] = {0};
+//    strncpy(checksum_data, &received_msg[6], len - 10);
+//    calculate_checksum(checksum_data, &calculated_checksum_h, &calculated_checksum_l);
+//    calculated_checksum = (calculated_checksum_h << 4) | calculated_checksum_l;
+//
+//    // Compare checksums
+//    if (calculated_checksum != received_checksum)
+//    {
+//        return false;  // Checksum mismatch
+//    }
 
     return true;  // Successfully decoded
 }
