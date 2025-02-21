@@ -20,6 +20,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "cmsis_os.h"
+#include "can.h"
 #include "spi.h"
 #include "tim.h"
 #include "usart.h"
@@ -97,6 +98,8 @@ int main(void)
   MX_USART2_UART_Init();
   MX_USART4_UART_Init();
   MX_TIM16_Init();
+  MX_TIM17_Init();
+  MX_CAN_Init();
   /* USER CODE BEGIN 2 */
 #ifndef FREERTOS
   /* USER CODE END 2 */

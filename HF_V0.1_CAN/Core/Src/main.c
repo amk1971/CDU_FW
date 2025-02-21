@@ -105,6 +105,19 @@ int main(void)
   MX_USART1_UART_Init();
   MX_USART2_UART_Init();
   MX_TIM3_Init();
+
+  CAN_Filter_Config();
+
+  if(HAL_CAN_ActivateNotification(&hcan,CAN_IT_RX_FIFO0_MSG_PENDING)!=HAL_OK)
+  {
+	  Error_Handler();
+  }
+
+  if(HAL_CAN_Start(&hcan)!=HAL_OK)
+  {
+	  Error_Handler();
+  }
+
   /* USER CODE BEGIN 2 */
 
 #ifndef FREERTOS
