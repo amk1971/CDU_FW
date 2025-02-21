@@ -51,6 +51,13 @@ typedef union
     } fields;
     uint64_t RX_TX_FRAME;  // Full 8 bytes
 } FRAME;
+
+typedef enum
+{
+	Request,
+	Reply
+}CAN_REQUEST_REPLY;
+
 /* USER CODE END Private defines */
 
 void MX_CAN_Init(void);
