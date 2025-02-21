@@ -65,6 +65,8 @@ void GPIO_EXTI_Callback_Left(uint16_t GPIO_Pin){
 		if (!HF_parameters.PROG)
 		{
 			read_encoder_volume();
+		}else{
+			scroll_freqs_memory();
 		}
 	}
 
@@ -85,14 +87,17 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 		if (!HF_parameters.PROG)
 		{
 			read_encoder_volume();
+		}else{
+			scroll_freqs_memory();
 		}
 	}
 	else if (GPIO_Pin == RIGHT_A1_Pin)
 	{
 
-        if ((!HF_parameters.PROG) && (HF_parameters.FRQ_CH == FRQ) && (HF_parameters.Cursor == ON))
+        if ((HF_parameters.PROG == ON))// && (HF_parameters.FRQ_CH == FRQ) && (HF_parameters.Cursor == ON))
         {
-        	adjust_digit_interrupt();
+        	//adjust_digit_interrupt();
+        	read_encoder_channel_khz();
         }
         else
         {
@@ -102,9 +107,10 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 	}
 	else if (GPIO_Pin == RIGHT_B1_Pin)
 	{  // DONE change of FRQ and select preset on CH and non functional in GD
-        if ((!HF_parameters.PROG) && (HF_parameters.FRQ_CH == FRQ) && (HF_parameters.Cursor == ON))
-        {
-        	adjust_digit_interrupt();
+        //if ((!HF_parameters.PROG) && (HF_parameters.FRQ_CH == FRQ) && (HF_parameters.Cursor == ON))
+        if(HF_parameters.PROG == ON){
+        	//adjust_digit_interrupt();
+        	read_encoder_channel_khz();
         }
         else
         {
@@ -114,25 +120,26 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 	}
 	else if (GPIO_Pin == RIGHT_A2_Pin)
 	{  // DONE change of FRQ and select preset on CH and non functional in GD
-		if ((!HF_parameters.PROG) && (HF_parameters.FRQ_CH == FRQ)){
-			if (HF_parameters.Cursor == ON){
+		//if ((!HF_parameters.PROG) && (HF_parameters.FRQ_CH == FRQ)){
+			if (HF_parameters.PROG == ON){
 			//read_encoder_standby_mhz();
-				move_cursor();
+				//move_cursor();
+				read_encoder_channel_mhz();
 			} else {
 				read_encoder_standby_mhz();
 			}
-		}
+		//}
 	}
 	else if (GPIO_Pin == RIGHT_B2_Pin)
 	{  // DONE change of FRQ and select preset on CH and non functional in GD
-		if ((!HF_parameters.PROG) && (HF_parameters.FRQ_CH == FRQ)){
-			if (HF_parameters.Cursor == ON){
-			//read_encoder_standby_mhz();
-				move_cursor();
+		//if ((!HF_parameters.PROG) && (HF_parameters.FRQ_CH == FRQ)){
+			if (HF_parameters.PROG == ON){
+				read_encoder_channel_mhz();
+				//move_cursor();
 			} else {
 				read_encoder_standby_mhz();
 			}
-		}
+		//}
 	}
 }
 

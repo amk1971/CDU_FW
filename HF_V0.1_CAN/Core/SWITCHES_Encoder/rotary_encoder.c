@@ -14,6 +14,7 @@
 // flags for rotray
 bool volatile read_encoder_standby_mhz_flag = false;
 bool volatile read_encoder_standby_khz_flag = false;
+bool volatile read_encoder_channel_flag = false;
 bool volatile read_encoder_volume_flag = false;
 bool volatile move_cursor_flag = false;
 
@@ -316,6 +317,63 @@ void read_encoder_standby_mhz() // Controls the 10 kHz steps for larger place va
 	}
 }
 
+void read_encoder_channel_mhz() // Controls the 10 kHz steps for larger place values (tens, hundreds, thousands)
+{
+	uint16_t index, MHz, KHz;
+	index = g_vars.g_selectedPreset
+	float number = saved_channels[index];
+	if (number <  STANDBY_MHZ_MIN) number = STANDBY_MHZ_MIN;
+	if (number >  STANDBY_MHZ_MAX) number = STANDBY_MHZ_MAX;
+		MHz = (uint16_t) number;
+		KHz = (uint16_t) (((number - MHz) + 0.0001) * 1000);
+
+	if (!read_encoder_channel_flag)
+	{
+		static uint8_t old_AB = 3;                         // Lookup table index
+		static int8_t encval = 0;                               // Encoder value
+		static const int8_t enc_states[] =
+		{ 0, 0, 0, 0, 0, -1, 0, -1, 0, 0, 0, 1, 0, 0, 0, 1 };  // Lookup table
+
+		old_AB <<= 2;  // Remember previous state
+
+		if (HAL_GPIO_ReadPin(RIGHT_A2_GPIO_Port, RIGHT_A2_Pin))
+			old_AB |= 0x02;  // Add current state of pin A
+		if (HAL_GPIO_ReadPin(RIGHT_B2_GPIO_Port, RIGHT_B2_Pin))
+			old_AB |= 0x01;  // Add current state of pin B
+
+		encval += enc_states[(old_AB & 0x0f)];
+
+		if (encval > 0)  // Rotate forward (increment)
+		{
+			if (MHz < STANDBY_MHZ_MAX)
+			{
+				MHz++;  // Increment by 1
+			}
+			else
+			{
+				MHz = STANDBY_MHZ_MIN; // Wrap to 019 (after 179)
+			}
+			read_encoder_channel_flag = true;
+			encval = 0;
+		}
+		else if (encval < 0)  // Rotate backward (decrement)
+		{
+			if (MHz > STANDBY_MHZ_MIN)
+			{
+				MHz--;  // Decrement by 1
+			}
+			else
+			{
+				MHz = STANDBY_MHZ_MAX; // Wrap to 179 (after going below 019)
+			}
+			read_encoder_channel_flag = true;
+			encval = 0;
+		}
+		saved_channels[index] = MHz + KHz / 1000.0;
+	}
+}
+
+
 void read_encoder_standby_khz()  // KHz right inner knob
 {
 	//g_vars.g_current_page
@@ -392,6 +450,87 @@ void read_encoder_standby_khz()  // KHz right inner knob
 		g_vars.g_standby_khz_knob = ((g_vars.g_standby_khz_knob+CHANGE_KHZ/2)/CHANGE_KHZ)*CHANGE_KHZ;
 	}
 }
+
+void read_encoder_channel_khz()  // KHz right inner knob
+{
+	//g_vars.g_current_page
+	uint16_t index, MHz, KHz;
+	index = g_vars.g_selectedPreset
+	float number = saved_channels[index];
+	if (number <  STANDBY_MHZ_MIN) number = STANDBY_MHZ_MIN;
+	if (number >  STANDBY_MHZ_MAX) number = STANDBY_MHZ_MAX;
+		MHz = (uint16_t) number;
+		KHz = (uint16_t) (((number - MHz) + 0.0001) * 1000);
+// Encoder interrupt routine for both pins. Updates counter
+// if they are valid and have rotated a full indent
+	if (!read_encoder_channel_flag)
+	{
+		static uint8_t old_GH = 3;                         // Lookup table index
+		static int8_t encval = 0;                               // Encoder value
+		static const int8_t enc_states[] =
+		{ 0, 0, 0, 0, 0, -1, 0, -1, 0, 0, 0, 1, 0, 0, 0, 1 };  // Lookup table
+
+		old_GH <<= 2;  // Remember previous state
+
+		if (HAL_GPIO_ReadPin(RIGHT_A1_GPIO_Port, RIGHT_A1_Pin))
+			old_GH |= 0x02;  // Add current state of pin G
+		if (HAL_GPIO_ReadPin(RIGHT_B1_GPIO_Port, RIGHT_B1_Pin))
+			old_GH |= 0x01;  // Add current state of pin H
+
+		encval += enc_states[(old_GH & 0x0f)];
+
+		// Update counter if encoder has rotated a full indent, that is at least 4 steps
+		if (encval > 0)  // Four steps forward
+		{
+			KHz += CHANGE_KHZ;  // Update kHz counter
+
+			// Check if kHz exceeds max and adjust MHz
+			if (KHz > STANDBY_KHZ_MAX)
+			{
+				KHz = STANDBY_KHZ_MIN; // Reset kHz to minimum
+				if (MHz < STANDBY_MHZ_MAX)
+				{
+					MHz++;  // Increment MHz
+				}
+#if DEBUG_CONSOLE
+                debug_print("E_MHz Incremented: %d\n", g_vars.g_standby_mhz_knob);
+#endif
+			}
+			read_encoder_channel_flag = true;
+#if DEBUG_CONSOLE
+            debug_print("E_KHz = %d \n", g_vars.g_standby_khz_knob);
+#endif
+			encval = 0;  // Reset encoder value
+		}
+		else if (encval < 0)  // Four steps backward
+		{
+
+			if (KHz == STANDBY_KHZ_MIN)
+			{
+				KHz = STANDBY_KHZ_MAX; // Reset kHz to maximum
+				if (MHz > STANDBY_MHZ_MIN)
+				{
+					MHz--;  // Decrement MHz
+				}
+#if DEBUG_CONSOLE
+                debug_print("E_MHz Decremented: %d\n", g_vars.g_standby_mhz_knob);
+#endif
+			}
+			else
+			{
+				KHz -= CHANGE_KHZ;  // Update kHz counter
+			}
+			read_encoder_channel_flag = true;
+#if DEBUG_CONSOLE
+            debug_print("E_KHz = %d \n", g_vars.g_standby_khz_knob);
+#endif
+			encval = 0;  // Reset encoder value
+		}
+		KHz = ((KHz+CHANGE_KHZ/2)/CHANGE_KHZ)*CHANGE_KHZ;
+		saved_channels[index] = MHz + KHz / 1000.0;
+	}
+}
+
 
 void read_encoder_volume()  // volume left inner knob
 {                           // DONE volume without roll over
@@ -489,6 +628,8 @@ void scroll_freqs_memory()
 	}
 }
 
+
+
 void change_saved_channel_khz()
 {
 // Encoder interrupt routine for both pins. Updates counter
@@ -496,7 +637,7 @@ void change_saved_channel_khz()
 	float number = saved_channels[g_vars.g_selectedPreset];
 	g_vars.g_saved_channel_mhz = (uint8_t) number;
 	g_vars.g_saved_channel_khz =
-			(uint8_t) (((number - (uint8_t) number) + 0.001) * 100);
+			(uint8_t) (((number - (uint8_t) number) + 0.0001) * 1000);
 
 	if (g_vars.g_saved_channel_mhz == 0)
 	{

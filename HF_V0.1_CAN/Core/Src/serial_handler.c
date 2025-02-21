@@ -44,7 +44,8 @@ void serial_HF_Receiver_com_thread(void *pvParameters)
             debug_print("HF_Receiver_COM Queue_Recv :: %s\n", receive_buff_HF);
 #endif
 
-            bool decode_success = true;  // decode_message_HF(receive_buff_HF, &mesg);
+            bool decode_success = true;  //
+            decode_receive_data(receive_buff_HF);
 
             if ((decode_success) && (xMainNotifyQueue != NULL))
             {

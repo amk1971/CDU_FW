@@ -65,7 +65,9 @@ void general_purpose_switches_thread(void *pvParameters)
                      (xTaskGetTickCount() - right_knob_press_start_time) >= pdMS_TO_TICKS(LONG_PRESS_THRESHOLD_MS))
             {
                 // Long press detected
-                xEventGroupSetBits(buttonEventGroup, EVENT_LEFT_SW_LONG_PRESS);
+
+            	//??????
+//                xEventGroupSetBits(buttonEventGroup, EVENT_LEFT_SW_LONG_PRESS);
                 left_knob_was_pressed = 0;  // Reset state to avoid repeated long press events
             }
         }

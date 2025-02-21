@@ -22,6 +22,7 @@
 extern bool volatile read_encoder_standby_mhz_flag;
 extern bool volatile read_encoder_standby_khz_flag;
 extern bool volatile read_encoder_volume_flag;
+extern bool volatile read_encoder_channel_flag;
 extern bool volatile scroll_flag;
 extern bool volatile read_saved_standby_khz_flag;
 extern bool volatile read_saved_standby_mhz_flag;
@@ -106,7 +107,10 @@ void HF_main_thread(void *pvParameters)
 			taskEXIT_CRITICAL();
 			vTaskDelay(pdMS_TO_TICKS(100));
 		}
-
+		if (read_encoder_channel_flag){
+			read_encoder_channel_flag = false;
+			mem_screen_update = true;
+		}
 		if (read_encoder_volume_flag)
 		{  // DONE map volume to ascii for  interface
 			taskENTER_CRITICAL();
@@ -143,8 +147,8 @@ void HF_main_thread(void *pvParameters)
 		{
 			taskENTER_CRITICAL();
 			uint8_t index = 0;  // get_current_index();
-			saved_channels[index] = g_vars.g_saved_channel_mhz
-					+ (0.01 * g_vars.g_saved_channel_khz);
+			//saved_channels[index] = g_vars.g_saved_channel_mhz
+			//		+ (0.001 * g_vars.g_saved_channel_khz);
 			mem_screen_update = true;
 
 			HF_parameters.tuned_freq =
@@ -179,7 +183,9 @@ void HF_main_thread(void *pvParameters)
 		if (lcd_update_needed
 				&& (current_time - last_lcd_update_time > lcd_update_interval))
 		{
-			LCD_Print_Home();
+			if(HF_parameters.PROG == OFF){
+				LCD_Print_Home();
+			}
 			last_lcd_update_time = current_time;  // Update the last update time
 			lcd_update_needed = false;        // Reset the flag after the update
 		}
@@ -187,7 +193,9 @@ void HF_main_thread(void *pvParameters)
 		if (mem_screen_update
 				&& (current_time - last_lcd_update_time > lcd_update_interval))
 		{
-			LCD_PRINT_MEM_SCREEN(g_vars.g_current_page);
+			if(HF_parameters.PROG == ON){
+				LCD_PRINT_MEM_SCREEN(g_vars.g_current_page);
+			}
 			last_lcd_update_time = current_time;  // Update the last update time
 			mem_screen_update = false;        // Reset the flag after the update
 		}

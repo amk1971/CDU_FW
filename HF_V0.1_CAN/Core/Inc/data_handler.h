@@ -29,7 +29,7 @@
 #define EVENT_GP_SW_PROG_EXIT (1 << 6)  // preset button
 #define EVENT_GP_SW_DELETE_STO (1 << 7)
 
-#define NUM_FREQUENCIES 15
+#define NUM_FREQUENCIES 20
 
 // #define RCU_ID 'A'  // A for HF
 typedef enum
@@ -74,6 +74,8 @@ typedef struct
     uint8_t Channel;
     uint8_t volume;
     uint8_t FRQ_CH : 2;
+    //uint8_t Channel;
+    //float Freq[21];
     char volume_ascii[2];
     B_Status power_on;
     B_Status STO;
