@@ -119,6 +119,7 @@ void HF_main_thread(void *pvParameters)
 		{
 			send_data_to_transmission_queue_HF_RECEIVER(TEST_ON);
 			read_Test_Start_Flag = false;
+			lcd_update_needed = true;
 			Test_end_flag = true;
 		}
 		if(Test_end_flag){
@@ -126,6 +127,7 @@ void HF_main_thread(void *pvParameters)
 				HF_parameters.Test = false;
 				send_data_to_transmission_queue_HF_RECEIVER(TEST_OFF);
 				Test_end_flag = false;
+				lcd_update_needed = true;
 			}
 		}
 		if (read_encoder_volume_flag)

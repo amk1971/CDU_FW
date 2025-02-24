@@ -44,7 +44,7 @@ void general_purpose_switches_thread(void *pvParameters)
             xEventGroupSetBits(buttonEventGroup, EVENT_GP_SW_PROG_EXIT);
         }
 
-        if (readButton(SW5_GPIO_Port, SW5_Pin))
+        if (!readButton(SW5_GPIO_Port, SW5_Pin))
         {  // STO
             xEventGroupSetBits(buttonEventGroup, EVENT_GP_SW_DELETE_STO);
             vTaskDelay(pdMS_TO_TICKS(200));
