@@ -429,7 +429,7 @@ void glcd_clear_all()
 {
     int i;
     for (i = 0; i < 8; i++) glcd_clearline(i);
-    send_command(0x40);  // SET Cursor on Y=0
+    //send_command(0x40);  // SET Cursor on Y=0
     send_command(0xB8);  // SET Page on X=0, Line=0
 }
 

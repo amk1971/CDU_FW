@@ -83,12 +83,19 @@ void GLCD_INIT(void)
 //	DATA7_PORT->CRL &= ~(GPIO_CRL_MODE5 | GPIO_CRL_CNF5);
 //	DATA7_PORT->CRL |= GPIO_CRL_MODE5_0;
 
-	SECO1_PORT->CRL &= ~(GPIO_CRL_MODE4 | GPIO_CRL_CNF4 | GPIO_CRL_MODE3
-			| GPIO_CRL_CNF3);
-	SECO1_PORT->CRL |= (GPIO_CRL_MODE4_0 | GPIO_CRL_MODE3_0);
+//	SECO1_PORT->CRL &= ~(GPIO_CRL_MODE4 | GPIO_CRL_CNF4 | GPIO_CRL_MODE3
+//			| GPIO_CRL_CNF3);
+//	SECO1_PORT->CRL |= (GPIO_CRL_MODE4_0 | GPIO_CRL_MODE3_0);
 
-	RESET_PORT->CRL &= ~(GPIO_CRL_MODE2 | GPIO_CRL_CNF2);
-	RESET_PORT->CRL |= GPIO_CRL_MODE2_0;
+//	RESET_PORT->CRL &= ~(GPIO_CRL_MODE2 | GPIO_CRL_CNF2);
+//	RESET_PORT->CRL |= GPIO_CRL_MODE2_0;
+
+	GPIO_InitStruct.Pin = ((uint16_t)0x01 << RESET_PIN_NUMBER);
+	  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+	  GPIO_InitStruct.Pull = GPIO_NOPULL;
+	  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+	  HAL_GPIO_Init(RESET_PORT, &GPIO_InitStruct);
+
 
 	// GPIOB: D0, D3 (PB1, PB0)
 //	DATA0_PORT->CRL &= ~(GPIO_CRL_MODE1 | GPIO_CRL_CNF1 | GPIO_CRL_MODE0
@@ -98,9 +105,9 @@ void GLCD_INIT(void)
 //	// GPIOE: D1, DI, RW, E (PE7, PE10, PE8, PE9)
 //	DATA1_PORT->CRL &= ~(GPIO_CRL_MODE7 | GPIO_CRL_CNF7);
 //	DATA1_PORT->CRL |= GPIO_CRL_MODE7_0;
-	CTRL_PORT->CRH &= ~(GPIO_CRH_MODE10 | GPIO_CRH_CNF10 | GPIO_CRH_MODE8
-			| GPIO_CRH_CNF8 | GPIO_CRH_MODE9 | GPIO_CRH_CNF9);
-	CTRL_PORT->CRH |= (GPIO_CRH_MODE10_0 | GPIO_CRH_MODE8_0 | GPIO_CRH_MODE9_0);
+//	CTRL_PORT->CRH &= ~(GPIO_CRH_MODE10 | GPIO_CRH_CNF10 | GPIO_CRH_MODE8
+//			| GPIO_CRH_CNF8 | GPIO_CRH_MODE9 | GPIO_CRH_CNF9);
+//	CTRL_PORT->CRH |= (GPIO_CRH_MODE10_0 | GPIO_CRH_MODE8_0 | GPIO_CRH_MODE9_0);
 
 	// GPIOC: D2, D4 (PC5, PC4)
 //	DATA2_PORT->CRL &= ~(GPIO_CRL_MODE5 | GPIO_CRL_CNF5);
@@ -117,9 +124,9 @@ void GLCD_INIT(void)
 //	DATA5_PORT->BSRR = (1 << (D5_PIN_NUMBER + 16));
 //	DATA6_PORT->BSRR = (1 << (D6_PIN_NUMBER + 16));
 //	DATA7_PORT->BSRR = (1 << (D7_PIN_NUMBER + 16));
-	SECO1_PORT->BSRR = (1 << (CS1_PIN_NUMBER + 16));
-	SECO2_PORT->BSRR = (1 << (CS2_PIN_NUMBER + 16));
-	RESET_PORT->BSRR = (1 << (RESET_PIN_NUMBER + 16));
+	//SECO1_PORT->BSRR = (1 << (CS1_PIN_NUMBER + 16));
+	//SECO2_PORT->BSRR = (1 << (CS2_PIN_NUMBER + 16));
+	//RESET_PORT->BSRR = (1 << (RESET_PIN_NUMBER + 16));
 
 	// Reset the GLCD
 	RESET_PORT->BSRR = (1 << RESET_PIN_NUMBER); // Set reset pin high
@@ -294,12 +301,12 @@ void LCD_PRINT_MEM_SCREEN(uint8_t page)
 
 		if (presetIndex <= TOTAL_PRESETS)
 		{
-			snprintf(presetLabel, sizeof(presetLabel), "CH%d", presetIndex + 1); // Presets are 1-based
+			snprintf(presetLabel, sizeof(presetLabel), " CH%d", presetIndex + 1); // Presets are 1-based
 		}
 
 		else  // should not come here since preset should not exceed  15
 		{
-			snprintf(presetLabel, sizeof(presetLabel), "EMPTY");
+			snprintf(presetLabel, sizeof(presetLabel), "EMPTY  ");
 			snprintf(strS, sizeof(strS), "no here");  // No frequency
 		}
 
@@ -328,7 +335,7 @@ void LCD_PRINT_MEM_SCREEN(uint8_t page)
 		if (saved_channels[g_vars.g_selectedPreset] == EMPTY_FREQ)
 		{
 			//glcd_puts("EMPTY", 2, 2);
-			LCD_UpdateRegion(TL, "EMPTY");    // Update Top Left with channel frequency
+			LCD_UpdateRegion(TL, "EMPTY  ");    // Update Top Left with channel frequency
 		}
 		else
 		{
@@ -351,7 +358,7 @@ void LCD_PRINT_CURSOR(uint8_t status, uint8_t cursor_location)
 	uint8_t loc = cursor_location;
 	if (status == true)
 	{
-		glcd_puts("_", loc, 2);
+//		glcd_puts("_", loc, 2);
 	}
 	else
 	{
