@@ -15,7 +15,11 @@ void compute_checksum(const char *message, char *checksum)
     {
         sum += message[i];
     }
-    snprintf(checksum, 3, "%02X", sum % 256);  // Convert sum to 2-char ASCII
+
+    //snprintf(checksum, 3, "%02X", sum % 256);  // Convert sum to 2-char ASCII
+    checksum[0] = (sum >> 4) + '0';
+    checksum[1] = (sum & 0x0F) + '0';
+    checksum[2] = 0;
 }
 void encode_message(uint8_t *tx_buffer, Message_ID m_index, uint8_t mhz, uint16_t khz, bool f_flag, uint8_t volume)
 {
@@ -48,7 +52,12 @@ void encode_message(uint8_t *tx_buffer, Message_ID m_index, uint8_t mhz, uint16_
 void encode_message_for_interface(s_HF_Parameters *obj, char *tx_buffer)
 {
 	char CrLf[3]  = "\r\n";
-	char test_tone=0;
+	char checksum[3];
+	//char test_tone=0;
+    char volume_as[3];
+    char mhz_str[4];
+    char khz_str[4];
+
     uint16_t mhz = (uint16_t)obj->tuned_freq;
     uint16_t khz = (uint16_t)((obj->tuned_freq - mhz) * 1000);
     B_Status on_off = obj->ON_OFF;
@@ -56,17 +65,14 @@ void encode_message_for_interface(s_HF_Parameters *obj, char *tx_buffer)
 
     khz = ((khz+12)/25)*25;
 
-    char volume_as[3];
     snprintf(volume_as, 3, "%s", VolumeMap[obj->volume]);
 
-    char mhz_str[4];
 
     mhz_str[0] = (mhz / 100) + '0';
     mhz_str[1] = ((mhz / 10) % 10) + '0';
     mhz_str[2] = (mhz % 10) + '0';
     mhz_str[3] = '\0';  // Null-terminate the string for safety
 
-    char khz_str[4];
     khz_str[0] = (khz / 100) + '0';
     khz_str[1] = ((khz / 10) % 10) + '0';
     khz_str[2] = (khz % 10) + '0';
@@ -76,7 +82,7 @@ void encode_message_for_interface(s_HF_Parameters *obj, char *tx_buffer)
              obj->Test + '0', obj->Mode + '0');
 
 
-    char checksum[3];
+
     // Compute checksum and append it
     compute_checksum(tx_buffer, checksum);
     strcat(tx_buffer, checksum);

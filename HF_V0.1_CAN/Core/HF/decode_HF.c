@@ -95,9 +95,14 @@ bool decode_message(uint8_t *rx_buffer)
 	// Extract the received checksum
 	uint8_t received_checksum_h = received_msg[len - 4];
 	uint8_t received_checksum_l = received_msg[len - 3];
-	received_checksum = ((received_checksum_h >= 'A') ? (received_checksum_h - 'A' + 10) : (received_checksum_h - '0'))
-							<< 4 |
-						((received_checksum_l >= 'A') ? (received_checksum_l - 'A' + 10) : (received_checksum_l - '0'));
+
+	//If the Packet has Ascii CheckSum 0-9,A-F
+//	received_checksum = ((received_checksum_h >= 'A') ? (received_checksum_h - 'A' + 10) : (received_checksum_h - '0'))	<< 4 |
+//						((received_checksum_l >= 'A') ? (received_checksum_l - 'A' + 10) : (received_checksum_l - '0'));
+	//If the Packet has Modified Ascii Check Sum 0-9 : ; < = > ?
+	received_checksum = received_checksum_h - '0' << 4 |
+						received_checksum_l - '0';
+
 
 	// Calculate the checksum from the message
 	char checksum_data[15] = {0};
