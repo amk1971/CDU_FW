@@ -123,7 +123,7 @@ void HF_main_thread(void *pvParameters)
 			Test_end_flag = true;
 		}
 		if(Test_end_flag){
-			if((HAL_GetTick() - HF_parameters.TestTick) > 5000){
+			if(((HAL_GetTick() - HF_parameters.TestTick) > 5000) || (HF_parameters.Tr == ON)){
 				HF_parameters.Test = false;
 				send_data_to_transmission_queue_HF_RECEIVER(TEST_OFF);
 				Test_end_flag = false;

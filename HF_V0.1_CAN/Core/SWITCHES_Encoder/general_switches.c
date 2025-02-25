@@ -170,9 +170,13 @@ void handle_gp_sw2_press(void)
 		set_saved_channel_index(g_vars.g_selectedPreset);
 		LCD_PRINT_MEM_SCREEN(g_vars.g_current_page);
 	} else {
-		HF_parameters.Test = ON;//(HF_parameters.Test == ON)? OFF : ON;
-		HF_parameters.TestTick = HAL_GetTick();
-		read_Test_Start_Flag = true;
+		if(HF_parameters.Test == OFF){
+			HF_parameters.Test = ON;//(HF_parameters.Test == ON)? OFF : ON;
+			HF_parameters.TestTick = HAL_GetTick();
+			read_Test_Start_Flag = true;
+		} else {
+			HF_parameters.TestTick = HAL_GetTick() - 6000;
+		}
 	}
 
 }

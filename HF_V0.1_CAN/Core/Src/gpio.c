@@ -117,14 +117,14 @@ void MX_GPIO_Init(void)
   /*Configure GPIO pins : PBPin PBPin PBPin PBPin
                            PBPin PBPin PBPin */
   GPIO_InitStruct.Pin = LCD_CS2_Pin|LCD_CS1_Pin|LCD_E_Pin|LCD_DI_Pin
-                          |CAN_SDOWN_Pin|CAN_STDBY_Pin|MCU_DTR2_Pin;
+                          |CAN_SDOWN_Pin|CAN_STDBY_Pin|MCU_DTR2_Pin|FLASH_CS_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
   /*Configure GPIO pins : PBPin PBPin PBPin */
-  GPIO_InitStruct.Pin = BOOT1_Pin|MCU_DSR2_Pin|FLASH_CS_Pin;
+  GPIO_InitStruct.Pin = BOOT1_Pin|MCU_DSR2_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);

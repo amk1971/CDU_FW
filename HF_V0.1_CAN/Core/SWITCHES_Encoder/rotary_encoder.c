@@ -216,56 +216,56 @@ void adjust_digit_interrupt()
 	}
 }
 
-void move_cursor()
-{
-	if (!move_cursor_flag)
-	{
-		static uint8_t old_AB = 3;  // Lookup table index
-		static int8_t encval = 0;   // Encoder value
-		static const int8_t enc_states[] =
-		{ 0, 0, 0, 0, 0, -1, 0, -1, 0, 0, 0, 1, 0, 0, 0, 1 };  // Lookup table
-
-		old_AB <<= 2;  // Remember previous state
-
-		if (HAL_GPIO_ReadPin(RIGHT_A2_GPIO_Port, RIGHT_A2_Pin))
-			old_AB |= 0x02;  // Add current state of pin A
-		if (HAL_GPIO_ReadPin(RIGHT_B2_GPIO_Port, RIGHT_B2_Pin))
-			old_AB |= 0x01;  // Add current state of pin B
-
-		encval += enc_states[(old_AB & 0x0F)];
-
-		if (encval > 0)  // Rotate forward (increment cursor position)
-		{
-			if (g_vars.cursor_index < (sizeof(g_vars.cursor_map) - 1))
-			{
-				g_vars.cursor_index++;  // Move to the next index
-			}
-			else
-			{
-				g_vars.cursor_index = 0;  // Wrap around to the first position
-			}
-			g_vars.current_cursor_location =
-					g_vars.cursor_map[g_vars.cursor_index];
-			move_cursor_flag = true;
-			encval = 0;
-		}
-		else if (encval < 0)  // Rotate backward (decrement cursor position)
-		{
-			if (g_vars.cursor_index > 0)
-			{
-				g_vars.cursor_index--;  // Move to the previous index
-			}
-			else
-			{
-				g_vars.cursor_index = sizeof(g_vars.cursor_map) - 1; // Wrap to the last position
-			}
-			g_vars.current_cursor_location =
-					g_vars.cursor_map[g_vars.cursor_index];
-			move_cursor_flag = true;
-			encval = 0;
-		}
-	}
-}
+//void move_cursor()
+//{
+//	if (!move_cursor_flag)
+//	{
+//		static uint8_t old_AB = 3;  // Lookup table index
+//		static int8_t encval = 0;   // Encoder value
+//		static const int8_t enc_states[] =
+//		{ 0, 0, 0, 0, 0, -1, 0, -1, 0, 0, 0, 1, 0, 0, 0, 1 };  // Lookup table
+//
+//		old_AB <<= 2;  // Remember previous state
+//
+//		if (HAL_GPIO_ReadPin(RIGHT_A2_GPIO_Port, RIGHT_A2_Pin))
+//			old_AB |= 0x02;  // Add current state of pin A
+//		if (HAL_GPIO_ReadPin(RIGHT_B2_GPIO_Port, RIGHT_B2_Pin))
+//			old_AB |= 0x01;  // Add current state of pin B
+//
+//		encval += enc_states[(old_AB & 0x0F)];
+//
+//		if (encval > 0)  // Rotate forward (increment cursor position)
+//		{
+//			if (g_vars.cursor_index < (sizeof(g_vars.cursor_map) - 1))
+//			{
+//				g_vars.cursor_index++;  // Move to the next index
+//			}
+//			else
+//			{
+//				g_vars.cursor_index = 0;  // Wrap around to the first position
+//			}
+//			g_vars.current_cursor_location =
+//					g_vars.cursor_map[g_vars.cursor_index];
+//			move_cursor_flag = true;
+//			encval = 0;
+//		}
+//		else if (encval < 0)  // Rotate backward (decrement cursor position)
+//		{
+//			if (g_vars.cursor_index > 0)
+//			{
+//				g_vars.cursor_index--;  // Move to the previous index
+//			}
+//			else
+//			{
+//				g_vars.cursor_index = sizeof(g_vars.cursor_map) - 1; // Wrap to the last position
+//			}
+//			g_vars.current_cursor_location =
+//					g_vars.cursor_map[g_vars.cursor_index];
+//			move_cursor_flag = true;
+//			encval = 0;
+//		}
+//	}
+//}
 
 void read_encoder_standby_mhz() // Controls the 10 kHz steps for larger place values (tens, hundreds, thousands)
 {

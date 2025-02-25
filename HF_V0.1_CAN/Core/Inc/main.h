@@ -76,12 +76,12 @@ void Error_Handler(void);
 #define LEFT_B1_Pin GPIO_PIN_0
 #define LEFT_B1_GPIO_Port GPIOC
 #define LEFT_B1_EXTI_IRQn EXTI0_IRQn
-#define LEFT_B2_Pin GPIO_PIN_2
+#define LEFT_B2_Pin GPIO_PIN_1
 #define LEFT_B2_GPIO_Port GPIOC
-#define LEFT_B2_EXTI_IRQn EXTI2_IRQn
-#define LEFT_A2_Pin GPIO_PIN_1
+#define LEFT_B2_EXTI_IRQn EXTI1_IRQn
+#define LEFT_A2_Pin GPIO_PIN_2
 #define LEFT_A2_GPIO_Port GPIOC
-#define LEFT_A2_EXTI_IRQn EXTI1_IRQn
+#define LEFT_A2_EXTI_IRQn EXTI2_IRQn
 #define ANALOG_IN2_Pin GPIO_PIN_3
 #define ANALOG_IN2_GPIO_Port GPIOC
 #define ANALOG_IN1_Pin GPIO_PIN_0

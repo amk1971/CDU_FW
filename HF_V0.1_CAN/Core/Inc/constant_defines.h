@@ -56,7 +56,7 @@ static const float EMPTY_FREQ = 0.0;  // Define an "empty" frequency value
 #define HF_TX_BUFFER_SIZE 3
 #define NUM_MESSAGE_ID 3
 #define saved_channel_SIZE 20
-#define UPLOAD_DEFAULT 1
+#define UPLOAD_DEFAULT 0
 #define DECIMAL_CURSOR_POSITION 32
 
 // 0 Disable and 1 for Enable
