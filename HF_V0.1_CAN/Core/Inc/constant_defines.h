@@ -64,7 +64,7 @@ typedef enum
 {
     FRQ,
     CH,
-} FRQ_CH;
+} FRQ_CHan;
 
 static const char *message_id_HF[NUM_MESSAGE_ID] = {
     "28",  // Standby Frequency Message ID

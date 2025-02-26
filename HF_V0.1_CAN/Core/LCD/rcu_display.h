@@ -15,48 +15,48 @@
 // Coordinate definitions (adjust as needed)
 #define TL_X1 0
 #define TL_X2 48
-#define TL_Y1 1
-#define TL_Y2 1
+#define TL_Y1 0
+#define TL_Y2 0
 
 #define ML_X1 0
 #define ML_X2 48
-#define ML_Y1 4
-#define ML_Y2 4
+#define ML_Y1 3
+#define ML_Y2 3
 
 #define BL_X1 0
 #define BL_X2 32
-#define BL_Y1 7
-#define BL_Y2 7
+#define BL_Y1 6
+#define BL_Y2 6
 
-#define MT_X1 64
+#define MT_X1 68
 #define MT_X2 68
-#define MT_Y1 1
-#define MT_Y2 1
+#define MT_Y1 0
+#define MT_Y2 0
 
-#define MM_X1 64
+#define MM_X1 68
 #define MM_X2 68
-#define MM_Y1 4
-#define MM_Y2 4
+#define MM_Y1 3
+#define MM_Y2 3
 
-#define MB_X1 64
+#define MB_X1 68
 #define MB_X2 68
-#define MB_Y1 7
-#define MB_Y2 7
+#define MB_Y1 6
+#define MB_Y2 6
 
 #define RT_X1 128
 #define RT_X2 125
-#define RT_Y1 1
-#define RT_Y2 1
+#define RT_Y1 0
+#define RT_Y2 0
 
 #define RM_X1 128
 #define RM_X2 125
-#define RM_Y1 4
-#define RM_Y2 4
+#define RM_Y1 3
+#define RM_Y2 3
 
 #define RB_X1 128
 #define RB_X2 125
-#define RB_Y1 7
-#define RB_Y2 7
+#define RB_Y1 6
+#define RB_Y2 6
 
 // Define X, Y coordinates for each region
 typedef enum {

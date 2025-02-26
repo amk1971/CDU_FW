@@ -23,6 +23,7 @@ bool volatile read_Test_Start_Flag = false;
 
 bool volatile read_saved_standby_khz_flag = false;
 bool volatile read_saved_standby_mhz_flag = false;
+bool volatile encoder_change_channel_flag = false;
 bool volatile scroll_flag = false;
 bool volatile digit_change = false;
 
@@ -279,7 +280,8 @@ void read_encoder_standby_mhz() // Controls the 10 kHz steps for larger place va
 		static uint8_t old_AB = 3;                         // Lookup table index
 		static int8_t encval = 0;                               // Encoder value
 		static const int8_t enc_states[] =
-		{ 0, 0, 0, 0, 0, -1, 0, -1, 0, 0, 0, 1, 0, 0, 0, 1 };  // Lookup table
+//		{ 0, 0, 0, 0, 0, -1, 0, -1, 0, 0, 0, 1, 0, 0, 0, 1 };  // Lookup table
+		{ 0, 1, -1, 0, -1, 0, 0, 1, 1, 0, 0, -1, 0, -1, 1, 0 }; // State transition table
 
 		old_AB <<= 2;  // Remember previous state
 
@@ -288,9 +290,9 @@ void read_encoder_standby_mhz() // Controls the 10 kHz steps for larger place va
 		if (HAL_GPIO_ReadPin(RIGHT_B2_GPIO_Port, RIGHT_B2_Pin))
 			old_AB |= 0x01;  // Add current state of pin B
 
-		encval += enc_states[(old_AB & 0x0f)];
+		encval -= enc_states[(old_AB & 0x0f)];
 
-		if (encval > 0)  // Rotate forward (increment)
+		if (encval > 1)  // Rotate forward (increment)
 		{
 			if (g_vars.g_standby_mhz_knob < STANDBY_MHZ_MAX)
 			{
@@ -335,7 +337,8 @@ void read_encoder_channel_mhz() // Controls the 10 kHz steps for larger place va
 		static uint8_t old_AB = 3;                         // Lookup table index
 		static int8_t encval = 0;                               // Encoder value
 		static const int8_t enc_states[] =
-		{ 0, 0, 0, 0, 0, -1, 0, -1, 0, 0, 0, 1, 0, 0, 0, 1 };  // Lookup table
+//		{ 0, 0, 0, 0, 0, -1, 0, -1, 0, 0, 0, 1, 0, 0, 0, 1 };  // Lookup table
+		{ 0, 1, -1, 0, -1, 0, 0, 1, 1, 0, 0, -1, 0, -1, 1, 0 }; // State transition table
 
 		old_AB <<= 2;  // Remember previous state
 
@@ -344,9 +347,9 @@ void read_encoder_channel_mhz() // Controls the 10 kHz steps for larger place va
 		if (HAL_GPIO_ReadPin(RIGHT_B2_GPIO_Port, RIGHT_B2_Pin))
 			old_AB |= 0x01;  // Add current state of pin B
 
-		encval += enc_states[(old_AB & 0x0f)];
+		encval -= enc_states[(old_AB & 0x0f)];
 
-		if (encval > 0)  // Rotate forward (increment)
+		if (encval > 1)  // Rotate forward (increment)
 		{
 			if (MHz < STANDBY_MHZ_MAX)
 			{
@@ -359,7 +362,7 @@ void read_encoder_channel_mhz() // Controls the 10 kHz steps for larger place va
 			read_encoder_channel_flag = true;
 			encval = 0;
 		}
-		else if (encval < 0)  // Rotate backward (decrement)
+		else if (encval < -1)  // Rotate backward (decrement)
 		{
 			if (MHz > STANDBY_MHZ_MIN)
 			{
@@ -391,7 +394,8 @@ void read_encoder_standby_khz()  // KHz right inner knob
 		static uint8_t old_GH = 3;                         // Lookup table index
 		static int8_t encval = 0;                               // Encoder value
 		static const int8_t enc_states[] =
-		{ 0, 0, 0, 0, 0, -1, 0, -1, 0, 0, 0, 1, 0, 0, 0, 1 };  // Lookup table
+//		{ 0, 0, 0, 0, 0, -1, 0, -1, 0, 0, 0, 1, 0, 0, 0, 1 };  // Lookup table
+		{ 0, 1, -1, 0, -1, 0, 0, 1, 1, 0, 0, -1, 0, -1, 1, 0 }; // State transition table
 
 		old_GH <<= 2;  // Remember previous state
 
@@ -400,10 +404,10 @@ void read_encoder_standby_khz()  // KHz right inner knob
 		if (HAL_GPIO_ReadPin(RIGHT_B1_GPIO_Port, RIGHT_B1_Pin))
 			old_GH |= 0x01;  // Add current state of pin H
 
-		encval += enc_states[(old_GH & 0x0f)];
+		encval -= enc_states[(old_GH & 0x0f)];
 
 		// Update counter if encoder has rotated a full indent, that is at least 4 steps
-		if (encval > 0)  // Four steps forward
+		if (encval > 1)  // Four steps forward
 		{
 			g_vars.g_standby_khz_knob += CHANGE_KHZ;  // Update kHz counter
 
@@ -425,7 +429,7 @@ void read_encoder_standby_khz()  // KHz right inner knob
 #endif
 			encval = 0;  // Reset encoder value
 		}
-		else if (encval < 0)  // Four steps backward
+		else if (encval < -1)  // Four steps backward
 		{
 
 			if (g_vars.g_standby_khz_knob == STANDBY_KHZ_MIN)
@@ -471,7 +475,8 @@ void read_encoder_channel_khz()  // KHz right inner knob
 		static uint8_t old_GH = 3;                         // Lookup table index
 		static int8_t encval = 0;                               // Encoder value
 		static const int8_t enc_states[] =
-		{ 0, 0, 0, 0, 0, -1, 0, -1, 0, 0, 0, 1, 0, 0, 0, 1 };  // Lookup table
+		//{ 0, 0, 0, 0, 0, -1, 0, -1, 0, 0, 0, 1, 0, 0, 0, 1 };  // Lookup table
+		{ 0, 1, -1, 0, -1, 0, 0, 1, 1, 0, 0, -1, 0, -1, 1, 0 }; // State transition table
 
 		old_GH <<= 2;  // Remember previous state
 
@@ -480,10 +485,10 @@ void read_encoder_channel_khz()  // KHz right inner knob
 		if (HAL_GPIO_ReadPin(RIGHT_B1_GPIO_Port, RIGHT_B1_Pin))
 			old_GH |= 0x01;  // Add current state of pin H
 
-		encval += enc_states[(old_GH & 0x0f)];
+		encval -= enc_states[(old_GH & 0x0f)];
 
 		// Update counter if encoder has rotated a full indent, that is at least 4 steps
-		if (encval > 0)  // Four steps forward
+		if (encval > 1)  // Four steps forward
 		{
 			KHz += CHANGE_KHZ;  // Update kHz counter
 
@@ -505,7 +510,7 @@ void read_encoder_channel_khz()  // KHz right inner knob
 #endif
 			encval = 0;  // Reset encoder value
 		}
-		else if (encval < 0)  // Four steps backward
+		else if (encval < -1)  // Four steps backward
 		{
 
 			if (KHz == STANDBY_KHZ_MIN)
@@ -543,6 +548,8 @@ void read_encoder_volume()  // volume left inner knob
 		static int8_t encval = 0;                               // Encoder value
 		static const int8_t enc_states[] =
 		{ 0, 0, 0, 0, 0, -1, 0, -1, 0, 0, 0, 1, 0, 0, 0, 1 };  // Lookup table
+//		{ 0, -1, 1, 0, 1, 0, 0, -1, -1, 0, 0, 1, 0, 1, -1, 0 }; // State transition table
+//		{ 0, 1, -1, 0, -1, 0, 0, 1, 1, 0, 0, -1, 0, -1, 1, 0 }; // State transition table
 
 		old_CD <<= 2;  // Remember previous state
 
@@ -553,7 +560,7 @@ void read_encoder_volume()  // volume left inner knob
 
 		encval += enc_states[(old_CD & 0x0F)];
 
-		if (encval > 1)  // Four steps forward
+		if (encval > 0)  // Four steps forward
 		{
 			if (g_vars.g_volume_knob + CHANGE_VALUE <= VOLUME_MAX)
 			{
@@ -565,7 +572,7 @@ void read_encoder_volume()  // volume left inner knob
 				encval = 0;  // Reset encoder counter after successful update
 			}
 		}
-		else if (encval < -1)  // Four steps backward
+		else if (encval < 0)  // Four steps backward
 		{
 			if (g_vars.g_volume_knob - CHANGE_VALUE >= VOLUME_MIN)
 			{
@@ -587,7 +594,8 @@ void scroll_freqs_memory()
 		static uint8_t old_AB = 3;  // Previous state of encoder
 		static int8_t encval = 0;   // Accumulated encoder value
 		static const int8_t enc_states[] =
-		{ 0, 0, 0, 0, 0, -1, 0, -1, 0, 0, 0, 1, 0, 0, 0, 1 }; // State transition table
+		//{ 0, 0, 0, 0, 0, -1, 0, -1, 0, 0, 0, 1, 0, 0, 0, 1 }; // State transition table
+		{ 0, 1, -1, 0, -1, 0, 0, 1, 1, 0, 0, -1, 0, -1, 1, 0 }; // State transition table
 
 		old_AB <<= 2; // Shift the previous state to make space for the new state
 
@@ -597,10 +605,10 @@ void scroll_freqs_memory()
 		if (HAL_GPIO_ReadPin(LEFT_B2_GPIO_Port, LEFT_B2_Pin))
 			old_AB |= 0x01;  // Add pin B state
 
-		encval += enc_states[(old_AB & 0x0f)]; // Update encoder value based on state
+		encval -= enc_states[(old_AB & 0x0f)]; // Update encoder value based on state
 
 		// Check if the encoder has completed one full step (4 state transitions)
-		if (encval > 1)
+		if (encval < 1)
 		{  // Full step forward
 			if (g_vars.g_current_page < MAX_PAGES)
 			{
@@ -614,7 +622,7 @@ void scroll_freqs_memory()
 			scroll_flag = true;
 			encval = 0;  // Reset the encoder value
 		}
-		else if (encval < -1)
+		else if (encval > 0)
 		{
 			if (g_vars.g_current_page == 0)
 			{
@@ -622,7 +630,7 @@ void scroll_freqs_memory()
 			}
 			else
 			{
-				g_vars.g_current_page -= 1;  // Update kHz counter
+				g_vars.g_current_page--;  // Update kHz counter
 			}
 			scroll_flag = true;  // Update the display with the new frequency
 
@@ -764,3 +772,53 @@ void change_saved_channel_mhz()
 		}
 	}
 }
+
+void encoder_change_channel(void )
+{
+
+	if (!encoder_change_channel_flag)
+	{
+		static uint8_t old_AB = 3;                         // Lookup table index
+		static int8_t encval = 0;                               // Encoder value
+		static const int8_t enc_states[] =
+//		{ 0, 0, 0, 0, 0, -1, 0, -1, 0, 0, 0, 1, 0, 0, 0, 1 };  // Lookup table
+		{ 0, 1, -1, 0, -1, 0, 0, 1, 1, 0, 0, -1, 0, -1, 1, 0 }; // State transition table
+
+		old_AB <<= 2;  // Remember previous state
+
+		if (HAL_GPIO_ReadPin(RIGHT_A2_GPIO_Port, RIGHT_A2_Pin))
+			old_AB |= 0x02;  // Add current state of pin A
+		if (HAL_GPIO_ReadPin(RIGHT_B2_GPIO_Port, RIGHT_B2_Pin))
+			old_AB |= 0x01;  // Add current state of pin B
+
+		encval -= enc_states[(old_AB & 0x0f)];
+
+		if (encval > 1)  // Rotate forward (increment)
+		{
+			if (HF_parameters.Channel < TOTAL_PRESETS)
+			{
+				HF_parameters.Channel++;  // Increment by 1
+			}
+			else
+			{
+				HF_parameters.Channel = TOTAL_PRESETS; // Wrap to 019 (after 179)
+			}
+			encoder_change_channel_flag = true;
+			encval = 0;
+		}
+		else if (encval < 0)  // Rotate backward (decrement)
+		{
+			if (HF_parameters.Channel > TOTAL_PRESETS)
+			{
+				HF_parameters.Channel--;  // Decrement by 1
+			}
+			else
+			{
+				HF_parameters.Channel = TOTAL_PRESETS; // Wrap to 179 (after going below 019)
+			}
+			encoder_change_channel_flag = true;
+			encval = 0;
+		}
+	}
+}
+

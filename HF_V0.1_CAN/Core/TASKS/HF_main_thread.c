@@ -31,6 +31,8 @@ extern bool volatile digit_change;
 extern bool volatile read_mode_flag;
 extern bool volatile read_Radio_mode_flag;
 extern bool volatile read_Test_Start_Flag;
+extern bool volatile encoder_change_channel_flag;
+
 bool volatile Test_end_flag = false;
 s_HF_Parameters HF_parameters;
 
@@ -155,6 +157,10 @@ void HF_main_thread(void *pvParameters)
 		}
 		if(read_Radio_mode_flag){
 			read_Radio_mode_flag = false;
+			lcd_update_needed = true;
+		}
+		if(encoder_change_channel_flag){
+			encoder_change_channel_flag = false;
 			lcd_update_needed = true;
 		}
 		if (scroll_flag && HF_parameters.PROG == ON)

@@ -177,45 +177,42 @@ void LCD_Print_Home(void)
 	memset(strV, 0, sizeof(strV));
 
 
-	snprintf(strV, sizeof(strV), "%0.3f", HF_parameters.tuned_freq);
-	LCD_UpdateRegion(TL, strV);    // Update Top Left with frequency
-
 	// Check if standby frequency has changed
 
 	if (HF_parameters.FRQ_CH == FRQ)
 	{
-		//glcd_clear_text("FRQ", 75, 1);
-		//glcd_puts("/", 98, 1);
-		//glcd_puts("CH", 105, 1);
-		//snprintf(strV, sizeof(strV), "0.3f", saved_channels[g_vars.g_selectedPreset]);
-		//snprintf(strV, sizeof(strV), "FRQ");
+		if(HF_parameters.tuned_freq == 0){
+			snprintf(strV, sizeof(strV), "EMPTY ");
+		} else {
+			snprintf(strV, sizeof(strV), "%0.3f", HF_parameters.tuned_freq);
+		}
+		LCD_UpdateRegion(TL, strV);    // Update Top Left with frequency
 
 		LCD_UpdateRegionInv(RT, "FRQ" , "/CH" , 0);    // Update Top Right with frequency
 	}
 	if (HF_parameters.FRQ_CH == CH)
 	{
-//		glcd_puts("FRQ", 75, 1);
-//		glcd_puts("/", 98, 1);
-//		glcd_clear_text("CH", 105, 1);
-		//snprintf(strV, sizeof(strV), "P%d", HF_parameters.Channel);
-		//snprintf(strV, sizeof(strV), "CH");
+
+		snprintf(strV, sizeof(strV), "CH%02d   ", HF_parameters.Channel);
+		LCD_UpdateRegion(TL, strV);    // Update Top Left with frequency
+
 		LCD_UpdateRegionInv(RT, "FRQ/" , "CH" , 1);    // Update Top Left with Channel
 	}
 
 	//glcd_puts("STO", 2, 3);
 	if(HF_parameters.STO == ON){
-		LCD_UpdateRegionInv(ML, "SQ", "", 0);
+		LCD_UpdateRegionInv(ML, "SQ  ", "", 0);
 	} else {
-		LCD_UpdateRegion(ML, "SQ");    // Update Mid Left with frequency
+		LCD_UpdateRegion(ML, "SQ  ");    // Update Mid Left with frequency
 	}
 	LCD_UpdateRegion(BL, "PROG");    // Update Mid Left with frequency
 	if(HF_parameters.Test == ON){
-		LCD_UpdateRegionInv(RM, "TST", "", 0);    // Update Mid Left with frequency
+		LCD_UpdateRegionInv(RM, "  TST", "", 0);    // Update Mid Left with frequency
 	} else {
-		LCD_UpdateRegion(RM, "TST");    // Update Mid Left with frequency
+		LCD_UpdateRegion(RM, "  TST");    // Update Mid Left with frequency
 	}
 
-	LCD_UpdateRegion(MT, "    ");
+	LCD_UpdateRegion(MT, "  ");
 	if (HF_parameters.Tr == '1')
 	{
 //		glcd_puts("T", 70, 1);
@@ -247,27 +244,27 @@ void LCD_Print_Home(void)
 	LCD_UpdateRegion(MT, CenDisp);
 //	glcd_puts("PROG", 2, 6);
 
-	if (HF_parameters.tuned_freq != prev_tuned_freq
-			|| HF_parameters.power_on == ON || HF_parameters.PROG == OFF)
-	{
-		if (HF_parameters.tuned_freq == EMPTY_FREQ)
-
-		{
-			//glcd_clear_here(2, 68, 1, 1); // Clear specific area for standby frequency
-			//glcd_puts("NO MEM", 1, 1);
-			LCD_UpdateRegion(TL, "NO MEM");    // Update Mid Top with Flag
-
-		}
-		else
-		{
-			snprintf(strS, sizeof(strS), "%0.3f", HF_parameters.tuned_freq); // coulmn first
-
-//			glcd_clear_here(2, 68, 1, 1); // Clear specific area for standby frequency
-//			glcd_puts(strS, 1, 1);          // Update standby frequency
-			LCD_UpdateRegion(TL, strS);    // Update Mid Top with Flag
-			prev_tuned_freq = HF_parameters.tuned_freq;
-		}
-	}
+//	if (HF_parameters.tuned_freq != prev_tuned_freq
+//			|| HF_parameters.power_on == ON || HF_parameters.PROG == OFF)
+//	{
+//		if (HF_parameters.tuned_freq == EMPTY_FREQ)
+//
+//		{
+//			//glcd_clear_here(2, 68, 1, 1); // Clear specific area for standby frequency
+//			//glcd_puts("NO MEM", 1, 1);
+//			LCD_UpdateRegion(TL, "NO MEM");    // Update Mid Top with Flag
+//
+//		}
+//		else
+//		{
+//			snprintf(strS, sizeof(strS), "%0.3f", HF_parameters.tuned_freq); // coulmn first
+//
+////			glcd_clear_here(2, 68, 1, 1); // Clear specific area for standby frequency
+////			glcd_puts(strS, 1, 1);          // Update standby frequency
+//			LCD_UpdateRegion(TL, strS);    // Update Mid Top with Flag
+//			prev_tuned_freq = HF_parameters.tuned_freq;
+//		}
+//	}
 	// Check if volume has changed
 	if (HF_parameters.volume != prev_volume || HF_parameters.power_on == ON
 			|| HF_parameters.PROG == OFF)
@@ -315,7 +312,10 @@ void LCD_PRINT_MEM_SCREEN(uint8_t page)
 	//		glcd_clear_text(presetLabel, 90, 2 + (i * 2)); // Highlighting rectangle for selected preset
 				if(i == 0) LCD_UpdateRegionInv(RT, presetLabel, "", 0);    // Update Top Right with channel frequency
 				if(i == 1) LCD_UpdateRegionInv(RM, presetLabel, "", 0);    // Update Mid Right with channel frequency
-				if(i == 2) LCD_UpdateRegionInv(RB, presetLabel, "", 0);    // Update Bot Right with channel frequency
+				if((i == 2) && (presetIndex != 20))
+					LCD_UpdateRegionInv(RB, presetLabel, "", 0);    // Update Bot Right with channel frequency
+				else
+					LCD_UpdateRegion(RB, "    ");
 		}
 		else
 		{
@@ -323,7 +323,10 @@ void LCD_PRINT_MEM_SCREEN(uint8_t page)
 			//glcd_puts(presetLabel, 90, 2 + (i * 2));  // Normal text
 			if(i == 0) LCD_UpdateRegion(RT, presetLabel);    // Update Top Right with channel frequency
 			if(i == 1) LCD_UpdateRegion(RM, presetLabel);    // Update Mid Right with channel frequency
-			if(i == 2) LCD_UpdateRegion(RB, presetLabel);    // Update Bot Right with channel frequency
+			if((i == 2) && (presetIndex != 20))
+				LCD_UpdateRegion(RB, presetLabel);    // Update Bot Right with channel frequency
+			else
+				LCD_UpdateRegion(RB, "    ");
 		}
 	}
 

@@ -76,7 +76,7 @@ typedef struct
     float tuned_freq;	//Current Frequency
     uint8_t Channel;	//Current Channel
     uint8_t volume;		//Current Volume
-    uint8_t FRQ_CH : 2;	//Frequency or Channel
+    FRQ_CHan FRQ_CH;	//Frequency or Channel
     //uint8_t Channel;
     //float Freq[21];
     //char volume_ascii[2];

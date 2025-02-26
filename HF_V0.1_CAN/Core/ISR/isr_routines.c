@@ -59,6 +59,35 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 	/* USER CODE END Callback 1 */
 }
 
+
+/**
+  * @brief  This function handles EXTI interrupt request.
+  * @param  GPIO_Pin: Specifies the pins connected EXTI line
+  * @retval None
+  */
+void HAL_GPIO_EXTI_IRQHandler(uint16_t GPIO_Pin)
+{
+    if (GPIO_Pin == GPIO_PIN_14) {  // Check if EXTI line 14 triggered the interrupt
+        if (HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_14)) {  // Check if it was from PC14
+            // Handle interrupt from PC14
+        	GPIO_EXTI_Callback_Left(GPIO_Pin);
+        } else
+        if (HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_14)) {  // Check if it was from PB14
+            // Handle interrupt from PB14
+        	HAL_GPIO_EXTI_Callback(GPIO_Pin);
+        }
+        __HAL_GPIO_EXTI_CLEAR_IT(GPIO_Pin);
+        //EXTI->PR = EXTI_PR_PR14;  // Clear the interrupt pending flag
+    } else
+  /* EXTI line interrupt detected */
+  if (__HAL_GPIO_EXTI_GET_IT(GPIO_Pin) != 0x00u)
+  {
+    __HAL_GPIO_EXTI_CLEAR_IT(GPIO_Pin);
+    HAL_GPIO_EXTI_Callback(GPIO_Pin);
+  }
+}
+
+
 // Indices for buffer management
 void GPIO_EXTI_Callback_Left(uint16_t GPIO_Pin){
  if (GPIO_Pin == LEFT_A1_Pin)
@@ -104,8 +133,12 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
         }
         else
         {
+        	if(HF_parameters.FRQ_CH == FRQ){
             //change_saved_channel_khz();
-            read_encoder_standby_khz();
+        		read_encoder_standby_khz();
+        	} else {
+        		//No Change on Inner Knob
+        	}
         }
 	}
 	else if (GPIO_Pin == RIGHT_B1_Pin)
@@ -117,8 +150,12 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
         }
         else
         {
+        	if(HF_parameters.FRQ_CH == FRQ){
             //change_saved_channel_khz();
-        	read_encoder_standby_khz();
+        		read_encoder_standby_khz();
+        	} else {
+        		//No Change on Inner Knob
+        	}
         }
 	}
 	else if (GPIO_Pin == RIGHT_A2_Pin)
@@ -129,7 +166,12 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 				//move_cursor();
 				read_encoder_channel_mhz();
 			} else {
-				read_encoder_standby_mhz();
+	        	if(HF_parameters.FRQ_CH == FRQ){
+	            //change_saved_channel_khz();
+	        		read_encoder_standby_mhz();
+	        	} else {
+	        		encoder_change_channel();
+	        	}
 			}
 		//}
 	}
@@ -140,7 +182,12 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 				read_encoder_channel_mhz();
 				//move_cursor();
 			} else {
-				read_encoder_standby_mhz();
+	        	if(HF_parameters.FRQ_CH == FRQ){
+	            //change_saved_channel_khz();
+	        		read_encoder_standby_mhz();
+	        	} else {
+	        		encoder_change_channel();
+	        	}
 			}
 		//}
 	}
