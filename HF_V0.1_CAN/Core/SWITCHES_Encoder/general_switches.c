@@ -263,10 +263,15 @@ void handle_left_sw_normal_press(void)
 	// read_channels_from_flash(CHANNEL_FLASH_ADDRESS, saved_channels, NUM_FREQUENCIES);
 	// Load_HF_RCU_Parameters(&HF_parameters);
 	// update_globals(&HF_parameters);
-
-	// HF_parameters.power_on = ON;
-	// send_data_to_transmission_queue_HF_RECEIVER(POWER_ON);
-	// LCD_Print_Home();
+	if (HF_parameters.power_on == OFF){
+		LCD_power_on();
+		 HF_parameters.power_on = ON;
+		 HF_parameters.PROG = OFF;
+		 HF_parameters.FRQ_CH = FRQ;
+		 HF_parameters.volume = 05;
+		 send_data_to_transmission_queue_HF_RECEIVER(POWER_ON);
+		 LCD_Print_Home();
+	}
 }
 
 void handle_left_sw_long_press(void)

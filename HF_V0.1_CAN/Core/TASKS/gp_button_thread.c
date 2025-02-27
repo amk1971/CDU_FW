@@ -17,6 +17,7 @@ void general_purpose_switches_thread(void *pvParameters)
 {
     TickType_t right_knob_press_start_time = 0;
     uint8_t left_knob_was_pressed = 0;
+    uint8_t left_knob_long_press = 0;
 
     for (;;)
     {
@@ -66,15 +67,15 @@ void general_purpose_switches_thread(void *pvParameters)
             {
                 // Long press detected
 
-            	//??????
-//                xEventGroupSetBits(buttonEventGroup, EVENT_LEFT_SW_LONG_PRESS);
-                left_knob_was_pressed = 0;  // Reset state to avoid repeated long press events
+            	//??????!!!!
+                xEventGroupSetBits(buttonEventGroup, EVENT_LEFT_SW_LONG_PRESS);
+                left_knob_long_press = 1;  // Reset state to avoid repeated long press events
+                vTaskDelay(pdMS_TO_TICKS(200));
             }
         }
         else
         {
-            if (left_knob_was_pressed)
-            {
+            if ((left_knob_was_pressed) && (left_knob_long_press == 0)) {
                 // Button just released
                 if ((xTaskGetTickCount() - right_knob_press_start_time) < pdMS_TO_TICKS(LONG_PRESS_THRESHOLD_MS))
                 {
@@ -82,6 +83,10 @@ void general_purpose_switches_thread(void *pvParameters)
                     xEventGroupSetBits(buttonEventGroup, EVENT_LEFT_SW_NORMAL_PRESS);
                 }
                 left_knob_was_pressed = 0;
+            }
+            if (left_knob_long_press == 1) {
+            	left_knob_long_press = 0;
+            	left_knob_was_pressed = 0;
             }
         }
 

@@ -310,10 +310,13 @@ void LCD_PRINT_MEM_SCREEN(uint8_t page)
 		if (presetIndex == g_vars.g_selectedPreset)
 		{
 	//		glcd_clear_text(presetLabel, 90, 2 + (i * 2)); // Highlighting rectangle for selected preset
-				if(i == 0) LCD_UpdateRegionInv(RT, presetLabel, "", 0);    // Update Top Right with channel frequency
-				if(i == 1) LCD_UpdateRegionInv(RM, presetLabel, "", 0);    // Update Mid Right with channel frequency
+				if(i == 0) {
+					LCD_UpdateRegion(RT, "    ");
+					LCD_UpdateRegionInv(RT, presetLabel+1, "", 0);    // Update Top Right with channel frequency
+				}
+				if(i == 1) LCD_UpdateRegionInv(RM, presetLabel+1, "", 0);    // Update Mid Right with channel frequency
 				if((i == 2) && (presetIndex != 20))
-					LCD_UpdateRegionInv(RB, presetLabel, "", 0);    // Update Bot Right with channel frequency
+					LCD_UpdateRegionInv(RB, presetLabel+1, "", 0);    // Update Bot Right with channel frequency
 				else
 					LCD_UpdateRegion(RB, "    ");
 		}

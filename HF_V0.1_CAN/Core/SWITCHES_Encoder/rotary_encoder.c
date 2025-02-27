@@ -594,8 +594,8 @@ void scroll_freqs_memory()
 		static uint8_t old_AB = 3;  // Previous state of encoder
 		static int8_t encval = 0;   // Accumulated encoder value
 		static const int8_t enc_states[] =
-		//{ 0, 0, 0, 0, 0, -1, 0, -1, 0, 0, 0, 1, 0, 0, 0, 1 }; // State transition table
-		{ 0, 1, -1, 0, -1, 0, 0, 1, 1, 0, 0, -1, 0, -1, 1, 0 }; // State transition table
+		{ 0, 0, 0, 0, 0, -1, 0, -1, 0, 0, 0, 1, 0, 0, 0, 1 }; // State transition table
+		//{ 0, 1, -1, 0, -1, 0, 0, 1, 1, 0, 0, -1, 0, -1, 1, 0 }; // State transition table
 
 		old_AB <<= 2; // Shift the previous state to make space for the new state
 
@@ -605,10 +605,10 @@ void scroll_freqs_memory()
 		if (HAL_GPIO_ReadPin(LEFT_B2_GPIO_Port, LEFT_B2_Pin))
 			old_AB |= 0x01;  // Add pin B state
 
-		encval -= enc_states[(old_AB & 0x0f)]; // Update encoder value based on state
+		encval += enc_states[(old_AB & 0x0f)]; // Update encoder value based on state
 
 		// Check if the encoder has completed one full step (4 state transitions)
-		if (encval < 1)
+		if (encval > 0)
 		{  // Full step forward
 			if (g_vars.g_current_page < MAX_PAGES)
 			{
@@ -622,7 +622,7 @@ void scroll_freqs_memory()
 			scroll_flag = true;
 			encval = 0;  // Reset the encoder value
 		}
-		else if (encval > 0)
+		else if (encval < 0)
 		{
 			if (g_vars.g_current_page == 0)
 			{

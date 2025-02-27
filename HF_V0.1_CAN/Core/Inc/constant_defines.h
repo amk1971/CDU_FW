@@ -33,6 +33,7 @@ static const uint8_t STANDBY_FREQ_MIN = 190;
 // Thresholds
 static const uint8_t POLL_INTERVAL_MS = 50;            // Polling interval
 static const uint16_t LONG_PRESS_THRESHOLD_MS = 3000;  // Long press threshold (3 seconds)
+static const uint16_t SHORT_PRESS_THRESHOLD_MS = 300;  // Long press threshold (3 seconds)
 static const uint16_t DEBOUNCE_DELAY = 300;
 
 // Conversion constants
