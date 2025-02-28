@@ -100,9 +100,20 @@ int main(void)
   MX_TIM16_Init();
   MX_TIM17_Init();
   MX_CAN_Init();
-  /* USER CODE BEGIN 2 */
 
-//  HAL_NVIC_SetPriorityGrouping());
+  CAN_Filter_Config();
+
+  if(HAL_CAN_ActivateNotification(&hcan,CAN_IT_RX_FIFO0_MSG_PENDING)!=HAL_OK)
+  {
+	  Error_Handler();
+  }
+
+  if(HAL_CAN_Start(&hcan)!=HAL_OK)
+  {
+	  Error_Handler();
+  }
+
+  /* USER CODE BEGIN 2 */
 #ifndef FREERTOS
   /* USER CODE END 2 */
 
@@ -202,10 +213,6 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
   if (htim->Instance == TIM16)
   {
 	  time_up_notify_tft();
-  }
-  if (htim->Instance == TIM17)
-  {
-	  cursor_notify_tft();
   }
   /* USER CODE END Callback 1 */
 }
