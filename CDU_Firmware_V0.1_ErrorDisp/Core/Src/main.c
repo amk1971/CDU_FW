@@ -20,6 +20,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "cmsis_os.h"
+#include "can.h"
 #include "spi.h"
 #include "tim.h"
 #include "usart.h"
@@ -79,7 +80,6 @@ int main(void)
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
   HAL_Init();
 
-
   /* USER CODE BEGIN Init */
 
   /* USER CODE END Init */
@@ -99,9 +99,21 @@ int main(void)
   MX_USART4_UART_Init();
   MX_TIM16_Init();
   MX_TIM17_Init();
-  /* USER CODE BEGIN 2 */
+  MX_CAN_Init();
 
-//  HAL_NVIC_SetPriorityGrouping());
+  CAN_Filter_Config();
+
+  if(HAL_CAN_ActivateNotification(&hcan,CAN_IT_RX_FIFO0_MSG_PENDING)!=HAL_OK)
+  {
+	  Error_Handler();
+  }
+
+  if(HAL_CAN_Start(&hcan)!=HAL_OK)
+  {
+	  Error_Handler();
+  }
+
+  /* USER CODE BEGIN 2 */
 #ifndef FREERTOS
   /* USER CODE END 2 */
 
@@ -201,10 +213,6 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
   if (htim->Instance == TIM16)
   {
 	  time_up_notify_tft();
-  }
-  if (htim->Instance == TIM17)
-  {
-	  cursor_notify_tft();
   }
   /* USER CODE END Callback 1 */
 }
