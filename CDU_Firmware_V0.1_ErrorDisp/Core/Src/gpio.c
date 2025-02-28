@@ -142,7 +142,7 @@ void MX_GPIO_Init(void)
 
   /*Configure GPIO pins : PDPin PDPin PDPin PDPin
                            PDPin PDPin */
-  GPIO_InitStruct.Pin = RIGHT_SW4_Pin|RIGHT_SW3_Pin|RIGHT_SW2_Pin|RIGHT_SW1_Pin
+  GPIO_InitStruct.Pin = RIGHT_SW1_Pin|RIGHT_SW2_Pin|RIGHT_SW3_Pin|RIGHT_SW4_Pin
                           |GP_SW4_Pin|GP_SW3_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_NOPULL;

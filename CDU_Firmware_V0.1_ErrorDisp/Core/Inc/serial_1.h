@@ -19,5 +19,7 @@ extern xQueueHandle xuartRXQueue;
 void serial_1553_thread(void *pvParameters);
 extern void send_to_uart_queue_freq(uint8_t class_id, uint8_t msg_id, float frequency);
 extern void send_to_uart_queue_channel(uint8_t class_id, uint8_t msg_id, const char *key);
+extern void send_to_uart_queue_volume(uint8_t class_id, uint8_t msg_id, uint8_t vol);
+extern void send_to_uart_tacan_mode(uint8_t class_id, uint8_t msg_id, uint8_t mode);
 
 #endif /* INC_SERIAL_1_H_ */

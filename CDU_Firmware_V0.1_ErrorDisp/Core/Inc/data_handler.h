@@ -27,12 +27,19 @@ typedef enum {
 typedef enum {
 	S_FREQ,
 	A_FREQ,
+	VOLUME,
+	Health,
+	MODE,
 	V_T_S,
 	RESET_STATUS,
 	COM_ERROR,
-	Health,
     INVALID
 }Message_Id;
+
+typedef enum{
+	MODE_CHANNEL,
+	MODE_FREQUENCY
+}tacan_mode;
 
 typedef struct {
 	// NAV Parameters
@@ -79,6 +86,19 @@ typedef struct {
 	float p6_hf_freq;						// HF Pre-Programmed Frequency P6
 	float p7_hf_freq;						// HF Pre-Programmed Frequency P7
 	float p8_hf_freq;						// HF Pre-Programmed Frequency P8
+	float p9_hf_freq;						// HF Pre-Programmed Frequency P9
+	float p10_hf_freq;						// HF Pre-Programmed Frequency P10
+	float p11_hf_freq;						// HF Pre-Programmed Frequency P11
+	float p12_hf_freq;						// HF Pre-Programmed Frequency P12
+	float p13_hf_freq;						// HF Pre-Programmed Frequency P13
+	float p14_hf_freq;						// HF Pre-Programmed Frequency P14
+	float p15_hf_freq;						// HF Pre-Programmed Frequency P15
+	float p16_hf_freq;						// HF Pre-Programmed Frequency P16
+	float p17_hf_freq;						// HF Pre-Programmed Frequency P17
+	float p18_hf_freq;						// HF Pre-Programmed Frequency P18
+	float p19_hf_freq;						// HF Pre-Programmed Frequency P19
+
+
 	// VHF Parameters
 	float standby_vhf_freq;					// VHF Standby Frequency
 	float active_vhf_freq;			 		// VHF Active Frequency
@@ -126,6 +146,7 @@ typedef struct {
 	int		VHF_message_counter;			// Counts the time after the last vhf health message
 	int		ADF_message_counter;			// Counts the time after the last adf health message
 
+
 }CDU_Parameters;
 
 typedef struct {
@@ -134,7 +155,8 @@ typedef struct {
 	uint16_t khz;
 	Class_Id class;
 	Message_Id msg_id;
-	int val;
+	uint8_t vol;
+	tacan_mode mode;
 }Identifier;
 
 extern SemaphoreHandle_t xFlashMutex;
@@ -142,6 +164,7 @@ extern SemaphoreHandle_t xFlashMutex;
 extern CDU_Parameters cdu_parameters;
 
 extern Class_Id get_class_Id(void);
+Message_Id get_message_Id(void);
 extern void swap_active_standby_freq(Class_Id unit);
 extern void swap_active_standby_channel(void);
 void copy_preset_to_standby_freq(char index, Class_Id unit);
@@ -149,8 +172,7 @@ extern void copy_preset_to_standby_channel(char index);
 
 
 extern void decode_receive_data(uint8_t *buffer);
-extern void encode_message(uint8_t *tx_buffer, Class_Id c_index, Message_Id m_index, uint8_t mhz , uint16_t khz,  char f_flag);
-
+extern void encode_message(uint8_t *tx_buffer, Class_Id c_index, Message_Id m_index, uint8_t mhz , uint16_t khz, uint8_t vol , uint8_t mode, char f_flag);
 // Data read and write from and to flash
 extern void Load_CDU_Parameters(CDU_Parameters* params);
 extern void update_flash(void);

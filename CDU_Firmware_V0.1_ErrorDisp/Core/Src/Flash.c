@@ -47,9 +47,9 @@ uint8_t Flash_ReadDeviceID(void) {
     uint8_t id;
 
     FLASH_CS_LOW();
-    HAL_SPI_Transmit(&hspi1, &cmd, 1, HAL_MAX_DELAY);  // Send JEDEC ID command
-    HAL_SPI_Transmit(&hspi1, dummy, 3, HAL_MAX_DELAY); // Send 3 dummy bytes
-    HAL_SPI_Receive(&hspi1, &id, 1, HAL_MAX_DELAY);    // Receive the device ID
+    HAL_SPI_Transmit(&hspi1, &cmd, 1, 500);  // Send JEDEC ID command
+    HAL_SPI_Transmit(&hspi1, dummy, 3, 500); // Send 3 dummy bytes
+    HAL_SPI_Receive(&hspi1, &id, 1, 500);    // Receive the device ID
     FLASH_CS_HIGH();
 
     return id;
@@ -67,7 +67,7 @@ uint8_t Flash_ReadDeviceID(void) {
 void Flash_WriteEnable(void) {
     uint8_t cmd = CMD_WRITE_ENABLE;
     FLASH_CS_LOW();
-    HAL_SPI_Transmit(&hspi1, &cmd, 1, HAL_MAX_DELAY);
+    HAL_SPI_Transmit(&hspi1, &cmd, 1, 500);
     FLASH_CS_HIGH();
 }
 
@@ -83,7 +83,7 @@ void Flash_WriteEnable(void) {
 void Flash_WriteDisable(void) {
     uint8_t cmd = CMD_WRITE_DISABLE;
     FLASH_CS_LOW();
-    HAL_SPI_Transmit(&hspi1, &cmd, 1, HAL_MAX_DELAY);
+    HAL_SPI_Transmit(&hspi1, &cmd, 1, 500);
     FLASH_CS_HIGH();
 }
 
@@ -103,8 +103,8 @@ uint8_t Flash_ReadStatus(void) {
     uint8_t cmd = CMD_READ_STATUS;
     uint8_t status;
     FLASH_CS_LOW();
-    HAL_SPI_Transmit(&hspi1, &cmd, 1, HAL_MAX_DELAY);
-    HAL_SPI_Receive(&hspi1, &status, 1, HAL_MAX_DELAY);
+    HAL_SPI_Transmit(&hspi1, &cmd, 1, 500);
+    HAL_SPI_Receive(&hspi1, &status, 1, 500);
     FLASH_CS_HIGH();
     return status;
 }
@@ -136,7 +136,7 @@ void Flash_SectorErase(uint32_t address) {
     cmd[3] = address & 0xFF;
 
     FLASH_CS_LOW();
-    HAL_SPI_Transmit(&hspi1, cmd, 4, HAL_MAX_DELAY);  // Send Sector Erase command and address
+    HAL_SPI_Transmit(&hspi1, cmd, 4, 500);  // Send Sector Erase command and address
     FLASH_CS_HIGH();
 
     // Wait for the erase operation to complete
@@ -177,8 +177,8 @@ void Flash_PageProgram(uint32_t address, uint8_t* data, uint16_t length) {
     cmd[3] = address & 0xFF;
 
     FLASH_CS_LOW();
-    HAL_SPI_Transmit(&hspi1, cmd, 4, HAL_MAX_DELAY);  // Send Page Program command and address
-    HAL_SPI_Transmit(&hspi1, data, length, HAL_MAX_DELAY);  // Send data to be written
+    HAL_SPI_Transmit(&hspi1, cmd, 4, 500);  // Send Page Program command and address
+    HAL_SPI_Transmit(&hspi1, data, length, 500);  // Send data to be written
     FLASH_CS_HIGH();
 
     // Wait for the write operation to complete
@@ -208,7 +208,7 @@ void Flash_ChipErase(void)
     uint8_t cmd = CMD_CHIP_ERASE;
 
     FLASH_CS_LOW();
-    HAL_SPI_Transmit(&hspi1, &cmd, 1, HAL_MAX_DELAY);  // Send Chip Erase command
+    HAL_SPI_Transmit(&hspi1, &cmd, 1, 500);  // Send Chip Erase command
     FLASH_CS_HIGH();
 
     // Wait for the erase operation to complete
@@ -236,12 +236,12 @@ void Flash_SoftReset()
 
     // Step 1: Send the Enable Reset command (0x66)
     FLASH_CS_LOW();
-    HAL_SPI_Transmit(&hspi1, &enable_reset_cmd, 1, HAL_MAX_DELAY);
+    HAL_SPI_Transmit(&hspi1, &enable_reset_cmd, 1, 500);
     FLASH_CS_HIGH();
 
     // Step 2: Send the Reset command (0x99)
     FLASH_CS_LOW();
-    HAL_SPI_Transmit(&hspi1, &reset_cmd, 1, HAL_MAX_DELAY);
+    HAL_SPI_Transmit(&hspi1, &reset_cmd, 1, 500);
     FLASH_CS_HIGH();
 }
 /*  ----------- READ/WRITE Options ------------------------- */
@@ -285,8 +285,8 @@ void Flash_ReadData(uint32_t address, uint8_t* buffer, uint16_t length)
     cmd[3] = address & 0xFF;
 
     FLASH_CS_LOW();
-    HAL_SPI_Transmit(&hspi1, cmd, 4, HAL_MAX_DELAY);  // Send Read Data command and address
-    HAL_SPI_Receive(&hspi1, buffer, length, HAL_MAX_DELAY);  // Receive data
+    HAL_SPI_Transmit(&hspi1, cmd, 4, 500);  // Send Read Data command and address
+    HAL_SPI_Receive(&hspi1, buffer, length, 500);  // Receive data
     FLASH_CS_HIGH();
 }
 
@@ -377,7 +377,7 @@ uint8_t flash_check(void)
     uint8_t deviceID;
 
     Flash_SoftReset(); // resest the flash once to be sure the flash is ready with default settings
-    HAL_Delay(5);	// flash needs 30 microseconds for the reset. but i am giving it a 5 ms. its not issue as its on a startup.
+    HAL_Delay(30);	// flash needs 30 microseconds for the reset. but i am giving it a 5 ms. its not issue as its on a startup.
 
     // 1. Get and print the Device ID
     deviceID = Flash_ReadDeviceID();

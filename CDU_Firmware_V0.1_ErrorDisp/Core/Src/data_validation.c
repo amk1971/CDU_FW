@@ -47,8 +47,8 @@
 #define TACAN_CHANNEL_Y     'Y'
 
 /* ADF FREQUENCY RANGE*/
-#define ADF_MIN_FREQ        0.190
-#define ADF_MAX_FREQ        1.799 //+ PRECISION_FACTOR_2
+#define ADF_MIN_FREQ        190
+#define ADF_MAX_FREQ        1799 //+ PRECISION_FACTOR_2
 
 #define ADF_INCREMENT       1
 
@@ -219,7 +219,8 @@ bool input_data_validation_freq(Class_Id input_class, float input_val)
 			}
 		break;
 		case ADF:
-			if (input_val >= ADF_MIN_FREQ && input_val < ADF_MAX_FREQ)
+			uint16_t val=(uint16_t)((input_val)*1000 );;
+			if ((val >= ADF_MIN_FREQ )&& (val <= ADF_MAX_FREQ))
 			{
 				status = true;
 			}
