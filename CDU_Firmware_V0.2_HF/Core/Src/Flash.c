@@ -377,7 +377,7 @@ uint8_t flash_check(void)
     uint8_t deviceID;
 
     Flash_SoftReset(); // resest the flash once to be sure the flash is ready with default settings
-    HAL_Delay(30);	// flash needs 30 microseconds for the reset. but i am giving it a 5 ms. its not issue as its on a startup.
+ //   HAL_Delay(30);	// flash needs 30 microseconds for the reset. but i am giving it a 5 ms. its not issue as its on a startup.
 
     // 1. Get and print the Device ID
     deviceID = Flash_ReadDeviceID();
