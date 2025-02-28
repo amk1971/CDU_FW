@@ -20,6 +20,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "cmsis_os.h"
+#include "can.h"
 #include "spi.h"
 #include "tim.h"
 #include "usart.h"
@@ -79,7 +80,6 @@ int main(void)
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
   HAL_Init();
 
-
   /* USER CODE BEGIN Init */
 
   /* USER CODE END Init */
@@ -99,14 +99,12 @@ int main(void)
   MX_USART4_UART_Init();
   MX_TIM16_Init();
   MX_TIM17_Init();
+  MX_CAN_Init();
   /* USER CODE BEGIN 2 */
 
 //  HAL_NVIC_SetPriorityGrouping());
 #ifndef FREERTOS
   /* USER CODE END 2 */
-
-  /* Init scheduler */
-  osKernelInitialize();
 
   /* Call init function for freertos objects (in cmsis_os2.c) */
   MX_FREERTOS_Init();
