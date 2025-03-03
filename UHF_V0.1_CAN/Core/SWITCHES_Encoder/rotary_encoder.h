@@ -3,6 +3,9 @@
 
 void read_encoder_standby_mhz();
 void read_encoder_standby_khz();
+void read_encoder_channel_mhz(void );
+void read_encoder_channel_khz(void );
+void encoder_change_channel(void );
 void read_encoder_volume();
 void scroll_freqs_memory();
 void change_saved_channel_khz();
