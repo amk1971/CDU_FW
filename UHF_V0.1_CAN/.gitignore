@@ -2,8 +2,6 @@
 /.metadata/
 /.settings/
 /Debug/
-/Drivers/
-/Middlewares/
 *.launch
 *.bin
 *.hex
