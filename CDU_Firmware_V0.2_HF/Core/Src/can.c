@@ -120,7 +120,7 @@ void HAL_CAN_MspDeInit(CAN_HandleTypeDef* canHandle)
 /* USER CODE BEGIN 1 */
 void CAN_RECEIVE_FRAME(FRAME *frame)
 {
-    if(frame->fields.Request_Reply == 1)
+    if(frame->fields.Request_Reply == Reply)
     {
     	//Slave Reply
     }
@@ -150,7 +150,7 @@ void CAN_SEND_FRAME(FRAME *frame) {
 	}
 }
 //Active Freq 290.725 Can_TX_SF(1,0,1,0,1,99,290,725,955);
-void Can_TX_SF(bool request_reply, bool power_status, bool squelch, bool test_tone,
+void Can_TX_SF(CAN_REQUEST_REPLY request_reply, bool power_status, bool squelch, bool test_tone,
                bool receiver_mode, uint8_t volume, int mhz,int khz, uint16_t checksum)
 {
 	float tFreq = ConvertToFrequency(mhz,khz);

@@ -12,7 +12,7 @@
 #include "keyboard.h"
 #include "main.h"
 #include "debug_console.h"
-
+#include "can.h"
 /* -------------------------------------------------------------------------------------------------------- */
 /* -------------------------------------------- User Defines -------------------------------------------- */
 // Define row and column pins here (as GPIO pins)
@@ -217,7 +217,7 @@ char right_panel_scan(void) {
 //		debug_print("I_ Key Pressed RIGHT_SW2 :: %c", panel_key);
 	} else if (HAL_GPIO_ReadPin(RIGHT_SW3_GPIO_Port, RIGHT_SW3_Pin) == 0) {
 		panel_key = RIGHT_SW3;
-		Can_TX_SF(1,0,1,0,1,99,290,725,955);
+		Can_TX_SF(Request,0,1,0,1,99,290,725,955);
 //		debug_print("I_ Key Pressed RIGHT_SW3 :: %c", panel_key);
 	} else if (HAL_GPIO_ReadPin(RIGHT_SW4_GPIO_Port, RIGHT_SW4_Pin) == 0) {
 		panel_key = RIGHT_SW4;

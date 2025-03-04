@@ -54,7 +54,7 @@ typedef union
 
 typedef enum
 {
-	Request,
+	Request = 0,
 	Reply
 }CAN_REQUEST_REPLY;
 
@@ -68,7 +68,7 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan);
 void CAN_SEND_FRAME(FRAME *frame);
 void CAN_RECEIVE_FRAME(FRAME *frame);
 float ConvertToFrequency(int mhz, int khz);
-void Can_TX_SF(bool request_reply, bool power_status, bool squelch, bool test_tone,
+void Can_TX_SF(CAN_REQUEST_REPLY request_reply, bool power_status, bool squelch, bool test_tone,
                bool receiver_mode, uint8_t volume, int mhz,int khz, uint16_t checksum);
 /* USER CODE END Prototypes */
 
