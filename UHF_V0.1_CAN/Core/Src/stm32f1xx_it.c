@@ -285,7 +285,7 @@ void USART2_IRQHandler(void)
 void EXTI15_10_IRQHandler(void)
 {
   /* USER CODE BEGIN EXTI15_10_IRQn 0 */
-	HAL_GPIO_EXTI_IRQHandler(LEFT_A1_Pin);
+  //HAL_GPIO_EXTI_IRQHandler(LEFT_A1_Pin);
   /* USER CODE END EXTI15_10_IRQn 0 */
   HAL_GPIO_EXTI_IRQHandler(RIGHT_A2_Pin);
   HAL_GPIO_EXTI_IRQHandler(RIGHT_A1_Pin);

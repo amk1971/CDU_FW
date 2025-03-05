@@ -71,7 +71,7 @@ void HAL_GPIO_EXTI_IRQHandler(uint16_t GPIO_Pin)
         if (HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_14)) {  // Check if it was from PC14
             // Handle interrupt from PC14
         	GPIO_EXTI_Callback_Left(GPIO_Pin);
-        } else
+        }
         if (HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_14)) {  // Check if it was from PB14
             // Handle interrupt from PB14
         	HAL_GPIO_EXTI_Callback(GPIO_Pin);
@@ -92,7 +92,7 @@ void HAL_GPIO_EXTI_IRQHandler(uint16_t GPIO_Pin)
 void GPIO_EXTI_Callback_Left(uint16_t GPIO_Pin){
  if (GPIO_Pin == LEFT_A1_Pin)
 	{
-		if (!HF_parameters.PROG == OFF)
+		if (HF_parameters.PROG == OFF)
 		{
 			read_encoder_volume();
 		}

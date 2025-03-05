@@ -292,7 +292,7 @@ void read_encoder_standby_mhz() // Controls the 10 kHz steps for larger place va
 
 		encval -= enc_states[(old_AB & 0x0f)];
 
-		if (encval > 1)  // Rotate forward (increment)
+		if (encval > 0)  // Rotate forward (increment)
 		{
 			if (g_vars.g_standby_mhz_knob < STANDBY_MHZ_MAX)
 			{
@@ -349,7 +349,7 @@ void read_encoder_channel_mhz() // Controls the 10 kHz steps for larger place va
 
 		encval -= enc_states[(old_AB & 0x0f)];
 
-		if (encval > 1)  // Rotate forward (increment)
+		if (encval > 0)  // Rotate forward (increment)
 		{
 			if (MHz < STANDBY_MHZ_MAX)
 			{
@@ -362,7 +362,7 @@ void read_encoder_channel_mhz() // Controls the 10 kHz steps for larger place va
 			read_encoder_channel_flag = true;
 			encval = 0;
 		}
-		else if (encval < -1)  // Rotate backward (decrement)
+		else if (encval < 0)  // Rotate backward (decrement)
 		{
 			if (MHz > STANDBY_MHZ_MIN)
 			{
@@ -407,7 +407,7 @@ void read_encoder_standby_khz()  // KHz right inner knob
 		encval -= enc_states[(old_GH & 0x0f)];
 
 		// Update counter if encoder has rotated a full indent, that is at least 4 steps
-		if (encval > 1)  // Four steps forward
+		if (encval > 0)  // Four steps forward
 		{
 			g_vars.g_standby_khz_knob += CHANGE_KHZ;  // Update kHz counter
 
@@ -429,7 +429,7 @@ void read_encoder_standby_khz()  // KHz right inner knob
 #endif
 			encval = 0;  // Reset encoder value
 		}
-		else if (encval < -1)  // Four steps backward
+		else if (encval < 0)  // Four steps backward
 		{
 
 			if (g_vars.g_standby_khz_knob == STANDBY_KHZ_MIN)
@@ -488,7 +488,7 @@ void read_encoder_channel_khz()  // KHz right inner knob
 		encval -= enc_states[(old_GH & 0x0f)];
 
 		// Update counter if encoder has rotated a full indent, that is at least 4 steps
-		if (encval > 1)  // Four steps forward
+		if (encval > 0)  // Four steps forward
 		{
 			KHz += CHANGE_KHZ;  // Update kHz counter
 
@@ -510,7 +510,7 @@ void read_encoder_channel_khz()  // KHz right inner knob
 #endif
 			encval = 0;  // Reset encoder value
 		}
-		else if (encval < -1)  // Four steps backward
+		else if (encval < 0)  // Four steps backward
 		{
 
 			if (KHz == STANDBY_KHZ_MIN)
@@ -793,29 +793,41 @@ void encoder_change_channel(void )
 
 		encval -= enc_states[(old_AB & 0x0f)];
 
-		if (encval > 1)  // Rotate forward (increment)
+		if (encval > 0)  // Rotate forward (increment)
 		{
-			if (HF_parameters.Channel < TOTAL_PRESETS)
-			{
-				HF_parameters.Channel++;  // Increment by 1
+			for(int i = HF_parameters.Channel; i < TOTAL_PRESETS; i++) {
+				if(saved_channels[i] > 0){
+					HF_parameters.Channel = i;
+					break;
+				}
 			}
-			else
-			{
-				HF_parameters.Channel = TOTAL_PRESETS; // Wrap to 019 (after 179)
-			}
+//			if (HF_parameters.Channel < TOTAL_PRESETS)
+//			{
+//				HF_parameters.Channel++;  // Increment by 1
+//			}
+//			else
+//			{
+//				HF_parameters.Channel = TOTAL_PRESETS; // Wrap to 019 (after 179)
+//			}
 			encoder_change_channel_flag = true;
 			encval = 0;
 		}
 		else if (encval < 0)  // Rotate backward (decrement)
 		{
-			if (HF_parameters.Channel > TOTAL_PRESETS)
-			{
-				HF_parameters.Channel--;  // Decrement by 1
+			for(int i = HF_parameters.Channel; i > 0; i--) {
+				if(saved_channels[i] > 0){
+					HF_parameters.Channel = i;
+					break;
+				}
 			}
-			else
-			{
-				HF_parameters.Channel = TOTAL_PRESETS; // Wrap to 179 (after going below 019)
-			}
+//			if (HF_parameters.Channel > TOTAL_PRESETS)
+//			{
+//				HF_parameters.Channel--;  // Decrement by 1
+//			}
+//			else
+//			{
+//				HF_parameters.Channel = TOTAL_PRESETS; // Wrap to 179 (after going below 019)
+//			}
 			encoder_change_channel_flag = true;
 			encval = 0;
 		}
