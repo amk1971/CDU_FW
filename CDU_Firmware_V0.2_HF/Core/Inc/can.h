@@ -27,11 +27,12 @@ extern "C" {
 
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
-#include "sys_defines.h"
+
 /* USER CODE BEGIN Includes */
 #include<stdio.h>
 #include<string.h>
 #include<stdbool.h>
+#include "sys_defines.h"
 /* USER CODE END Includes */
 
 extern CAN_HandleTypeDef hcan;

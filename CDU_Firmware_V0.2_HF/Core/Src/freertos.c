@@ -66,6 +66,18 @@ void StartDefaultTask(void *argument);
 
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
 
+/* Hook prototypes */
+void vApplicationStackOverflowHook(xTaskHandle xTask, signed char *pcTaskName);
+
+/* USER CODE BEGIN 4 */
+void vApplicationStackOverflowHook(xTaskHandle xTask, signed char *pcTaskName)
+{
+   /* Run time stack overflow checking is performed if
+   configCHECK_FOR_STACK_OVERFLOW is defined to 1 or 2. This hook function is
+   called if a stack overflow is detected. */
+}
+/* USER CODE END 4 */
+
 /**
   * @brief  FreeRTOS initialization
   * @param  None
@@ -148,7 +160,7 @@ void StartDefaultTask(void *argument)
 // Task Size
 #define KEYBOARD_STACK_SIZE	256
 #define SERIAL1_STACK_SIZE	512
-#define COMM_BUS_STACK_SIZE 512
+#define COMM_BUS_STACK_SIZE 128
 //#define SERIAL2_STACK_SIZE	256
 //#define SERIAL3_STACK_SIZE	256
 //#define SERIAL4_STACK_SIZE	256
@@ -163,6 +175,7 @@ xQueueHandle xKeyQueue = NULL;
 xQueueHandle xuartTXQueue = NULL;
 xQueueHandle xuartRXQueue = NULL;
 xQueueHandle xcanRXQueue = NULL;
+
 #if DEBUG_CONSOLE
 xQueueHandle xDebugQueue = NULL;
 #endif
@@ -170,6 +183,8 @@ xQueueHandle xDebugQueue = NULL;
 //SemaphoreHandle_t uartRXSemaphoreHandle;
 
 SemaphoreHandle_t xFlashMutex;
+
+
 
 /*
  * Function: create_cdu_tasks
@@ -210,7 +225,7 @@ void create_cdu_tasks(void)
 	xTaskCreate(serial_1553_thread, "Serial 1553", SERIAL1_STACK_SIZE, (void *) 1, 1, NULL);
 
 	// Can Thread for Comm Bus (Medium priority)
-	xTaskCreate(Comm_bus_thread, "COMM BUS CAN", COMM_BUS_STACK_SIZE, (void *) 1, 1, NULL);
+	//xTaskCreate(Comm_bus_thread, "COMM BUS CAN", COMM_BUS_STACK_SIZE, (void *) 1, 1, NULL);
 
 	// A display task (Low priority)
 	xTaskCreate(tft_lcd_thread, "TFT_LCD", TFT_LCD_STACK_SIZE, (void *)1, 0, NULL);
@@ -269,7 +284,7 @@ void create_cdu_queus(void)
 #endif
 
 	// CAN Reception queue
-	xcanRXQueue = xQueueCreate(QUEUE_LENGTH, CAN_MESSAGE_LENGTH + 1);
+	//xcanRXQueue = xQueueCreate(QUEUE_LENGTH, CAN_MESSAGE_LENGTH + 1);
 
 
 }

@@ -18,18 +18,13 @@
   */
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
-#include <stdint.h>
-#include <stdio.h>
-#include <string.h>
-#include "FreeRTOS.h"
+
+#include "freertos.h"
 #include "semphr.h"
-#include "sys_defines.h"
 #include "can.h"
 
-extern xQueueHandle xcanRXQueue;
-
 /* USER CODE BEGIN 0 */
-
+extern xQueueHandle xcanRXQueue;
 /* USER CODE END 0 */
 
 CAN_HandleTypeDef hcan;

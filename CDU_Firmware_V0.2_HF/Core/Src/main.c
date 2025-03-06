@@ -99,10 +99,7 @@ int main(void)
   MX_USART4_UART_Init();
   MX_TIM16_Init();
   MX_TIM17_Init();
-  MX_CAN_Init();
-
-
-
+ // MX_CAN_Init();
   /* USER CODE BEGIN 2 */
 #ifndef FREERTOS
   /* USER CODE END 2 */
