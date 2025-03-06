@@ -136,14 +136,22 @@ void HAL_CAN_MspDeInit(CAN_HandleTypeDef* canHandle)
 // Fucntions
 void CAN_RECEIVE_FRAME(FRAME *frame)
 {
-    if(frame->fields.Request_Reply == Reply)
-    {
-    	//Slave Reply
-    	Can_TX_SF(Reply,0,1,0,1,99,290,725,955);
-    }
-    else
-    {
-    }
+	//Reply With Health Message
+
+	if(frame->data.eID == UHF) {
+		if(frame->data.mID == Health){
+			CAN_SEND_FRAME(frame);		//For health message Reply with same frame
+		}
+	}
+
+//    if(frame->fields.Request_Reply == Reply)
+//    {
+//    	//Slave Reply
+//    	Can_TX_SF(Reply,0,1,0,1,99,290,725,955);
+//    }
+//    else
+//    {
+//    }
 
 }
 

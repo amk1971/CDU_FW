@@ -101,17 +101,7 @@ int main(void)
   MX_TIM17_Init();
   MX_CAN_Init();
 
-  CAN_Filter_Config();
 
-  if(HAL_CAN_ActivateNotification(&hcan,CAN_IT_RX_FIFO0_MSG_PENDING)!=HAL_OK)
-  {
-	  Error_Handler();
-  }
-
-  if(HAL_CAN_Start(&hcan)!=HAL_OK)
-  {
-	  Error_Handler();
-  }
 
   /* USER CODE BEGIN 2 */
 #ifndef FREERTOS

@@ -9,6 +9,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
+#include "sys_defines.h"
 #include "data_handler.h"
 #include "Flash.h"
 #include "TFT_LCD.h"
@@ -1090,7 +1091,7 @@ void handle_HF_incoming_message(Identifier *ident, uint8_t f_mhz,
 }
 
 /*
- * Function: handle_UHF_incoming_message
+ * Function: handle_UHF_incoming_message    .....
  * Arguments: Identifier* ident, uint8_t f_mhz, uint16_t f_khz
  *
  * Description:
@@ -1122,6 +1123,9 @@ void handle_UHF_incoming_message(Identifier *ident, uint8_t f_mhz,
 		break;
 	case COM_ERROR:
 		// handle com error
+		break;
+	case Health:
+		cdu_parameters.NAV_message_counter = 0;
 		break;
 	default:
 		break;

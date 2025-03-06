@@ -11,30 +11,10 @@
 #include <stdint.h>
 #include "FreeRTOS.h"
 #include "semphr.h"
+#include "sys_defines.h"
 
 #define TACAN_S	5
 
-typedef enum {
-	NAV = 0,
-	ADF,
-	TACAN,
-	HF,
-	VHF,
-	UHF,
-	class_ID_Count
-}Class_Id;
-
-typedef enum {
-	S_FREQ,
-	A_FREQ,
-	VOLUME,
-	Health,
-	MODE,
-	V_T_S,
-	RESET_STATUS,
-	COM_ERROR,
-    INVALID
-}Message_Id;
 
 typedef enum{
 	MODE_CHANNEL,
@@ -121,11 +101,24 @@ typedef struct {
 	float p6_uhf_freq;						// UHF Pre-Programmed Frequency P6
 	float p7_uhf_freq;						// UHF Pre-Programmed Frequency P7
 	float p8_uhf_freq;						// UHF Pre-Programmed Frequency P8
+	float p9_uhf_freq;						// UHF Pre-Programmed Frequency P7
+	float p10_uhf_freq;						// UHF Pre-Programmed Frequency P8
+	float p11_uhf_freq;						// UHF Pre-Programmed Frequency P7
+	float p12_uhf_freq;						// UHF Pre-Programmed Frequency P8
+	float p13_uhf_freq;						// UHF Pre-Programmed Frequency P7
+	float p14_uhf_freq;						// UHF Pre-Programmed Frequency P8
+	float p15_uhf_freq;						// UHF Pre-Programmed Frequency P7
+	float p16_uhf_freq;						// UHF Pre-Programmed Frequency P8
+	float p17_uhf_freq;						// UHF Pre-Programmed Frequency P7
+	float p18_uhf_freq;						// UHF Pre-Programmed Frequency P8
+	float p19_uhf_freq;						// UHF Pre-Programmed Frequency P7
+	float p20_uhf_freq;						// UHF Pre-Programmed Frequency P8
 
 	// Volumes
 	uint8_t volume_nav;
 	uint8_t volume_adf;
 	uint8_t volume_tacan;
+	uint8_t volume_uhf;
 
 	// TACAN Channel Parameters
 	char standby_channel[TACAN_S];			// TACAN Standby Channel

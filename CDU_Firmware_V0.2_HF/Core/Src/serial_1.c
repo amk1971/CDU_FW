@@ -10,6 +10,7 @@
 #include <string.h>
 #include "FreeRTOS.h"
 #include "task.h"
+#include "sys_defines.h"
 #include "serial_1.h"
 #include "main.h"
 #include "debug_console.h"

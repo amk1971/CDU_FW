@@ -10,6 +10,7 @@
 #include <string.h>
 
 #include "FreeRTOS.h"
+#include "sys_defines.h"
 #include "data_handler.h"
 #include "data_validation.h"
 #include "debug_console.h"
@@ -662,7 +663,7 @@ void tft_lcd_Home(int mode) {
 
     vTaskDelay(pdMS_TO_TICKS(10));
 
-    if (cdu_parameters.UHF_message_counter > 3000)
+    if (cdu_parameters.UHF_message_counter > 3000)  //.....
       tft_lcd_send_command_int("t7", "pco", RED);
     else
       tft_lcd_send_command_int("t7", "pco", BLACK);

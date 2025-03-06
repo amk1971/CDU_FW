@@ -37,6 +37,35 @@ extern "C" {
 extern CAN_HandleTypeDef hcan;
 
 /* USER CODE BEGIN Private defines */
+
+typedef enum {
+	NAV = 0,
+	ADF,
+	TACAN,
+	HF,
+	VHF,
+	UHF,
+	class_ID_Count
+}Class_Id;
+
+typedef enum {
+	T_FREQ,
+	A_FREQ,
+	VOL,
+	Health,					//Health Check message
+	MODE,
+	V_T_S,
+	RESET_STATUS,
+	COM_ERROR,
+    INVALid
+} CanMessage_Id;
+
+typedef struct {
+	Class_Id eID;			//Equipment ID
+	CanMessage_Id mID;			//message ID
+
+} Comm_bus_Frame;
+
 typedef union
 {
     struct {
@@ -49,6 +78,7 @@ typedef union
         uint16_t Checksum;         // 2 bytes
         float   Frequency;         // 4 bytes
     } fields;
+    Comm_bus_Frame data;			// data in Comm bus frame
     uint64_t RX_TX_FRAME;  // Full 8 bytes
 } FRAME;
 
