@@ -80,7 +80,7 @@
 
 #define VOLUME_ "Vol"
 
-#define TOTAL_SCREENS 29
+#define TOTAL_SCREENS 36
 
 #define MAX_STANDBY_FREQ_LEN 10
 
@@ -635,24 +635,24 @@ void tft_lcd_Home(int mode) {
 
     vTaskDelay(pdMS_TO_TICKS(10));
 
-    //		if (cdu_parameters.ADF_message_counter > 3000)
-    //			tft_lcd_send_command_int("t2", "pco", RED);
-    //		else
+    if (cdu_parameters.ADF_message_counter > 3000)
+    			tft_lcd_send_command_int("t2", "pco", RED);
+    else
     tft_lcd_send_command_int("t2", "pco", BLACK);
 
     vTaskDelay(pdMS_TO_TICKS(10));
-    //
-    //		if (cdu_parameters.TACAN_message_counter > 3000)
-    //			tft_lcd_send_command_int("t3", "pco", RED);
-    //		else
+
+    if (cdu_parameters.TACAN_message_counter > 3000)
+    		tft_lcd_send_command_int("t3", "pco", RED);
+    else
     tft_lcd_send_command_int("t3", "pco", BLACK);
 
     vTaskDelay(pdMS_TO_TICKS(10));
 
-    //    if (cdu_parameters.HF_message_counter > 3000)
-    //      tft_lcd_send_command_int("t5", "pco", RED);
-    //    else
-    //      tft_lcd_send_command_int("t5", "pco", BLACK);
+        if (cdu_parameters.HF_message_counter > 3000)
+          tft_lcd_send_command_int("t5", "pco", RED);
+        else
+          tft_lcd_send_command_int("t5", "pco", BLACK);
     //
     //    vTaskDelay(pdMS_TO_TICKS(10));
 
@@ -4207,7 +4207,7 @@ void hf_p4_screen_handler(uint8_t key) {  // current_screen = HF_P2_SCREEN;
         tft_lcd_change_screen(HF_P3_PROG_SCREEN);
         tft_lcd_send_command_float("t1", TEXT, cdu_parameters.standby_hf_freq, STANDBY);
         tft_lcd_send_command_float("t4", TEXT, cdu_parameters.active_hf_freq, ACTIVE);
-        //tft_lcd_send_command_float("t10", TEXT, cdu_parameters.p9_hf_freq, PRE_PRO_9);    .....
+        tft_lcd_send_command_float("t10", TEXT, cdu_parameters.p9_hf_freq, PRE_PRO_9);
         tft_lcd_send_command_int("t5", COLOR_CHG_BG, BLACK);
         tft_lcd_send_command_int("t5", COLOR_CHG_TEXT, WHITE);
         prefix_index = '9';
@@ -4217,7 +4217,7 @@ void hf_p4_screen_handler(uint8_t key) {  // current_screen = HF_P2_SCREEN;
         tft_lcd_change_screen(HF_P3_PROG_SCREEN);
         tft_lcd_send_command_float("t1", TEXT, cdu_parameters.standby_hf_freq, STANDBY);
         tft_lcd_send_command_float("t4", TEXT, cdu_parameters.active_hf_freq, ACTIVE);
-        //tft_lcd_send_command_float("t10", TEXT, cdu_parameters.p10_hf_freq, PRE_PRO_10);
+        tft_lcd_send_command_float("t10", TEXT, cdu_parameters.p10_hf_freq, PRE_PRO_10);
         tft_lcd_send_command_int("t6", COLOR_CHG_BG, BLACK);
         tft_lcd_send_command_int("t6", COLOR_CHG_TEXT, WHITE);
         prefix_index = '10';
@@ -4226,7 +4226,7 @@ void hf_p4_screen_handler(uint8_t key) {  // current_screen = HF_P2_SCREEN;
         tft_lcd_change_screen(HF_P3_PROG_SCREEN);
         tft_lcd_send_command_float("t1", TEXT, cdu_parameters.standby_hf_freq, STANDBY);
         tft_lcd_send_command_float("t4", TEXT, cdu_parameters.active_hf_freq, ACTIVE);
-        //tft_lcd_send_command_float("t10", TEXT, cdu_parameters.p11_hf_freq, PRE_PRO_11);
+        tft_lcd_send_command_float("t10", TEXT, cdu_parameters.p11_hf_freq, PRE_PRO_11);
         tft_lcd_send_command_int("t7", COLOR_CHG_BG, BLACK);
         tft_lcd_send_command_int("t7", COLOR_CHG_TEXT, WHITE);
         prefix_index = '11';
@@ -4235,7 +4235,7 @@ void hf_p4_screen_handler(uint8_t key) {  // current_screen = HF_P2_SCREEN;
         tft_lcd_change_screen(HF_P3_PROG_SCREEN);
         tft_lcd_send_command_float("t1", TEXT, cdu_parameters.standby_hf_freq, STANDBY);
         tft_lcd_send_command_float("t4", TEXT, cdu_parameters.active_hf_freq, ACTIVE);
-        //tft_lcd_send_command_float("t10", TEXT, cdu_parameters.p12_hf_freq, PRE_PRO_12);
+        tft_lcd_send_command_float("t10", TEXT, cdu_parameters.p12_hf_freq, PRE_PRO_12);
         tft_lcd_send_command_int("t8", COLOR_CHG_BG, BLACK);
         tft_lcd_send_command_int("t8", COLOR_CHG_TEXT, WHITE);
         prefix_index = '12';
@@ -4310,7 +4310,7 @@ void hf_p5_screen_handler(uint8_t key) {
         tft_lcd_change_screen(HF_P4_PROG_SCREEN);
         tft_lcd_send_command_float("t1", TEXT, cdu_parameters.standby_hf_freq, STANDBY);
         tft_lcd_send_command_float("t4", TEXT, cdu_parameters.active_hf_freq, ACTIVE);
-        //tft_lcd_send_command_float("t10", TEXT, cdu_parameters.p13_hf_freq, PRE_PRO_5);   .....
+        tft_lcd_send_command_float("t10", TEXT, cdu_parameters.p13_hf_freq, PRE_PRO_5);
         tft_lcd_send_command_int("t5", COLOR_CHG_BG, BLACK);
         tft_lcd_send_command_int("t5", COLOR_CHG_TEXT, WHITE);
         prefix_index = '13';
@@ -4320,7 +4320,7 @@ void hf_p5_screen_handler(uint8_t key) {
         tft_lcd_change_screen(HF_P4_PROG_SCREEN);
         tft_lcd_send_command_float("t1", TEXT, cdu_parameters.standby_hf_freq, STANDBY);
         tft_lcd_send_command_float("t4", TEXT, cdu_parameters.active_hf_freq, ACTIVE);
-        //tft_lcd_send_command_float("t10", TEXT, cdu_parameters.p14_hf_freq, PRE_PRO_6); .....
+        tft_lcd_send_command_float("t10", TEXT, cdu_parameters.p14_hf_freq, PRE_PRO_6);
         tft_lcd_send_command_int("t6", COLOR_CHG_BG, BLACK);
         tft_lcd_send_command_int("t6", COLOR_CHG_TEXT, WHITE);
         prefix_index = '14';
@@ -4329,7 +4329,7 @@ void hf_p5_screen_handler(uint8_t key) {
         tft_lcd_change_screen(HF_P4_PROG_SCREEN);
         tft_lcd_send_command_float("t1", TEXT, cdu_parameters.standby_hf_freq, STANDBY);
         tft_lcd_send_command_float("t4", TEXT, cdu_parameters.active_hf_freq, ACTIVE);
-        //tft_lcd_send_command_float("t10", TEXT, cdu_parameters.p15_hf_freq, PRE_PRO_7);
+        tft_lcd_send_command_float("t10", TEXT, cdu_parameters.p15_hf_freq, PRE_PRO_7);
         tft_lcd_send_command_int("t7", COLOR_CHG_BG, BLACK);
         tft_lcd_send_command_int("t7", COLOR_CHG_TEXT, WHITE);
         prefix_index = '15';
@@ -4338,7 +4338,7 @@ void hf_p5_screen_handler(uint8_t key) {
         tft_lcd_change_screen(HF_P4_PROG_SCREEN);
         tft_lcd_send_command_float("t1", TEXT, cdu_parameters.standby_hf_freq, STANDBY);
         tft_lcd_send_command_float("t4", TEXT, cdu_parameters.active_hf_freq, ACTIVE);
-        //tft_lcd_send_command_float("t10", TEXT, cdu_parameters.p16_hf_freq, PRE_PRO_8);
+        tft_lcd_send_command_float("t10", TEXT, cdu_parameters.p16_hf_freq, PRE_PRO_8);
         tft_lcd_send_command_int("t8", COLOR_CHG_BG, BLACK);
         tft_lcd_send_command_int("t8", COLOR_CHG_TEXT, WHITE);
         prefix_index = '16';
@@ -4413,7 +4413,7 @@ void hf_p6_screen_handler(uint8_t key) {
         tft_lcd_change_screen(HF_P5_PROG_SCREEN);
         tft_lcd_send_command_float("t1", TEXT, cdu_parameters.standby_hf_freq, STANDBY);
         tft_lcd_send_command_float("t4", TEXT, cdu_parameters.active_hf_freq, ACTIVE);
-        //tft_lcd_send_command_float("t10", TEXT, cdu_parameters.p17_hf_freq, PRE_PRO_17);  .....
+        tft_lcd_send_command_float("t10", TEXT, cdu_parameters.p17_hf_freq, PRE_PRO_17);
         tft_lcd_send_command_int("t5", COLOR_CHG_BG, BLACK);
         tft_lcd_send_command_int("t5", COLOR_CHG_TEXT, WHITE);
         prefix_index = '17';
@@ -4423,7 +4423,7 @@ void hf_p6_screen_handler(uint8_t key) {
         tft_lcd_change_screen(HF_P5_PROG_SCREEN);
         tft_lcd_send_command_float("t1", TEXT, cdu_parameters.standby_hf_freq, STANDBY);
         tft_lcd_send_command_float("t4", TEXT, cdu_parameters.active_hf_freq, ACTIVE);
-        //tft_lcd_send_command_float("t10", TEXT, cdu_parameters.p18_hf_freq, PRE_PRO_17);
+        tft_lcd_send_command_float("t10", TEXT, cdu_parameters.p18_hf_freq, PRE_PRO_17);
         tft_lcd_send_command_int("t6", COLOR_CHG_BG, BLACK);
         tft_lcd_send_command_int("t6", COLOR_CHG_TEXT, WHITE);
         prefix_index = '18';
@@ -4432,7 +4432,7 @@ void hf_p6_screen_handler(uint8_t key) {
         tft_lcd_change_screen(HF_P5_PROG_SCREEN);
         tft_lcd_send_command_float("t1", TEXT, cdu_parameters.standby_hf_freq, STANDBY);
         tft_lcd_send_command_float("t4", TEXT, cdu_parameters.active_hf_freq, ACTIVE);
-        //tft_lcd_send_command_float("t10", TEXT, cdu_parameters.p19_hf_freq, PRE_PRO_17);
+        tft_lcd_send_command_float("t10", TEXT, cdu_parameters.p19_hf_freq, PRE_PRO_17);
         tft_lcd_send_command_int("t7", COLOR_CHG_BG, BLACK);
         tft_lcd_send_command_int("t7", COLOR_CHG_TEXT, WHITE);
         prefix_index = '19';
@@ -4819,20 +4819,20 @@ void hf_p3_prog_screen_handler(uint8_t key) {
       bool status = input_data_validation_freq(HF, value);
       if (status) {
         if (strcmp(prefix, PRE_PRO_9) == 0) {
-         // cdu_parameters.p9_hf_freq = value;
-         // tft_lcd_send_command_float("t10", TEXT, cdu_parameters.p9_hf_freq, PRE_PRO_9); .....
+         cdu_parameters.p9_hf_freq = value;
+          tft_lcd_send_command_float("t10", TEXT, cdu_parameters.p9_hf_freq, PRE_PRO_9);
         }
         if (strcmp(prefix, PRE_PRO_10) == 0) {
-          //cdu_parameters.p10_hf_freq = value;
-          //tft_lcd_send_command_float("t10", TEXT, cdu_parameters.p10_hf_freq, PRE_PRO_10);
+          cdu_parameters.p10_hf_freq = value;
+          tft_lcd_send_command_float("t10", TEXT, cdu_parameters.p10_hf_freq, PRE_PRO_10);
         }
         if (strcmp(prefix, PRE_PRO_11) == 0) {
-          //cdu_parameters.p11_hf_freq = value;
-          //tft_lcd_send_command_float("t10", TEXT, cdu_parameters.p11_hf_freq, PRE_PRO_11);
+          cdu_parameters.p11_hf_freq = value;
+          tft_lcd_send_command_float("t10", TEXT, cdu_parameters.p11_hf_freq, PRE_PRO_11);
         }
         if (strcmp(prefix, PRE_PRO_12) == 0) {
-          //cdu_parameters.p12_hf_freq = value;
-          //tft_lcd_send_command_float("t10", TEXT, cdu_parameters.p12_hf_freq, PRE_PRO_12);
+          cdu_parameters.p12_hf_freq = value;
+          tft_lcd_send_command_float("t10", TEXT, cdu_parameters.p12_hf_freq, PRE_PRO_12);
         }
         update_flash();
       } else {
@@ -4878,7 +4878,7 @@ void hf_p3_prog_screen_handler(uint8_t key) {
         tft_lcd_change_screen(HF_P3_PROG_SCREEN);
         tft_lcd_send_command_float("t1", TEXT, cdu_parameters.standby_hf_freq, STANDBY);
         tft_lcd_send_command_float("t4", TEXT, cdu_parameters.active_hf_freq, ACTIVE);
-        //tft_lcd_send_command_float("t10", TEXT, cdu_parameters.p9_hf_freq, PRE_PRO_9);    .....
+        tft_lcd_send_command_float("t10", TEXT, cdu_parameters.p9_hf_freq, PRE_PRO_9);
         tft_lcd_send_command_int("t5", COLOR_CHG_BG, BLACK);
         tft_lcd_send_command_int("t5", COLOR_CHG_TEXT, WHITE);
         prefix_index = '9';
@@ -4887,7 +4887,7 @@ void hf_p3_prog_screen_handler(uint8_t key) {
         tft_lcd_change_screen(HF_P3_PROG_SCREEN);
         tft_lcd_send_command_float("t1", TEXT, cdu_parameters.standby_hf_freq, STANDBY);
         tft_lcd_send_command_float("t4", TEXT, cdu_parameters.active_hf_freq, ACTIVE);
-        //tft_lcd_send_command_float("t10", TEXT, cdu_parameters.p10_hf_freq, PRE_PRO_10);
+        tft_lcd_send_command_float("t10", TEXT, cdu_parameters.p10_hf_freq, PRE_PRO_10);
         tft_lcd_send_command_int("t6", COLOR_CHG_BG, BLACK);
         tft_lcd_send_command_int("t6", COLOR_CHG_TEXT, WHITE);
         prefix_index = '10';
@@ -4896,7 +4896,7 @@ void hf_p3_prog_screen_handler(uint8_t key) {
         tft_lcd_change_screen(HF_P3_PROG_SCREEN);
         tft_lcd_send_command_float("t1", TEXT, cdu_parameters.standby_hf_freq, STANDBY);
         tft_lcd_send_command_float("t4", TEXT, cdu_parameters.active_hf_freq, ACTIVE);
-        //tft_lcd_send_command_float("t10", TEXT, cdu_parameters.p11_hf_freq, PRE_PRO_11);
+        tft_lcd_send_command_float("t10", TEXT, cdu_parameters.p11_hf_freq, PRE_PRO_11);
         tft_lcd_send_command_int("t7", COLOR_CHG_BG, BLACK);
         tft_lcd_send_command_int("t7", COLOR_CHG_TEXT, WHITE);
         prefix_index = '11';
@@ -4905,7 +4905,7 @@ void hf_p3_prog_screen_handler(uint8_t key) {
         tft_lcd_change_screen(HF_P3_PROG_SCREEN);
         tft_lcd_send_command_float("t1", TEXT, cdu_parameters.standby_hf_freq, STANDBY);
         tft_lcd_send_command_float("t4", TEXT, cdu_parameters.active_hf_freq, ACTIVE);
-        //tft_lcd_send_command_float("t10", TEXT, cdu_parameters.p12_hf_freq, PRE_PRO_12);
+        tft_lcd_send_command_float("t10", TEXT, cdu_parameters.p12_hf_freq, PRE_PRO_12);
         tft_lcd_send_command_int("t8", COLOR_CHG_BG, BLACK);
         tft_lcd_send_command_int("t8", COLOR_CHG_TEXT, WHITE);
         prefix_index = '12';
@@ -4930,16 +4930,16 @@ void hf_p3_prog_screen_handler(uint8_t key) {
         tft_lcd_send_command_float("t1", TEXT, cdu_parameters.standby_hf_freq, STANDBY);
         switch (prefix_index) {
           case '9':
-            //tft_lcd_send_command_float("t10", TEXT, cdu_parameters.p9_hf_freq, PRE_PRO_9);   .....
+            tft_lcd_send_command_float("t10", TEXT, cdu_parameters.p9_hf_freq, PRE_PRO_9);
             break;
           case '10':
-            //tft_lcd_send_command_float("t10", TEXT, cdu_parameters.p10_hf_freq, PRE_PRO_10);
+            tft_lcd_send_command_float("t10", TEXT, cdu_parameters.p10_hf_freq, PRE_PRO_10);
             break;
           case '11':
-            //tft_lcd_send_command_float("t10", TEXT, cdu_parameters.p11_hf_freq, PRE_PRO_11);
+            tft_lcd_send_command_float("t10", TEXT, cdu_parameters.p11_hf_freq, PRE_PRO_11);
             break;
           case '12':
-            //tft_lcd_send_command_float("t10", TEXT, cdu_parameters.p12_hf_freq, PRE_PRO_12);
+            tft_lcd_send_command_float("t10", TEXT, cdu_parameters.p12_hf_freq, PRE_PRO_12);
             break;
         }
         prefix_index = 0;
@@ -4979,20 +4979,20 @@ void hf_p4_prog_screen_handler(uint8_t key) {
       bool status = input_data_validation_freq(HF, value);
       if (status) {
         if (strcmp(prefix, PRE_PRO_13) == 0) {
-          //cdu_parameters.p13_hf_freq = value;
-          //tft_lcd_send_command_float("t10", TEXT, cdu_parameters.p13_hf_freq, PRE_PRO_13);
+          cdu_parameters.p13_hf_freq = value;
+          tft_lcd_send_command_float("t10", TEXT, cdu_parameters.p13_hf_freq, PRE_PRO_13);
         }
         if (strcmp(prefix, PRE_PRO_14) == 0) {
-          //cdu_parameters.p14_hf_freq = value;
-          //tft_lcd_send_command_float("t10", TEXT, cdu_parameters.p14_hf_freq, PRE_PRO_14);
+          cdu_parameters.p14_hf_freq = value;
+          tft_lcd_send_command_float("t10", TEXT, cdu_parameters.p14_hf_freq, PRE_PRO_14);
         }
         if (strcmp(prefix, PRE_PRO_15) == 0) {
-          //cdu_parameters.p15_hf_freq = value;
-          //tft_lcd_send_command_float("t10", TEXT, cdu_parameters.p15_hf_freq, PRE_PRO_15);
+          cdu_parameters.p15_hf_freq = value;
+          tft_lcd_send_command_float("t10", TEXT, cdu_parameters.p15_hf_freq, PRE_PRO_15);
         }
         if (strcmp(prefix, PRE_PRO_16) == 0) {
-          //cdu_parameters.p16_hf_freq = value;
-          //tft_lcd_send_command_float("t10", TEXT, cdu_parameters.p16_hf_freq, PRE_PRO_16);
+          cdu_parameters.p16_hf_freq = value;
+          tft_lcd_send_command_float("t10", TEXT, cdu_parameters.p16_hf_freq, PRE_PRO_16);
         }
         update_flash();
       } else {
@@ -5038,7 +5038,7 @@ void hf_p4_prog_screen_handler(uint8_t key) {
         tft_lcd_change_screen(HF_P4_PROG_SCREEN);
         tft_lcd_send_command_float("t1", TEXT, cdu_parameters.standby_hf_freq, STANDBY);
         tft_lcd_send_command_float("t4", TEXT, cdu_parameters.active_hf_freq, ACTIVE);
-        ///tft_lcd_send_command_float("t10", TEXT, cdu_parameters.p13_hf_freq, PRE_PRO_13); .....
+        tft_lcd_send_command_float("t10", TEXT, cdu_parameters.p13_hf_freq, PRE_PRO_13);
         tft_lcd_send_command_int("t5", COLOR_CHG_BG, BLACK);
         tft_lcd_send_command_int("t5", COLOR_CHG_TEXT, WHITE);
         prefix_index = '13';
@@ -5047,7 +5047,7 @@ void hf_p4_prog_screen_handler(uint8_t key) {
         tft_lcd_change_screen(HF_P4_PROG_SCREEN);
         tft_lcd_send_command_float("t1", TEXT, cdu_parameters.standby_hf_freq, STANDBY);
         tft_lcd_send_command_float("t4", TEXT, cdu_parameters.active_hf_freq, ACTIVE);
-        //tft_lcd_send_command_float("t10", TEXT, cdu_parameters.p14_hf_freq, PRE_PRO_14);
+        tft_lcd_send_command_float("t10", TEXT, cdu_parameters.p14_hf_freq, PRE_PRO_14);
         tft_lcd_send_command_int("t6", COLOR_CHG_BG, BLACK);
         tft_lcd_send_command_int("t6", COLOR_CHG_TEXT, WHITE);
         prefix_index = '14';
@@ -5056,7 +5056,7 @@ void hf_p4_prog_screen_handler(uint8_t key) {
         tft_lcd_change_screen(HF_P4_PROG_SCREEN);
         tft_lcd_send_command_float("t1", TEXT, cdu_parameters.standby_hf_freq, STANDBY);
         tft_lcd_send_command_float("t4", TEXT, cdu_parameters.active_hf_freq, ACTIVE);
-        //tft_lcd_send_command_float("t10", TEXT, cdu_parameters.p15_hf_freq, PRE_PRO_15);
+        tft_lcd_send_command_float("t10", TEXT, cdu_parameters.p15_hf_freq, PRE_PRO_15);
         tft_lcd_send_command_int("t7", COLOR_CHG_BG, BLACK);
         tft_lcd_send_command_int("t7", COLOR_CHG_TEXT, WHITE);
         prefix_index = '15';
@@ -5065,7 +5065,7 @@ void hf_p4_prog_screen_handler(uint8_t key) {
         tft_lcd_change_screen(HF_P4_PROG_SCREEN);
         tft_lcd_send_command_float("t1", TEXT, cdu_parameters.standby_hf_freq, STANDBY);
         tft_lcd_send_command_float("t4", TEXT, cdu_parameters.active_hf_freq, ACTIVE);
-        //tft_lcd_send_command_float("t10", TEXT, cdu_parameters.p16_hf_freq, PRE_PRO_16); ....
+        tft_lcd_send_command_float("t10", TEXT, cdu_parameters.p16_hf_freq, PRE_PRO_16);
         tft_lcd_send_command_int("t8", COLOR_CHG_BG, BLACK);
         tft_lcd_send_command_int("t8", COLOR_CHG_TEXT, WHITE);
         prefix_index = '16';
@@ -5090,16 +5090,16 @@ void hf_p4_prog_screen_handler(uint8_t key) {
         tft_lcd_send_command_float("t1", TEXT, cdu_parameters.standby_hf_freq, STANDBY);
         switch (prefix_index) {
           case '13':
-            ///tft_lcd_send_command_float("t10", TEXT, cdu_parameters.p13_hf_freq, PRE_PRO_13);   ....
+            tft_lcd_send_command_float("t10", TEXT, cdu_parameters.p13_hf_freq, PRE_PRO_13);
             break;
           case '14':
-            //tft_lcd_send_command_float("t10", TEXT, cdu_parameters.p14_hf_freq, PRE_PRO_14);
+            tft_lcd_send_command_float("t10", TEXT, cdu_parameters.p14_hf_freq, PRE_PRO_14);
             break;
           case '15':
-            //tft_lcd_send_command_float("t10", TEXT, cdu_parameters.p15_hf_freq, PRE_PRO_15);
+            tft_lcd_send_command_float("t10", TEXT, cdu_parameters.p15_hf_freq, PRE_PRO_15);
             break;
           case '16':
-            //tft_lcd_send_command_float("t10", TEXT, cdu_parameters.p16_hf_freq, PRE_PRO_16);
+            tft_lcd_send_command_float("t10", TEXT, cdu_parameters.p16_hf_freq, PRE_PRO_16);
             break;
         }
         prefix_index = 0;
@@ -5139,16 +5139,16 @@ void hf_p5_prog_screen_handler(uint8_t key) {
       bool status = input_data_validation_freq(HF, value);
       if (status) {
         if (strcmp(prefix, PRE_PRO_17) == 0) {
-         // cdu_parameters.p17_hf_freq = value;
-         // tft_lcd_send_command_float("t10", TEXT, cdu_parameters.p17_hf_freq, PRE_PRO_17);    .....
+          cdu_parameters.p17_hf_freq = value;
+          tft_lcd_send_command_float("t10", TEXT, cdu_parameters.p17_hf_freq, PRE_PRO_17);
         }
         if (strcmp(prefix, PRE_PRO_18) == 0) {
-          //cdu_parameters.p18_hf_freq = value;
-          //tft_lcd_send_command_float("t10", TEXT, cdu_parameters.p18_hf_freq, PRE_PRO_18);
+          cdu_parameters.p18_hf_freq = value;
+          tft_lcd_send_command_float("t10", TEXT, cdu_parameters.p18_hf_freq, PRE_PRO_18);
         }
         if (strcmp(prefix, PRE_PRO_19) == 0) {
-          //cdu_parameters.p19_hf_freq = value;
-          //tft_lcd_send_command_float("t10", TEXT, cdu_parameters.p19_hf_freq, PRE_PRO_19);
+          cdu_parameters.p19_hf_freq = value;
+          tft_lcd_send_command_float("t10", TEXT, cdu_parameters.p19_hf_freq, PRE_PRO_19);
         }
         update_flash();
       } else {
@@ -5194,7 +5194,7 @@ void hf_p5_prog_screen_handler(uint8_t key) {
         tft_lcd_change_screen(HF_P5_PROG_SCREEN);
         tft_lcd_send_command_float("t1", TEXT, cdu_parameters.standby_hf_freq, STANDBY);
         tft_lcd_send_command_float("t4", TEXT, cdu_parameters.active_hf_freq, ACTIVE);
-        ////tft_lcd_send_command_float("t10", TEXT, cdu_parameters.p17_hf_freq, PRE_PRO_17);
+        tft_lcd_send_command_float("t10", TEXT, cdu_parameters.p17_hf_freq, PRE_PRO_17);
         tft_lcd_send_command_int("t5", COLOR_CHG_BG, BLACK);
         tft_lcd_send_command_int("t5", COLOR_CHG_TEXT, WHITE);
         prefix_index = '17';
@@ -5203,7 +5203,7 @@ void hf_p5_prog_screen_handler(uint8_t key) {
         tft_lcd_change_screen(HF_P5_PROG_SCREEN);
         tft_lcd_send_command_float("t1", TEXT, cdu_parameters.standby_hf_freq, STANDBY);
         tft_lcd_send_command_float("t4", TEXT, cdu_parameters.active_hf_freq, ACTIVE);
-        //tft_lcd_send_command_float("t10", TEXT, cdu_parameters.p18_hf_freq, PRE_PRO_18);
+        tft_lcd_send_command_float("t10", TEXT, cdu_parameters.p18_hf_freq, PRE_PRO_18);
         tft_lcd_send_command_int("t6", COLOR_CHG_BG, BLACK);
         tft_lcd_send_command_int("t6", COLOR_CHG_TEXT, WHITE);
         prefix_index = '18';
@@ -5212,7 +5212,7 @@ void hf_p5_prog_screen_handler(uint8_t key) {
         tft_lcd_change_screen(HF_P5_PROG_SCREEN);
         tft_lcd_send_command_float("t1", TEXT, cdu_parameters.standby_hf_freq, STANDBY);
         tft_lcd_send_command_float("t4", TEXT, cdu_parameters.active_hf_freq, ACTIVE);
-        //tft_lcd_send_command_float("t10", TEXT, cdu_parameters.p19_hf_freq, PRE_PRO_19);
+        tft_lcd_send_command_float("t10", TEXT, cdu_parameters.p19_hf_freq, PRE_PRO_19);
         tft_lcd_send_command_int("t7", COLOR_CHG_BG, BLACK);
         tft_lcd_send_command_int("t7", COLOR_CHG_TEXT, WHITE);
         prefix_index = '19';
@@ -5241,13 +5241,13 @@ void hf_p5_prog_screen_handler(uint8_t key) {
         tft_lcd_send_command_float("t1", TEXT, cdu_parameters.standby_hf_freq, STANDBY);
         switch (prefix_index) {
           case '17':
-            //tft_lcd_send_command_float("t10", TEXT, cdu_parameters.p17_hf_freq, PRE_PRO_17); .....
+            tft_lcd_send_command_float("t10", TEXT, cdu_parameters.p17_hf_freq, PRE_PRO_17);
             break;
           case '18':
-            //tft_lcd_send_command_float("t10", TEXT, cdu_parameters.p18_hf_freq, PRE_PRO_18);
+            tft_lcd_send_command_float("t10", TEXT, cdu_parameters.p18_hf_freq, PRE_PRO_18);
             break;
           case '19':
-            //tft_lcd_send_command_float("t10", TEXT, cdu_parameters.p19_hf_freq, PRE_PRO_19);
+            tft_lcd_send_command_float("t10", TEXT, cdu_parameters.p19_hf_freq, PRE_PRO_19);
             break;
         }
         prefix_index = 0;

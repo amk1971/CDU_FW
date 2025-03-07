@@ -24,6 +24,7 @@
 
 extern CAN_HandleTypeDef hcan;
 extern xQueueHandle xcanRXQueue;
+void tft_lcd(int );
 
 /*
  * Function: serial_1553_thread
@@ -61,7 +62,8 @@ void Comm_bus_thread(void *pvParameters)
 	  Request_Time = HAL_GetTick();
 	for(;;)
 	{
-		if((HAL_GetTick() - Request_Time) > 2000){
+		if((HAL_GetTick() - Request_Time) > 3000){
+			Request_Time = HAL_GetTick();
 			f.data.eID = UHF;
 			f.data.mID = Health;
 			CAN_SEND_FRAME(&f);
@@ -72,7 +74,7 @@ void Comm_bus_thread(void *pvParameters)
 	        if (xQueueReceive(xcanRXQueue, &receivedData, (TickType_t)5) == pdTRUE)
 	        {
 	        	cdu_parameters.UHF_message_counter = 0;		//Message Received
-	        	tft_lcd_Home();
+	        	tft_lcd_Home(0);
 	        }
 	    }
 //		if(uartRXSemaphoreHandle != NULL)

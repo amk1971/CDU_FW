@@ -143,12 +143,12 @@ void StartDefaultTask(void *argument)
 #include "data_handler.h"
 
 #define RX_MESSAGE_LENGTH 25
-#define QUEUE_LENGTH 10
+#define QUEUE_LENGTH 6
 
 // Task Size
 #define KEYBOARD_STACK_SIZE	256
 #define SERIAL1_STACK_SIZE	512
-#define COMM_BUS_STACK_SIZE 512
+#define COMM_BUS_STACK_SIZE 256
 //#define SERIAL2_STACK_SIZE	256
 //#define SERIAL3_STACK_SIZE	256
 //#define SERIAL4_STACK_SIZE	256

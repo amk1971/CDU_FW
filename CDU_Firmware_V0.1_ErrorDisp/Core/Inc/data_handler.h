@@ -65,6 +65,18 @@ typedef struct {
 	float p6_hf_freq;						// HF Pre-Programmed Frequency P6
 	float p7_hf_freq;						// HF Pre-Programmed Frequency P7
 	float p8_hf_freq;						// HF Pre-Programmed Frequency P8
+	float p9_hf_freq;						// HF Pre-Programmed Frequency P5
+	float p10_hf_freq;						// HF Pre-Programmed Frequency P6
+	float p11_hf_freq;						// HF Pre-Programmed Frequency P7
+	float p12_hf_freq;						// HF Pre-Programmed Frequency P8
+	float p13_hf_freq;						// HF Pre-Programmed Frequency P5
+	float p14_hf_freq;						// HF Pre-Programmed Frequency P6
+	float p15_hf_freq;						// HF Pre-Programmed Frequency P7
+	float p16_hf_freq;						// HF Pre-Programmed Frequency P8
+	float p17_hf_freq;						// HF Pre-Programmed Frequency P5
+	float p18_hf_freq;						// HF Pre-Programmed Frequency P6
+	float p19_hf_freq;						// HF Pre-Programmed Frequency P7
+	float p20_hf_freq;						// HF Pre-Programmed Frequency P8
 	// VHF Parameters
 	float standby_vhf_freq;					// VHF Standby Frequency
 	float active_vhf_freq;			 		// VHF Active Frequency
