@@ -11,6 +11,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdbool.h>
+#include "sys_defines.h"
 #include "usart.h"
 #include "keyboard.h"
 #include "debug_console.h"

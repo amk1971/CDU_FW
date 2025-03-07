@@ -85,8 +85,11 @@
 #define 	SLASH		'/'	 // Keyboard Key /
 
 // Special Firmware Purpose Keys
-#define DATA_1553	'z'
-#define REVERT_IN	'y'
+#define DATA_1553		'z'
+#define REVERT_IN		'y'
+#define BLINK_CURSOR	'x'
+#define SWI_CHANNEL	'w'
+#define SWI_FREQUENCY	'v'
 
 
 // Declare the event group handle as extern so it can be shared

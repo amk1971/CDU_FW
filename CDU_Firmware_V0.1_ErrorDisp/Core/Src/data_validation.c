@@ -11,6 +11,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <math.h>
+#include "sys_defines.h"
 #include "data_handler.h"
 #include "debug_console.h"
 

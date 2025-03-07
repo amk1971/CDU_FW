@@ -27,6 +27,7 @@ extern "C" {
 
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "sys_defines.h"
 
 /* USER CODE BEGIN Includes */
 #include<stdio.h>
@@ -38,49 +39,6 @@ extern CAN_HandleTypeDef hcan;
 
 /* USER CODE BEGIN Private defines */
 
-typedef enum {
-	NAV = 0,
-	ADF,
-	TACAN,
-	HF,
-	VHF,
-	UHF,
-	class_ID_Count
-}Class_Id;
-
-typedef enum {
-	T_FREQ,
-	A_FREQ,
-	VOL,
-	Health,					//Health Check message
-	MODE,
-	V_T_S,
-	RESET_STATUS,
-	COM_ERROR,
-    INVALid
-} CanMessage_Id;
-
-typedef struct {
-	Class_Id eID;			//Equipment ID
-	CanMessage_Id mID;			//message ID
-
-} Comm_bus_Frame;
-
-typedef union
-{
-    struct {
-        uint8_t Request_Reply : 1;
-        uint8_t power_status  : 1;
-        uint8_t Squelch       : 1;
-        uint8_t TestTone      : 1;
-        uint8_t Receiver_Mode : 1;
-        uint8_t Volume;
-        uint16_t Checksum;         // 2 bytes
-        float   Frequency;         // 4 bytes
-    } fields;
-    Comm_bus_Frame data;			// data in Comm bus frame
-    uint64_t RX_TX_FRAME;  // Full 8 bytes
-} FRAME;
 
 typedef enum
 {
