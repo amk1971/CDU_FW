@@ -72,6 +72,7 @@ void Comm_bus_thread(void *pvParameters)
 	        if (xQueueReceive(xcanRXQueue, &receivedData, (TickType_t)5) == pdTRUE)
 	        {
 	        	cdu_parameters.UHF_message_counter = 0;		//Message Received
+	        	tft_lcd_Home();
 	        }
 	    }
 //		if(uartRXSemaphoreHandle != NULL)

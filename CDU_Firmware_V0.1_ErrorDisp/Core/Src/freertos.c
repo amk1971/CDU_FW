@@ -201,19 +201,22 @@ void create_cdu_tasks(void)
 
 
 	// Key Board task for handling Keyboard inputs (High priority)
-	xTaskCreate(keyboard_thread, "Keyboard Matrix", KEYBOARD_STACK_SIZE, (void *)1, 3, NULL);
+	xTaskCreate(keyboard_thread, "Keyboard Matrix", KEYBOARD_STACK_SIZE, (void *)1, 4, NULL);
 
 	// Right Panel task for handling the Right panel key inputs (Medium-high priority)
-	xTaskCreate(right_panel_thread, "RIGHT PANEL", RIGHT_P_STACK_SIZE, (void *)1, 2, NULL);
+	xTaskCreate(right_panel_thread, "RIGHT PANEL", RIGHT_P_STACK_SIZE, (void *)1, 3, NULL);
 
 	// Serial Task to 1553 (Medium priority)
-	xTaskCreate(serial_1553_thread, "Serial 1553", SERIAL1_STACK_SIZE, (void *) 1, 1, NULL);
+	xTaskCreate(serial_1553_thread, "Serial 1553", SERIAL1_STACK_SIZE, (void *) 1, 2, NULL);
 
-	// Can Thread for Comm Bus (Medium priority)
-	xTaskCreate(Comm_bus_thread, "COMM BUS CAN", COMM_BUS_STACK_SIZE, (void *) 1, 1, NULL);
 
 	// A display task (Low priority)
 	xTaskCreate(tft_lcd_thread, "TFT_LCD", TFT_LCD_STACK_SIZE, (void *)1, 0, NULL);
+
+	// Can Thread for Comm Bus (Medium priority)
+	if(xTaskCreate(Comm_bus_thread, "COMM BUS CAN", COMM_BUS_STACK_SIZE, (void *) 1, 1, NULL) != pdPASS)
+		while(1);
+
 
 #if DEBUG_CONSOLE
 	xTaskCreate(debug_console_thread, "Debug Console", DEBUG_STACK_SIZE, (void *)1, 5, NULL);

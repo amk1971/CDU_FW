@@ -26,6 +26,21 @@ void stop_timer(void)
     HAL_TIM_Base_Stop_IT(&htim16);
 }
 
+void start_timer_cursor(void)
+{
+	  __HAL_TIM_SET_COUNTER(&htim17, 0);  // Reset the timer counter
+	__HAL_TIM_CLEAR_FLAG(&htim17, TIM_FLAG_UPDATE);
+    // Start the timer in interrupt mode
+    HAL_TIM_Base_Start_IT(&htim17);  // Replace htimx with your timer handle (e.g., htim2)
+}
+
+// Stop the timer if needed
+void stop_timer_cursor(void)
+{
+    // Stop the timer and disable interrupts
+    HAL_TIM_Base_Stop_IT(&htim17);
+}
+
 void time_up_notify_tft(void)
 {
 	char key = REVERT_IN;
