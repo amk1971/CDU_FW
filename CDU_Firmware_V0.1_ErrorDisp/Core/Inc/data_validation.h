@@ -10,6 +10,7 @@
 
 #include <stdbool.h>
 #include "data_handler.h"
+#include "sys_defines.h"
 
 extern bool input_data_validation_channel(Class_Id input_class, const char* channel);
 extern bool input_data_validation_freq(Class_Id input_class, float input_val);

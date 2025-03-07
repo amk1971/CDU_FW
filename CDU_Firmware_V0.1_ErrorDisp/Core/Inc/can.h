@@ -27,7 +27,7 @@ extern "C" {
 
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
-
+#include "sys_defines.h"
 /* USER CODE BEGIN Includes */
 #include<stdio.h>
 #include<string.h>
@@ -37,20 +37,20 @@ extern "C" {
 extern CAN_HandleTypeDef hcan;
 
 /* USER CODE BEGIN Private defines */
-typedef union
-{
-    struct {
-        uint8_t Request_Reply : 1;
-        uint8_t power_status  : 1;
-        uint8_t Squelch       : 1;
-        uint8_t TestTone      : 1;
-        uint8_t Receiver_Mode : 1;
-        uint8_t Volume;
-        uint16_t Checksum;         // 2 bytes
-        float   Frequency;         // 4 bytes
-    } fields;
-    uint64_t RX_TX_FRAME;  // Full 8 bytes
-} FRAME;
+//typedef union
+//{
+//    struct {
+//        uint8_t Request_Reply : 1;
+//        uint8_t power_status  : 1;
+//        uint8_t Squelch       : 1;
+//        uint8_t TestTone      : 1;
+//        uint8_t Receiver_Mode : 1;
+//        uint8_t Volume;
+//        uint16_t Checksum;         // 2 bytes
+//        float   Frequency;         // 4 bytes
+//    } fields;
+//    uint64_t RX_TX_FRAME;  // Full 8 bytes
+//} FRAME;
 
 typedef enum
 {
@@ -68,7 +68,7 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan);
 void CAN_SEND_FRAME(FRAME *frame);
 void CAN_RECEIVE_FRAME(FRAME *frame);
 float ConvertToFrequency(int mhz, int khz);
-void Can_TX_SF(bool request_reply, bool power_status, bool squelch, bool test_tone,
+void Can_TX_SF(CAN_REQUEST_REPLY request_reply, bool power_status, bool squelch, bool test_tone,
                bool receiver_mode, uint8_t volume, int mhz,int khz, uint16_t checksum);
 /* USER CODE END Prototypes */
 

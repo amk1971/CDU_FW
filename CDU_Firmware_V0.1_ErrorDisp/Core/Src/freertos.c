@@ -139,6 +139,7 @@ void StartDefaultTask(void *argument)
 #include "keyboard.h"
 #include "debug_console.h"
 #include "serial_1.h"
+#include "Comm_bus.h"
 #include "data_handler.h"
 
 #define RX_MESSAGE_LENGTH 25
@@ -146,11 +147,12 @@ void StartDefaultTask(void *argument)
 
 // Task Size
 #define KEYBOARD_STACK_SIZE	256
-#define SERIAL1_STACK_SIZE	256
+#define SERIAL1_STACK_SIZE	512
+#define COMM_BUS_STACK_SIZE 512
 //#define SERIAL2_STACK_SIZE	256
 //#define SERIAL3_STACK_SIZE	256
 //#define SERIAL4_STACK_SIZE	256
-#define TFT_LCD_STACK_SIZE	1024
+#define TFT_LCD_STACK_SIZE	2048
 #define RIGHT_P_STACK_SIZE	256
 #if DEBUG_CONSOLE
 #define DEBUG_STACK_SIZE	1024
@@ -160,6 +162,7 @@ void StartDefaultTask(void *argument)
 xQueueHandle xKeyQueue = NULL;
 xQueueHandle xuartTXQueue = NULL;
 xQueueHandle xuartRXQueue = NULL;
+xQueueHandle xcanRXQueue = NULL;
 #if DEBUG_CONSOLE
 xQueueHandle xDebugQueue = NULL;
 #endif
@@ -187,14 +190,30 @@ SemaphoreHandle_t xFlashMutex;
  */
 void create_cdu_tasks(void)
 {
-	// Key Board task for handling Keyboard inputs
-	xTaskCreate(keyboard_thread, "Keyboard Matrix", KEYBOARD_STACK_SIZE, (void *)1, 5, NULL);
-	// Right Panel task for handling the Right panel key inputs
-	xTaskCreate(right_panel_thread, "RIGHT PANEL", RIGHT_P_STACK_SIZE,  (void *)1, 5, NULL);
-	// Serial Task to 1553
-	xTaskCreate(serial_1553_thread, "Serial 1553", SERIAL1_STACK_SIZE, (void *) 1, 5, NULL);
-	// A display task
-	xTaskCreate(tft_lcd_thread, "TFT_LCD", TFT_LCD_STACK_SIZE, (void *)1, 5, NULL);
+//	// Key Board task for handling Keyboard inputs
+//	xTaskCreate(keyboard_thread, "Keyboard Matrix", KEYBOARD_STACK_SIZE, (void *)1, 5, NULL);
+//	// Right Panel task for handling the Right panel key inputs
+//	xTaskCreate(right_panel_thread, "RIGHT PANEL", RIGHT_P_STACK_SIZE,  (void *)1, 5, NULL);
+//	// Serial Task to 1553
+//	xTaskCreate(serial_1553_thread, "Serial 1553", SERIAL1_STACK_SIZE, (void *) 1, 5, NULL);
+//	// A display task
+//	xTaskCreate(tft_lcd_thread, "TFT_LCD", TFT_LCD_STACK_SIZE, (void *)1, 5, NULL);
+
+
+	// Key Board task for handling Keyboard inputs (High priority)
+	xTaskCreate(keyboard_thread, "Keyboard Matrix", KEYBOARD_STACK_SIZE, (void *)1, 3, NULL);
+
+	// Right Panel task for handling the Right panel key inputs (Medium-high priority)
+	xTaskCreate(right_panel_thread, "RIGHT PANEL", RIGHT_P_STACK_SIZE, (void *)1, 2, NULL);
+
+	// Serial Task to 1553 (Medium priority)
+	xTaskCreate(serial_1553_thread, "Serial 1553", SERIAL1_STACK_SIZE, (void *) 1, 1, NULL);
+
+	// Can Thread for Comm Bus (Medium priority)
+	xTaskCreate(Comm_bus_thread, "COMM BUS CAN", COMM_BUS_STACK_SIZE, (void *) 1, 1, NULL);
+
+	// A display task (Low priority)
+	xTaskCreate(tft_lcd_thread, "TFT_LCD", TFT_LCD_STACK_SIZE, (void *)1, 0, NULL);
 
 #if DEBUG_CONSOLE
 	xTaskCreate(debug_console_thread, "Debug Console", DEBUG_STACK_SIZE, (void *)1, 5, NULL);
@@ -248,6 +267,11 @@ void create_cdu_queus(void)
 		debug_print("Error: Failed to Create Queue xDebugQueue. \r\n");
 	}
 #endif
+
+	// CAN Reception queue
+	xcanRXQueue = xQueueCreate(QUEUE_LENGTH, CAN_MESSAGE_LENGTH + 1);
+
+
 }
 
 /*
@@ -308,9 +332,40 @@ void MX_FREERTOS_Init(void)
 	creat_cdu_semaphore();
 
 	// start the scheduler
+
+
     vTaskStartScheduler();
 }
 
+
+void vApplicationStackOverflowHook(TaskHandle_t xTask, char *pcTaskName) {
+    // Optional: Print the name of the task that caused the overflow (if logging is available)
+//    printf("Stack Overflow in Task: %s\n", pcTaskName);
+
+    // Disable interrupts to prevent further execution
+    taskDISABLE_INTERRUPTS();
+
+    // Infinite loop to halt execution (useful for debugging)
+    while (1) {
+        // You can toggle an LED here to indicate a failure if available
+    }
+}
+
+
+void vApplicationIdleHook(void)
+{
+    /* This is the idle task hook function. The idle task runs whenever no other task is ready to run.
+       It is often used for low-power modes like sleep or to perform low-priority background tasks.
+       In this example, we put the MCU into sleep mode when the system is idle. */
+
+    __WFI();  // Wait for interrupt (puts the MCU in low power mode until the next interrupt occurs)
+}
+
+
+void vApplicationMallocFailedHook(void) {
+    printf("Malloc Failed!\n");
+    while (1);
+}
 #endif
 
 /* USER CODE END Application */

@@ -18,7 +18,15 @@
   */
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
+#include <stdint.h>
+#include <stdio.h>
+#include <string.h>
+#include "FreeRTOS.h"
+#include "semphr.h"
+#include "sys_defines.h"
 #include "can.h"
+
+extern xQueueHandle xcanRXQueue;
 
 /* USER CODE BEGIN 0 */
 
@@ -120,7 +128,7 @@ void HAL_CAN_MspDeInit(CAN_HandleTypeDef* canHandle)
 /* USER CODE BEGIN 1 */
 void CAN_RECEIVE_FRAME(FRAME *frame)
 {
-    if(frame->fields.Request_Reply == 1)
+    if(frame->fields.Request_Reply == Reply)
     {
     	//Slave Reply
     }
@@ -150,7 +158,7 @@ void CAN_SEND_FRAME(FRAME *frame) {
 	}
 }
 //Active Freq 290.725 Can_TX_SF(1,0,1,0,1,99,290,725,955);
-void Can_TX_SF(bool request_reply, bool power_status, bool squelch, bool test_tone,
+void Can_TX_SF(CAN_REQUEST_REPLY request_reply, bool power_status, bool squelch, bool test_tone,
                bool receiver_mode, uint8_t volume, int mhz,int khz, uint16_t checksum)
 {
 	float tFreq = ConvertToFrequency(mhz,khz);
@@ -164,7 +172,7 @@ void Can_TX_SF(bool request_reply, bool power_status, bool squelch, bool test_to
     frame.fields.Frequency     = tFreq;
     frame.fields.Checksum      = checksum;
 
-    CAN_SEND_FRAME(&frame);
+    CAN_SEND_FRAME(&frame);     //.....
 }
 
 void CAN_Filter_Config(void)
@@ -191,12 +199,19 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 {
     CAN_RxHeaderTypeDef RxHeader;
     uint8_t buffer[8];
+    BaseType_t xHigherPriorityTaskWoken = pdFALSE;
 
     if (HAL_CAN_GetRxMessage(hcan, CAN_RX_FIFO0, &RxHeader, buffer) == HAL_OK)
     {
         FRAME RxData;
         memcpy(&RxData.RX_TX_FRAME, buffer, 8);
-        CAN_RECEIVE_FRAME(&RxData);
+        //CAN_RECEIVE_FRAME(&RxData);           //.....
+        if (xQueueSendFromISR(xcanRXQueue, buffer, &xHigherPriorityTaskWoken) != pdPASS)
+        {
+            // Handle queue full error (optional logging or error handling)
+        }
+
+
     }
 }
 

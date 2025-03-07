@@ -10,6 +10,7 @@
 #include <string.h>
 #include "FreeRTOS.h"
 #include "task.h"
+#include "sys_defines.h"
 #include "serial_1.h"
 #include "main.h"
 #include "debug_console.h"
@@ -25,9 +26,9 @@
 
 
 /* ------------------------------ Variables START -------------------------------------*/
-uint8_t rxBuffer[RX_BUFFER_SIZE];  // Buffer to store received data // +1 for NULL
+//uint8_t rxBuffer[RX_BUFFER_SIZE];  // Buffer to store received data // +1 for NULL
 uint8_t rxByte = 0;
-uint8_t rxIndex = 0;
+//uint8_t rxIndex = 0;
 uint8_t txBuffer[TX_BUFFER_SIZE];
 uint8_t check[8] = "Start\r\n";
 /* ------------------------------ Variables END -------------------------------------*/
@@ -57,7 +58,7 @@ void serial_1553_thread(void *pvParameters)
 	Identifier ident;
 	uint8_t size = sizeof(Identifier);
 	memset(&ident, 0, size);
-	memset(rxBuffer, 0, RX_BUFFER_SIZE);
+//	memset(rxBuffer, 0, RX_BUFFER_SIZE);
 //	HAL_UART_Transmit(&huart4, check, strlen((char *)check), HAL_MAX_DELAY);
 	UART_StartReceive();
 	for(;;)
@@ -95,7 +96,7 @@ void serial_1553_thread(void *pvParameters)
             if(xQueueReceive(xuartTXQueue, &ident, (TickType_t)10) == pdTRUE)
             {
             	memset(txBuffer, 0, TX_BUFFER_SIZE);
-            	encode_message(txBuffer, ident.class, ident.msg_id, ident.mhz , ident.khz,  ident.freq_flag); // Encode data for transmission
+            	encode_message(txBuffer, ident.class, ident.msg_id, ident.mhz , ident.khz, ident.vol, ident.mode, ident.freq_flag); // Encode data for transmission
 //            	txBuffer[TX_BUFFER_SIZE - 1] = '\0';
             	if(strlen((char *)txBuffer) < TX_BUFFER_SIZE)
             	{
@@ -163,41 +164,91 @@ void UART_StartReceive(void)
         }
     }
 }*/
+//
+//void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
+//{
+//    if (huart->Instance == USART4)
+//    {
+//        // Store the received byte into the buffer
+//        rxBuffer[rxIndex++] = rxByte;
+//
+//        // Check for "\r\n" in the last two received characters
+//        if (rxIndex >= 2 && rxBuffer[rxIndex - 2] == '\r' && rxBuffer[rxIndex - 1] == '\n') {
+//            // Null-terminate the message
+//            rxBuffer[rxIndex] = '\0';
+//
+//            // Enqueue the complete message
+//            BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+//            if (xQueueSendFromISR(xuartRXQueue, rxBuffer, &xHigherPriorityTaskWoken) != pdPASS)
+//            {
+//                // Handle queue full error
+//            }
+//
+//            // Reset index for the next message
+//            rxIndex = 0;
+//
+//            // Yield if a higher-priority task was woken
+//            portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
+//        }
+//        else if (rxIndex > RX_BUFFER_SIZE)
+//        {
+//            // Reset index if the buffer is full without finding \r\n
+//            rxIndex = 0;
+//        }
+//		UART_StartReceive();
+//    }
+//}
+
 
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
-    if (huart->Instance == USART4)
+    if (huart->Instance == USART4) // Maintain the same instance check
     {
+        BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+
+        // Use a static buffer for storing received bytes
+        static uint8_t rxBuffer[RX_BUFFER_SIZE];
+        static uint8_t rxIndex = 0;
+
         // Store the received byte into the buffer
         rxBuffer[rxIndex++] = rxByte;
 
         // Check for "\r\n" in the last two received characters
-        if (rxIndex >= 2 && rxBuffer[rxIndex - 2] == '\r' && rxBuffer[rxIndex - 1] == '\n') {
+        if (rxIndex >= 2 && rxBuffer[rxIndex - 2] == '\r' && rxBuffer[rxIndex - 1] == '\n')
+        {
             // Null-terminate the message
             rxBuffer[rxIndex] = '\0';
 
-            // Enqueue the complete message
-            BaseType_t xHigherPriorityTaskWoken = pdFALSE;
-            if (xQueueSendFromISR(xuartRXQueue, rxBuffer, &xHigherPriorityTaskWoken) != pdPASS)
+            // Send the buffer from the ISR to the task via the queue
+            if (xuartRXQueue != NULL)
             {
-                // Handle queue full error
+                if (xQueueSendFromISR(xuartRXQueue, rxBuffer, &xHigherPriorityTaskWoken) != pdPASS)
+                {
+                    // Handle queue full error (optional logging or error handling)
+                }
+                memset(rxBuffer, 0, RX_BUFFER_SIZE); // Clear the buffer after sending
             }
 
-            // Reset index for the next message
+            // Reset the index for the next message
             rxIndex = 0;
-
-            // Yield if a higher-priority task was woken
-            portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
         }
-        else if (rxIndex > RX_BUFFER_SIZE)
+        else if (rxIndex >= RX_BUFFER_SIZE)
         {
-            // Reset index if the buffer is full without finding \r\n
+            // Reset the index if the buffer is full without finding "\r\n"
+            memset(rxBuffer, 0, RX_BUFFER_SIZE); // Clear the buffer on overflow
             rxIndex = 0;
         }
-		UART_StartReceive();
+
+        // Yield if a higher-priority task was woken
+        if (xHigherPriorityTaskWoken == pdTRUE)
+        {
+            portEND_SWITCHING_ISR(xHigherPriorityTaskWoken);
+        }
+
+        // Re-enable UART reception for the next byte
+        UART_StartReceive();
     }
 }
-
 /*
  * Function: UART_StartTransmittion
  * Arguments: None
@@ -251,6 +302,12 @@ void split_frequency(float frequency, uint8_t *mhz, uint16_t *khz)
     *khz = (uint16_t)(((frequency - *mhz) + 0.001) * 1000);  // Fractional part (kHz)
 }
 
+void split_frequency_adf(float frequency, uint8_t *mhz, uint16_t *khz)
+{
+    *mhz = (uint8_t)frequency;              // Integer part (MHz)
+    *khz = (uint16_t)((((frequency - *mhz) ) * 1000)+0.001);  // Fractional part (kHz)
+}
+
 /*
  * Function: send_to_uart_queue
  * Arguments: uint8_t class_id, uint8_t msg_id, float frequency
@@ -271,7 +328,14 @@ void send_to_uart_queue_freq(uint8_t class_id, uint8_t msg_id, float frequency)
     // Split the frequency into MHz and kHz
     if(frequency > 0.0)
     {
-    	split_frequency(frequency, &identifier.mhz, &identifier.khz);
+    	if(class_id == ADF)
+    	{
+    		split_frequency_adf(frequency, &identifier.mhz, &identifier.khz);
+    	}
+    	else
+    	{
+    		split_frequency(frequency, &identifier.mhz, &identifier.khz);
+    	}
     	identifier.freq_flag = 'Y';
     }
     else
@@ -334,3 +398,48 @@ void send_to_uart_queue_channel(uint8_t class_id, uint8_t msg_id, const char *ke
     }
 }
 
+void send_to_uart_queue_volume(uint8_t class_id, uint8_t msg_id, uint8_t vol)
+{
+    Identifier identifier;
+
+    identifier.vol = vol;
+	identifier.freq_flag = 'N';
+
+    identifier.class = (Class_Id)class_id;
+    identifier.msg_id = (Message_Id)VOLUME;
+
+    // Send the identifier structure to the queue
+    if(xuartTXQueue != NULL)
+    {
+        // Successfully added to the queue
+    	if(xQueueSend(xuartTXQueue, &identifier, (TickType_t)10) != pdPASS)
+    	{
+#if DEBUG_CONSOLE
+    		debug_print("----Error: Failed to send volume to queue. xuartTXQueue \r\n");
+#endif
+    	}
+    }
+}
+
+void send_to_uart_tacan_mode(uint8_t class_id, uint8_t msg_id, uint8_t mode)
+{
+    Identifier identifier;
+
+    identifier.mode = mode;
+	identifier.freq_flag = 'N';
+
+    identifier.class = (Class_Id)class_id;
+    identifier.msg_id = (Message_Id)MODE;
+
+    // Send the identifier structure to the queue
+    if(xuartTXQueue != NULL)
+    {
+        // Successfully added to the queue
+    	if(xQueueSend(xuartTXQueue, &identifier, (TickType_t)10) != pdPASS)
+    	{
+#if DEBUG_CONSOLE
+    		debug_print("----Error: Failed to send volume to queue. xuartTXQueue \r\n");
+#endif
+    	}
+    }
+}

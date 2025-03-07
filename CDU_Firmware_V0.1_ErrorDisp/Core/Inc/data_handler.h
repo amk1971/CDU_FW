@@ -11,28 +11,14 @@
 #include <stdint.h>
 #include "FreeRTOS.h"
 #include "semphr.h"
+#include "sys_defines.h"
 
 #define TACAN_S	5
 
-typedef enum {
-	NAV = 0,
-	ADF,
-	TACAN,
-	HF,
-	VHF,
-	UHF,
-	class_ID_Count
-}Class_Id;
-
-typedef enum {
-	S_FREQ,
-	A_FREQ,
-	V_T_S,
-	RESET_STATUS,
-	COM_ERROR,
-	Health,
-    INVALID
-}Message_Id;
+typedef enum{
+	MODE_CHANNEL,
+	MODE_FREQUENCY
+}tacan_mode;
 
 typedef struct {
 	// NAV Parameters
@@ -101,6 +87,18 @@ typedef struct {
 	float p6_uhf_freq;						// UHF Pre-Programmed Frequency P6
 	float p7_uhf_freq;						// UHF Pre-Programmed Frequency P7
 	float p8_uhf_freq;						// UHF Pre-Programmed Frequency P8
+	float p9_uhf_freq;						// UHF Pre-Programmed Frequency P7
+	float p10_uhf_freq;						// UHF Pre-Programmed Frequency P8
+	float p11_uhf_freq;						// UHF Pre-Programmed Frequency P7
+	float p12_uhf_freq;						// UHF Pre-Programmed Frequency P8
+	float p13_uhf_freq;						// UHF Pre-Programmed Frequency P7
+	float p14_uhf_freq;						// UHF Pre-Programmed Frequency P8
+	float p15_uhf_freq;						// UHF Pre-Programmed Frequency P7
+	float p16_uhf_freq;						// UHF Pre-Programmed Frequency P8
+	float p17_uhf_freq;						// UHF Pre-Programmed Frequency P7
+	float p18_uhf_freq;						// UHF Pre-Programmed Frequency P8
+	float p19_uhf_freq;						// UHF Pre-Programmed Frequency P7
+	float p20_uhf_freq;						// UHF Pre-Programmed Frequency P8
 
 	// Volumes
 	uint8_t volume_nav;
@@ -134,7 +132,8 @@ typedef struct {
 	uint16_t khz;
 	Class_Id class;
 	Message_Id msg_id;
-	int val;
+	uint8_t vol;
+	tacan_mode mode;
 }Identifier;
 
 extern SemaphoreHandle_t xFlashMutex;
@@ -149,8 +148,8 @@ extern void copy_preset_to_standby_channel(char index);
 
 
 extern void decode_receive_data(uint8_t *buffer);
-extern void encode_message(uint8_t *tx_buffer, Class_Id c_index, Message_Id m_index, uint8_t mhz , uint16_t khz,  char f_flag);
-
+void encode_message(uint8_t *tx_buffer, Class_Id c_index, Message_Id m_index,
+		uint8_t mhz, uint16_t khz, uint8_t vol, uint8_t mode, char f_flag);
 // Data read and write from and to flash
 extern void Load_CDU_Parameters(CDU_Parameters* params);
 extern void update_flash(void);
